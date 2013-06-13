@@ -1,4 +1,4 @@
-package com.jgefroh.Main;
+package com.jgefroh.main;
 
 import org.lwjgl.opengl.Display;
 
