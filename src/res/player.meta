@@ -1,0 +1,14 @@
+{
+	"width":32,
+	"height":32,
+	"sprites":
+		[
+			{
+				"id":0,
+				"xmin":0,
+				"xmax":32,
+				"ymin":0,
+				"ymax":32
+			}
+		]
+}
