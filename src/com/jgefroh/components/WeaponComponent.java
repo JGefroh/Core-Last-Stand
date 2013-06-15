@@ -184,6 +184,32 @@ public class WeaponComponent implements IComponent
 		return 0;
 	}
 	
+	public int getShotsFiredThisBurst()
+	{
+		if(currentWeapon!=null)
+		{
+			return currentWeapon.getShotsFiredThisBurst();
+		}
+		return 0;
+	}
+	
+	public int getBurstSize()
+	{
+		if(currentWeapon!=null)
+		{
+			return currentWeapon.getBurstSize();
+		}
+		return 0;
+	}
+	
+	public long getDelayAfterBurst()
+	{
+		if(currentWeapon!=null)
+		{
+			return currentWeapon.getDelayAfterBurst();
+		}
+		return 0;
+	}
 	//////////
 	// SETTERS
 	//////////
@@ -323,6 +349,30 @@ public class WeaponComponent implements IComponent
 		if(currentWeapon!=null)
 		{
 			this.currentWeapon.setNumShots(numShots);
+		}
+	}
+	
+	public void setBurstSize(final int burstSize)
+	{
+		if(currentWeapon!=null)
+		{
+			this.currentWeapon.setBurstSize(burstSize);
+		}
+	}
+	
+	public void setShotsFiredThisBurst(final int shotsFiredThisBurst)
+	{
+		if(currentWeapon!=null)
+		{
+			this.currentWeapon.setShotsFiredThisBurst(shotsFiredThisBurst);
+		}
+	}
+	
+	public void setDelayAfterBurst(final long delayAfterBurst)
+	{
+		if(currentWeapon!=null)
+		{
+			this.currentWeapon.setDelayAfterBurst(delayAfterBurst);
 		}
 	}
 	//////////

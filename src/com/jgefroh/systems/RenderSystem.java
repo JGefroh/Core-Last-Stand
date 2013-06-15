@@ -19,8 +19,10 @@ import com.jgefroh.infopacks.RenderInfoPack;
 
 
 /**
- * This system handles the rendering and drawing of entities.
+ * Handles the rendering and drawing of entities on the screen.
  * 
+ * 
+ * Date: 12JUN13
  * @author Joseph Gefroh
  */
 public class RenderSystem implements ISystem
@@ -53,13 +55,13 @@ public class RenderSystem implements ISystem
 	/**Holds texture IDs associated with an image name.*/
 	private HashMap<String, Integer> idMan;
 	
-	
+	/**Flag that indicates whether wireframe mode is enabled.*/
 	private boolean wireframeEnabled = false;
 	//////////
 	// INIT
 	//////////
 	/**
-	 * Create a new RenderSystem.
+	 * Creates a new instance of this {@code System}.
 	 * @param core	 a reference to the Core controlling this system
 	 */
 	public RenderSystem(final Core core)
@@ -67,7 +69,6 @@ public class RenderSystem implements ISystem
 		this.core = core;
 		init();
 	}
-	
 	
 	/**
 	 * Initialize OpenGL settings.
@@ -77,15 +78,14 @@ public class RenderSystem implements ISystem
 		LOGGER.log(Level.FINE, "Setting default OpenGL values.");
 
 		GL11.glDepthFunc(GL11.GL_LEQUAL);
-		GL11.glHint(GL11.GL_PERSPECTIVE_CORRECTION_HINT, GL11.GL_FASTEST);	//Hint to increase performance (do once)
-		//GL11.glEnable(GL11.GL_BLEND);	//Enables blending? (do once)
+		GL11.glHint(GL11.GL_PERSPECTIVE_CORRECTION_HINT, GL11.GL_FASTEST);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_BLEND);
  		GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glLoadIdentity();
-		GL11.glViewport(0, 0, 1680, 1050);
-		GL11.glOrtho(0, 1680, 1050, 0, -1, 1);
+		GL11.glViewport(0, 0, 1366, 768);
+		GL11.glOrtho(0, 1366, 768, 0, -1, 1);
 	}
 	
 	
@@ -283,6 +283,7 @@ public class RenderSystem implements ISystem
 						idMan.put(pack.getPath(), -1);	//Avoid repeat log msgs.
 					}
 				}
+
 				drawQuadAt(pack.getTextureID(), 
 						pack.getXPos()-pack.getWidth()/2, pack.getYPos()-pack.getHeight()/2, pack.getZPos(),
 						pack.getWidth(), pack.getHeight(),
@@ -416,7 +417,7 @@ public class RenderSystem implements ISystem
 		GL11.glViewport(0, 0, width, height);
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glLoadIdentity();
-		GL11.glOrtho(0, 1680, 1050, 0, -1, 100);
+		GL11.glOrtho(0, 1366, 768, 0, -1, 100);
 	}
 	/**
 	 * Sets the debug level of this {@code System}.

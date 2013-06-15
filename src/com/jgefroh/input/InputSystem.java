@@ -91,7 +91,7 @@ public class InputSystem implements ISystem, IInputSystem
 		//TODO: Move somewhere else.
 		BindMap kbs = new BindMap();
 		BindMap mbs = new BindMap();
-		kbs.bind(Keyboard.KEY_SPACE, "FIRE", InputSystem.PRESS);
+		kbs.bind(Keyboard.KEY_SPACE, "FIRE", InputSystem.HOLD);
 		kbs.bind(Keyboard.KEY_W, "MOVE_UP", InputSystem.HOLD);
 		kbs.bind(Keyboard.KEY_A, "MOVE_LEFT", InputSystem.HOLD);
 		kbs.bind(Keyboard.KEY_S, "MOVE_DOWN", InputSystem.HOLD);
@@ -137,10 +137,10 @@ public class InputSystem implements ISystem, IInputSystem
 		core.setInterested(this,"MOVE_RIGHT");
 		core.setInterested(this,"FIRE");
 		
-		this.windowWidth = 1680;
-		this.windowHeight = 1050;
-		this.windowWidthOrig = 1680;
-		this.windowHeightOrig = 1050;
+		this.windowWidth = 1366;
+		this.windowHeight = 768;
+		this.windowWidthOrig = 1366;
+		this.windowHeightOrig = 768;
 		this.widthRatio = 1;
 		this.heightRatio = 1;
 		

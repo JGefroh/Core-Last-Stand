@@ -38,6 +38,14 @@ public class Weapon
 	
 	/**The number of shots this weapon fires per fire attempt.*/
 	private int numShots;
+	
+	private double shotSpeed; 
+	
+	private int burstSize;
+	
+	private int shotsFiredThisBurst;
+	
+	private long delayAfterBurst;
 	//////////
 	// INIT
 	//////////
@@ -99,6 +107,26 @@ public class Weapon
 	{
 		return this.numShots;
 	}
+	
+	public double getShotSpeed()
+	{
+		return this.shotSpeed;
+	}
+	
+	public int getBurstSize()
+	{
+		return this.burstSize;
+	}
+	
+	public int getShotsFiredThisBurst()
+	{
+		return this.shotsFiredThisBurst;
+	}
+	
+	public long getDelayAfterBurst()
+	{
+		return this.delayAfterBurst;
+	}
 	//////////
 	// SETTERS
 	//////////
@@ -147,5 +175,24 @@ public class Weapon
 	public void setNumShots(final int numShots)
 	{
 		this.numShots = numShots;
+	}
+	
+	public void setShotSpeed(final double shotSpeed)
+	{
+		this.shotSpeed = shotSpeed;
+	}
+	
+	public void setBurstSize(final int burstSize)
+	{
+		this.burstSize = burstSize;
+	}
+	
+	public void setShotsFiredThisBurst(final int shotsFiredThisBurst)
+	{
+		this.shotsFiredThisBurst = shotsFiredThisBurst;
+	}
+	public void setDelayAfterBurst(final long delayAfterBurst)
+	{
+		this.delayAfterBurst = delayAfterBurst;
 	}
 }

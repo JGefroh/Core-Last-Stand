@@ -63,6 +63,7 @@ public class WeaponSystem implements ISystem
 	{
 		isRunning = true;
 		core.setInterested(this, "REQUEST_FIRE");
+		core.setInterested(this, "CEASE_FIRE");
 		core.setInterested(this, "SWITCH_WEAPON_1");
 		core.setInterested(this, "SWITCH_WEAPON_2");
 		core.setInterested(this, "SWITCH_WEAPON_3");
@@ -157,32 +158,56 @@ public class WeaponSystem implements ISystem
 			{
 				if(now-each.getLastUpdated()>=each.getInterval())
 				{
+					//If the weapon has cycled...
 					if(each.isFireRequested())
 					{
+						//If the trigger was pulled...
 						each.setLastUpdated(now);
 						if(each.getAmmo()>0)
 						{							
-							fire(each);
-							decAmmo(each);
-							incSpread(each);
+							//If there is enough ammo...
+							fire(now, each);	//Fire
+							decAmmo(each);		//Decrement the ammo
+							incSpread(each);	//Add recoil
 						}
 					}
 					else
 					{
-						decSpread(each);
+						decSpread(each);	//Decrement the recoil (change)
+						each.setShotsFiredThisBurst(0);
 					}
 				}
-				each.setFireRequested(false);
 			}
 		}
 	}
 	
-	private void fire(final WeaponInfoPack pack)
+	private void fire(final long now, final WeaponInfoPack pack)
 	{
-		EntityCreationSystem ecs = core.getSystem(EntityCreationSystem.class);
-		for(int shot = 0;shot<pack.getNumShots();shot++)
-		{			
-			ecs.createBullet(pack.getOwner(), pack.getDamage(), pack.getMaxRange(), pack.getCurSpread());	
+		if(pack.getShotsFiredThisBurst()<pack.getBurstSize())
+		{
+			//If firing as part of a burst or single request
+			EntityCreationSystem ecs = core.getSystem(EntityCreationSystem.class);
+			for(int shot = 0;shot<pack.getNumShots();shot++)
+			{			
+				ecs.createBullet(pack.getOwner(), pack.getDamage(), pack.getMaxRange(), pack.getCurSpread());	
+			}
+			pack.setShotsFiredThisBurst(pack.getShotsFiredThisBurst()+1);
+		}
+		else if(pack.getBurstSize()==0)
+		{
+			EntityCreationSystem ecs = core.getSystem(EntityCreationSystem.class);
+			for(int shot = 0;shot<pack.getNumShots();shot++)
+			{			
+				ecs.createBullet(pack.getOwner(), pack.getDamage(), pack.getMaxRange(), pack.getCurSpread());	
+			}
+			pack.setFireRequested(false);
+		}
+		else
+		{
+			//If burst limit reached
+			pack.setShotsFiredThisBurst(0);
+			pack.setFireRequested(false);
+			pack.setLastUpdated(now+pack.getDelayAfterBurst());
 		}
 	}
 	

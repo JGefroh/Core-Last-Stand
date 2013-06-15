@@ -4,19 +4,9 @@
 Last Stand is a WIP 2D shooter.
 
 ###Controls:
-* Mouse - Aim
-* Left Click - Fire
+* Space - Fire
 * W - Move Up
-* A - Move Left
 * S - Move Down
-* D - Move Right
-* 1 - Pistol
-* 2 - Rifle
-* 3 - Machine Gun
-* 4 - Sniper Rifle
-* 5 - Shotgun
-* 6 - Rocket
-* 7 - Cheat Weapon
 
 ###Dependencies
 1. [LWJGL 2.8.5](http://www.lwjgl.org)
@@ -28,7 +18,7 @@ Have fun!
 ==========
 Current State:
 
-![Health Bars](/ss/12JUN13.png)
+![Enemies](/ss/15JUN13.png)
 
 ==========
 [Core](https://github.com/JGefroh/core)

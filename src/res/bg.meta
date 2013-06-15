@@ -1,14 +1,14 @@
 {
-	"width":96,
-	"height":64,
+	"width":1366,
+	"height":768,
 	"sprites":
 		[
 			{
 				"id":0,
 				"xmin":0,
-				"xmax":32,
+				"xmax":1366,
 				"ymin":0,
-				"ymax":32
+				"ymax":768
 			}
 		]
 }

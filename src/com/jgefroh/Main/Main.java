@@ -2,7 +2,9 @@ package com.jgefroh.main;
 
 import org.lwjgl.opengl.Display;
 
+import com.jgefroh.components.RenderComponent;
 import com.jgefroh.core.Core;
+import com.jgefroh.infopacks.AIInfoPackFactory;
 import com.jgefroh.infopacks.AnimationInfoPackFactory;
 import com.jgefroh.infopacks.CollisionInfoPackFactory;
 import com.jgefroh.infopacks.DamageInfoPackFactory;
@@ -14,8 +16,11 @@ import com.jgefroh.infopacks.MaxRangeInfoPackFactory;
 import com.jgefroh.infopacks.MouseTrackInfoPackFactory;
 import com.jgefroh.infopacks.MovementInfoPackFactory;
 import com.jgefroh.infopacks.RenderInfoPackFactory;
+import com.jgefroh.infopacks.TargetInfoPackFactory;
+import com.jgefroh.infopacks.TargetTrackInfoPackFactory;
 import com.jgefroh.infopacks.WeaponInfoPackFactory;
 import com.jgefroh.input.InputSystem;
+import com.jgefroh.systems.AISystem;
 import com.jgefroh.systems.CollisionSystem;
 import com.jgefroh.systems.DamageSystem;
 import com.jgefroh.systems.EntityCreationSystem;
@@ -26,6 +31,7 @@ import com.jgefroh.systems.MaxRangeSystem;
 import com.jgefroh.systems.MouseTrackingSystem;
 import com.jgefroh.systems.RenderSystem;
 import com.jgefroh.systems.ResourceLoader;
+import com.jgefroh.systems.TargetTrackSystem;
 import com.jgefroh.systems.TransformSystem;
 import com.jgefroh.systems.WeaponSystem;
 import com.jgefroh.systems.WindowSystem;
@@ -71,7 +77,7 @@ public class Main
 	private void initSystems()
 	{
 		core = new Core();
-		core.addSystem(new WindowSystem(core, 1680, 1050, "Last Stand"), true);
+		core.addSystem(new WindowSystem(core, 1366, 768, "Last Stand"), true);
 		core.addSystem(new RenderSystem(core), true);
 		core.addSystem(new ForceSystem(core));
 		TransformSystem tranSys = new TransformSystem(core);
@@ -82,7 +88,7 @@ public class Main
 		core.addSystem(new CollisionSystem(core));
 		core.addSystem(new EntityCreationSystem(core), true);
 		
-		core.addSystem(new MouseTrackingSystem(core));
+		//core.addSystem(new MouseTrackingSystem(core));
 		core.addSystem(new WeaponSystem(core));
 		MaxRangeSystem mrs = new MaxRangeSystem(core);
 		mrs.setWait(100);
@@ -90,6 +96,10 @@ public class Main
 		core.addSystem(new DamageSystem(core));
 		core.addSystem(new HealthMonitorSystem(core));
 		core.addSystem(new GUIHealthBarSystem(core));
+		AISystem aiSys = new AISystem(core);
+			aiSys.setWait(1000);
+		core.addSystem(aiSys);
+		core.addSystem(new TargetTrackSystem(core));
 		rl = new ResourceLoader(core);
 	}
 	
@@ -107,6 +117,9 @@ public class Main
 		core.addFactory(new HealthInfoPackFactory());
 		core.addFactory(new HealthBarInfoPackFactory());
 		core.addFactory(new DamageInfoPackFactory());
+		core.addFactory(new AIInfoPackFactory());
+		core.addFactory(new TargetInfoPackFactory());
+		core.addFactory(new TargetTrackInfoPackFactory());
 	}
 	
 	/**
@@ -129,23 +142,29 @@ public class Main
 
 		EntityCreationSystem ecs = 
 				core.getSystem(EntityCreationSystem.class);
-		core.getSystem(EntityCreationSystem.class).createPlayer(800, 950);
-		ecs.createAlien(100, 150, 30);
-		ecs.createAlien(150, 250, 100);
-		ecs.createAlien(200, 350, 59);
-		ecs.createAlien(250, 450, 20);
-		ecs.createAlien(300, 550, 41);
-		ecs.createAlien(350, 650, 5);
-		ecs.createAlien(400, 750, 65);
-		ecs.createAlien(450, 850, 76);
+		ecs.createPlayer(32, 384);
+
 		
-		core.getSystem(CollisionSystem.class).setCollision(1, 2, true);
+		ecs.createEnemy0_0(500, 250);
+
+		ecs.createEnemy1_0(500, 350);
+		
+		ecs.createEnemy2_0(500, 450);
+		ecs.createEnemy3_0(500, 550);
+
+		ecs.createEnemy0_1(700, 250);
+
+		ecs.createEnemy0_2(800, 250);
+
+		core.getSystem(CollisionSystem.class).setCollision(1, 2, true);	//alien, pbullet
+		core.getSystem(CollisionSystem.class).setCollision(0, 3, true);	//player, abullet
 	}
 	
 	public void loadTexture()
 	{
 		rl.loadTexture("res/player.png");
 		rl.loadTexture("res/bullet.png");
-		rl.loadTexture("res/asteroid.png");
+		rl.loadTexture("res/enemy.png");
+		rl.loadTexture("res/bg.png");
 	}
 }

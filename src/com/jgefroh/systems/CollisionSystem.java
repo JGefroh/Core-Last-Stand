@@ -215,11 +215,7 @@ public class CollisionSystem implements ISystem
 				(int)packTwo.getWidth(), (int)packTwo.getHeight());
 		if(r1.intersects(r2))
 		{
-			core.getSystem(EntityCreationSystem.class).createQuad((int)(packOne.getXPos()), 
-			(int)(packOne.getYPos()),
-				(int)packOne.getWidth(), 
-				(int)packOne.getHeight(),
-				0);
+
 			return true;
 		}
 		return false;

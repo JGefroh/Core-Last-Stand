@@ -134,6 +134,21 @@ public class WeaponInfoPack implements IInfoPack
 	{
 		return wc.getNumShots();
 	}
+	
+	public int getShotsFiredThisBurst()
+	{
+		return wc.getShotsFiredThisBurst();
+	}
+	
+	public int getBurstSize()
+	{
+		return wc.getBurstSize();
+	}
+	
+	public long getDelayAfterBurst()
+	{
+		return wc.getDelayAfterBurst();
+	}
 	//////////
 	// SETTERS
 	//////////
@@ -211,6 +226,21 @@ public class WeaponInfoPack implements IInfoPack
 	public void setNumShots(final int numShots)
 	{
 		wc.setNumShots(numShots);
+	}
+	
+	public void setBurstSize(final int burstSize)
+	{
+		wc.setBurstSize(burstSize);
+	}
+	
+	public void setShotsFiredThisBurst(final int shotsFiredThisBurst)
+	{
+		wc.setShotsFiredThisBurst(shotsFiredThisBurst);
+	}
+	
+	public void setDelayAfterBurst(final long delayAfterBurst)
+	{
+		wc.setDelayAfterBurst(delayAfterBurst);
 	}
 	
 }
