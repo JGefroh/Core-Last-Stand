@@ -6,6 +6,9 @@ import com.jgefroh.data.Vector;
 
 /**
  * Contains data used to generate force on an object.
+ * 
+ * 
+ * Date: 17JUN13
  * @author Joseph Gefroh
  */
 public class ForceGeneratorComponent implements IComponent
@@ -39,7 +42,7 @@ public class ForceGeneratorComponent implements IComponent
 	// INIT
 	//////////
 	/**
-	 * Create a new VelocityComponent.
+	 * Creates a new instance of this {@code Component}.
 	 * @param owner	the IEntity owner of the component
 	 */
 	public ForceGeneratorComponent(final IEntity owner)
@@ -51,7 +54,7 @@ public class ForceGeneratorComponent implements IComponent
 	@Override
 	public void init()
 	{
-		this.vector = new Vector();
+		setVector(new Vector());
 		setLastUpdated(-1);
 		setInterval(0);
 	}
@@ -84,22 +87,37 @@ public class ForceGeneratorComponent implements IComponent
 		return this.lastUpdated;
 	}
 	
-	
+	/**
+	 * Gets the amount to increment the magnitude by, per turn.
+	 * @return	the amount to increment the magnitude by
+	 */
 	public double getIncrement()
 	{
 		return this.increment;
 	}
 	
+	/**
+	 * Gets the amount to decrement the magnitude by, per turn.
+	 * @return	the amount to decrement the magnitude by
+	 */
 	public double getDecrement()
 	{
 		return this.decrement;
 	}
 	
+	/**
+	 * Gets the maximum magnitude that can be generated.
+	 * @return	the maximum magnitude
+	 */
 	public double getMaxMagnitude()
 	{
 		return this.maxMagnitude;
 	}
 	
+	/**
+	 * Gets the Vector representing the generated force.
+	 * @return	the vector
+	 */
 	public Vector getVector()
 	{
 		return this.vector;
@@ -117,7 +135,7 @@ public class ForceGeneratorComponent implements IComponent
 	}
 		
 	/**
-	 * Set the update interval of the component.
+	 * Sets the update interval of the component.
 	 * @param interval	the time, in ms, to wait before attempting a move
 	 */
 	public void setInterval(final long interval)
@@ -126,7 +144,7 @@ public class ForceGeneratorComponent implements IComponent
 	}
 	
 	/**
-	 * Set the time the component was last updated.
+	 * Sets the time the component was last updated.
 	 * @param lastUpdated	the time, in ms, the component was last updated
 	 */
 	public void setLastUpdated(final long lastUpdated)
@@ -134,22 +152,37 @@ public class ForceGeneratorComponent implements IComponent
 		this.lastUpdated = lastUpdated;
 	}
 	
-	
+	/**
+	 * Sets the amount to increment the magnitude by, per turn.
+	 * @param increment	the amount to increment the magnitude by
+	 */
 	public void setIncrement(final double increment)
 	{
 		this.increment = increment;
 	}
 	
+	/**
+	 * Sets the amount to decrement the magnitude by, per turn.
+	 * @param decrement	the amount to decrement the magnitude by
+	 */
 	public void setDecrement(final double decrement)
 	{
 		this.decrement = decrement;
 	}
 	
+	/**
+	 * Sets the maximum possible magnitude that can be generated
+	 * @param maxMagnitude	the maximum amount of force that can be generated
+	 */
 	public void setMaxMagnitude(final double maxMagnitude)
 	{
 		this.vector.setMaxMagnitude(maxMagnitude);
 	}
 	
+	/**
+	 * Sets the underlying Vector of this component.
+	 * @param vector	the vector to set to
+	 */
 	public void setVector(final Vector vector)
 	{
 		this.vector = vector;

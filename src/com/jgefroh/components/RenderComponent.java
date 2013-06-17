@@ -5,6 +5,9 @@ import com.jgefroh.core.IEntity;
 
 /**
  * Contains data necessary to render the entity.
+ * 
+ * 
+ * DATE: 17JUN13
  * @author Joseph Gefroh
  */
 public class RenderComponent implements IComponent
@@ -38,7 +41,7 @@ public class RenderComponent implements IComponent
 	// INIT
 	//////////
 	/**
-	 * Create a new Render component.
+	 * Creates a new instance of this {@code Component}.
 	 * @param owner	the IEntity owner of this component
 	 */
 	public RenderComponent(final IEntity owner)
@@ -65,8 +68,9 @@ public class RenderComponent implements IComponent
 	{
 		return this.owner;
 	}
+	
 	/**
-	 * Return the ID of the texture this entity uses.
+	 * Returns the ID of the texture this entity uses.
 	 * @return
 	 */
 	public int getTextureID()
@@ -76,7 +80,7 @@ public class RenderComponent implements IComponent
 	}
 	
 	/**
-	 * Return the absolute path of the texture.
+	 * Returns the absolute path of the texture.
 	 * @return
 	 */
 	public String getTexturePath()
@@ -85,7 +89,7 @@ public class RenderComponent implements IComponent
 	}
 
 	/**
-	 * Get the sprite index of this entity.
+	 * Gets the sprite index of this entity.
 	 * @return	the sprite index of this entity
 	 */
 	public int getSpriteID()
@@ -94,7 +98,7 @@ public class RenderComponent implements IComponent
 	}
 
 	/**
-	 * Get the pixel width of this entity.
+	 * Gets the pixel width of this entity.
 	 * @return	the int width of this entity
 	 */
 	public int getWidth()
@@ -103,7 +107,7 @@ public class RenderComponent implements IComponent
 	}
 	
 	/**
-	 * Get the pixel height of this entity.
+	 * Gets the pixel height of this entity.
 	 * @return	the int height of this entity
 	 */
 	public int getHeight()
@@ -112,7 +116,7 @@ public class RenderComponent implements IComponent
 	}
 	
 	/**
-	 * Return the visibility flag of this entity.
+	 * Returns the visibility flag of this entity.
 	 * @return	true if visible, false otherwise.
 	 */
 	public boolean isVisible()
@@ -131,8 +135,8 @@ public class RenderComponent implements IComponent
 	}
 	
 	/**
-	 * Set the sprite index of the image being drawn.
-	 * @param spriteID
+	 * Sets the sprite ID of the image being drawn.
+	 * @param spriteID	the ID of the sprite to draw
 	 */
 	public void setSpriteID(final int spriteID)
 	{
@@ -140,8 +144,8 @@ public class RenderComponent implements IComponent
 	}
 
 	/**
-	 * Set the visibility of this entity.
-	 * @param isVisible	true if visible, false otherwise.
+	 * Sets the visibility of this entity.
+	 * @param isVisible	true if visible; false otherwise.
 	 */
 	public void setVisible(final boolean isVisible)
 	{
@@ -149,7 +153,7 @@ public class RenderComponent implements IComponent
 	}
 	
 	/**
-	 * Set the ID of the texture.
+	 * Sets the ID of the texture.
 	 * @param textureID	the integer ID of the texture
 	 */
 	public void setTextureID(final int textureID)
@@ -158,8 +162,8 @@ public class RenderComponent implements IComponent
 	}
 	
 	/**
-	 * Set the absolute path of the texture.
-	 * @param texturePath
+	 * Sets the absolute path of the texture.
+	 * @param texturePath	the path of the texture
 	 */
 	public void setTexturePath(final String texturePath)
 	{

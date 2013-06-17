@@ -5,9 +5,7 @@ import com.jgefroh.core.IEntity;
 
 
 /**
- * Interface that describes an event.
  * @author Joseph Gefroh
- *
  */
 public class BulletHitEffect implements IEffect
 {

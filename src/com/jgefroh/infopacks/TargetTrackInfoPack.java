@@ -89,9 +89,9 @@ public class TargetTrackInfoPack implements IInfoPack
 		return ttc.getTarget();
 	}
 	
-	public double getDistanceToTarget()
+	public double getTargetRange()
 	{
-		return ttc.getDistanceToTarget();
+		return ttc.getTargetRange();
 	}
 	
 	
@@ -115,8 +115,8 @@ public class TargetTrackInfoPack implements IInfoPack
 		ttc.setTarget(target);
 	}
 	
-	public void setDistanceToTarget(final double distance)
+	public void setTargetRange(final double targetRange)
 	{
-		ttc.setDistanceToTarget(distance);
+		ttc.setTargetRange(targetRange);
 	}
 }

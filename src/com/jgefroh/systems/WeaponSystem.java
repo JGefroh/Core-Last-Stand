@@ -34,23 +34,25 @@ public class WeaponSystem implements ISystem
 	private long last;
 	
 	/**The level of detail in debug messages.*/
-	private Level debugLevel = Level.OFF;
+	private Level debugLevel = Level.INFO;
 	
 	/**Logger for debug purposes.*/
 	private final Logger LOGGER 
-		= LoggerFactory.getLogger(this.getClass(), debugLevel);
+		= LoggerFactory.getLogger(this.getClass(), Level.ALL);
 
 	
 	//////////
 	// INIT
 	//////////
 	/**
-	 * Create a new TransformSystem.
+	 * Creates a new instance of this {@code System}.
 	 * @param core	 a reference to the Core controlling this system
 	 */
 	public WeaponSystem(final Core core)
 	{
 		this.core = core;
+		setDebugLevel(this.debugLevel);
+
 		init();
 	}
 	
@@ -63,17 +65,6 @@ public class WeaponSystem implements ISystem
 	{
 		isRunning = true;
 		core.setInterested(this, "REQUEST_FIRE");
-		core.setInterested(this, "CEASE_FIRE");
-		core.setInterested(this, "SWITCH_WEAPON_1");
-		core.setInterested(this, "SWITCH_WEAPON_2");
-		core.setInterested(this, "SWITCH_WEAPON_3");
-		core.setInterested(this, "SWITCH_WEAPON_4");
-		core.setInterested(this, "SWITCH_WEAPON_5");
-		core.setInterested(this, "SWITCH_WEAPON_6");
-		core.setInterested(this, "SWITCH_WEAPON_7");
-		core.setInterested(this, "SWITCH_WEAPON_8");
-		core.setInterested(this, "SWITCH_WEAPON_9");
-		core.setInterested(this, "SWITCH_WEAPON_0");
 	}
 
 	@Override
@@ -137,15 +128,15 @@ public class WeaponSystem implements ISystem
 		{
 			requestFire(message);
 		}
-		else if(id.startsWith("SWITCH_WEAPON_"))
-		{
-			switchWeapon(message, id.charAt(id.length()-1));
-		}
 	}
 	
 	//////////
 	// SYSTEM METHODS
 	//////////
+	/**
+	 * Fires the weapon of all entities if they requested it.
+	 * @param now	the current time
+	 */
 	public void fire(final long now)
 	{
 		Iterator<WeaponInfoPack> packs
@@ -181,6 +172,11 @@ public class WeaponSystem implements ISystem
 		}
 	}
 	
+	/**
+	 * Fires a shot.
+	 * @param now	the current time
+	 * @param pack	the InfoPack of the entity to fire for
+	 */
 	private void fire(final long now, final WeaponInfoPack pack)
 	{
 		if(pack.getShotsFiredThisBurst()<pack.getBurstSize())
@@ -211,6 +207,10 @@ public class WeaponSystem implements ISystem
 		}
 	}
 	
+	/**
+	 * Requests a shot to be fired.
+	 * @param message [0] contains the entityID of the entity that is firing
+	 */
 	private void requestFire(final String[] message)
 	{
 		if(message.length>0)
@@ -225,35 +225,21 @@ public class WeaponSystem implements ISystem
 		}
 	}
 	
-	private void switchWeapon(final String[] message, final char weapon)
-	{
-		if(message.length>0)
-		{
-			WeaponInfoPack wip = 
-					core.getInfoPackFrom(message[0], WeaponInfoPack.class);
-			
-			if(wip!=null)
-			{	
-				try
-				{
-					int slot = Integer.parseInt(weapon+"");
-					wip.setCurrentWeapon(slot);
-					System.out.println("Equipped: " + weapon);
-				}
-				catch(NumberFormatException e)
-				{
-					LOGGER.log(Level.WARNING, "Can't switch weapon: bad num.");
-				}
-			}
-		}
-	}
-	
+	/**
+	 * Decreases the total amount of ammunition.
+	 * @param pack	the InfoPack of the entity
+	 */
 	private void decAmmo(final WeaponInfoPack pack)
 	{
 		pack.setAmmo(pack.getAmmo()-1);
 		pack.setCurSpread(pack.getCurSpread()+pack.getIncSpread());
 	}
+
 	
+	/**
+	 * Increases the current level of recoil.
+	 * @param pack	the InfoPack of the entity
+	 */
 	private void incSpread(final WeaponInfoPack pack)
 	{
 		if(pack.getCurSpread()+pack.getIncSpread()<pack.getMaxSpread())
@@ -266,6 +252,10 @@ public class WeaponSystem implements ISystem
 		}
 	}
 	
+	/**
+	 * Decreases the current level of recoil
+	 * @param pack	the InfoPack of the entity
+	 */
 	private void decSpread(final WeaponInfoPack pack)
 	{
 		if(pack.getCurSpread()-pack.getIncSpread()>0)
@@ -276,5 +266,14 @@ public class WeaponSystem implements ISystem
 		{
 			pack.setCurSpread(0);
 		}
+	}
+	
+	/**
+	 * Sets the debug level of this {@code System}.
+	 * @param level	the Level to set
+	 */
+	public void setDebugLevel(final Level level)
+	{
+		this.LOGGER.setLevel(level);
 	}
 }

@@ -4,8 +4,10 @@ import com.jgefroh.core.IComponent;
 import com.jgefroh.core.IEntity;
 
 /**
- * Contains data related to the health of an entity using a
- * traditional "hit points" perspective.
+ * Contains data related to the health of an entity.
+ * 
+ * 
+ * Date: 17JUN13
  * @author Joseph Gefroh
  */
 public class HealthComponent implements IComponent
@@ -24,7 +26,7 @@ public class HealthComponent implements IComponent
 	// INIT
 	//////////
 	/**
-	 * Create a new HealthComponent.
+	 * Creates a new instance of this {@code Component}.
 	 * @param owner	the IEntity owner of this component
 	 */
 	public HealthComponent(final IEntity owner)
@@ -51,7 +53,7 @@ public class HealthComponent implements IComponent
 	
 	
 	/**
-	 * Get the current number of health points of the entity.
+	 * Gets the current number of health points of the entity.
 	 * @return	the current number of health points of the entity
 	 */
 	public int getCurHealth()
@@ -70,7 +72,7 @@ public class HealthComponent implements IComponent
 	}
 
 	/**
-	 * Set the current number of health points of the entity.
+	 * Sets the current number of health points of the entity.
 	 * @param curHealth	the number of health points
 	 */
 	public void setCurHealth(final int curHealth)

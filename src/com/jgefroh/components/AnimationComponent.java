@@ -10,6 +10,9 @@ import com.jgefroh.data.Animation;
 
 /**
  * Contains data to keep track of animations for the entity.
+ * 
+ * 
+ * Date: 17JUN13
  * @author Joseph Gefroh
  */
 public class AnimationComponent implements IComponent
@@ -39,7 +42,7 @@ public class AnimationComponent implements IComponent
 	// INIT
 	//////////
 	/**
-	 * Create a new instance of this {@code Component}.
+	 * Creates a new instance of this {@code Component}.
 	 * @param entity	the owner of this component
 	 */
 	public AnimationComponent(final IEntity entity)
@@ -59,7 +62,7 @@ public class AnimationComponent implements IComponent
 	// METHODS
 	//////////
 	/**
-	 * Check to see if the given animation name is a valid animation.
+	 * Checks to see if the given animation name is a valid animation.
 	 * @param animationName	the name of the animation to check
 	 * @return	true if it is a valid animation, false otherwise
 	 */
@@ -73,7 +76,7 @@ public class AnimationComponent implements IComponent
 	}
 	
 	/**
-	 * Add an animation.
+	 * Adds an animation.
 	 * @param name				the unique name of the animation
 	 * @param spriteSequence	the sprite indexes that make up the animation
 	 * @param interval			the time to wait between frames
@@ -89,7 +92,7 @@ public class AnimationComponent implements IComponent
 	}
 	
 	/**
-	 * Add an animation.
+	 * Adds an animation.
 	 * @param animation
 	 */
 	public void addAnimation(final Animation animation)
@@ -108,7 +111,7 @@ public class AnimationComponent implements IComponent
 	}
 	
 	/**
-	 * Get the current frame of the animation.
+	 * Gets the current frame of the animation.
 	 * @return	the number of the current animation frame
 	 */
 	public int getCurrentFrame()
@@ -117,7 +120,7 @@ public class AnimationComponent implements IComponent
 	}
 	
 	/**
-	 * Get the time the component was last updated.
+	 * Gets the time the component was last updated.
 	 * @return	the time the component was last updated, in ms
 	 */
 	public long getLastUpdateTime()
@@ -126,7 +129,7 @@ public class AnimationComponent implements IComponent
 	}
 	
 	/**
-	 * Get the name of the current animation.
+	 * Gets the name of the current animation.
 	 * @return	the name of the current animation
 	 */
 	public String getCurrentAnimation()
@@ -135,7 +138,7 @@ public class AnimationComponent implements IComponent
 	}	
 	
 	/**
-	 * Get the time to wait before changing frames.
+	 * Gets the time to wait before changing frames.
 	 * @return	the time to wait between frames, in ms
 	 */
 	public long getInterval()
@@ -151,6 +154,10 @@ public class AnimationComponent implements IComponent
 		}
 	}
 	
+	/**
+	 * Gets the sprite index of the current animation frame.
+	 * @return	the sprite index if an animation is playing; null otherwise
+	 */
 	public int getAnimationSprite()
 	{
 		Animation animation = animations.get(currentAnimation);
@@ -164,6 +171,10 @@ public class AnimationComponent implements IComponent
 		}
 	}
 	
+	/**
+	 * Gets the number of frames in the current animation.
+	 * @return	the number of frames; -1 if no animation is playing
+	 */
 	public int getNumberOfFrames()
 	{
 		Animation animation = animations.get(currentAnimation);
@@ -176,6 +187,8 @@ public class AnimationComponent implements IComponent
 			return -1;
 		}
 	}
+	
+	
 	//////////
 	// SETTERS
 	//////////
@@ -186,7 +199,7 @@ public class AnimationComponent implements IComponent
 	}
 	
 	/**
-	 * Set the current frame of the animation.
+	 * Sets the current frame of the animation.
 	 * @param currentFrame	the current frame number of the animation
 	 */
 	public void setCurrentFrame(final int currentFrame)
@@ -195,7 +208,7 @@ public class AnimationComponent implements IComponent
 	}
 	
 	/**
-	 * set the time the animation was last updated
+	 * Sets the time the animation was last updated
 	 * @param lastUpdateTime the time the animation was last updated, in ms
 	 */
 	public void setLastUpdateTime(final long lastUpdateTime)
@@ -203,6 +216,10 @@ public class AnimationComponent implements IComponent
 		this.lastUpdateTime = lastUpdateTime;
 	}
 	
+	/**
+	 * Sets the current animation.
+	 * @param currentAnimation	the name of the animation to set as current
+	 */
 	public void setCurrentAnimation(final String currentAnimation)
 	{
 		this.currentAnimation = currentAnimation;

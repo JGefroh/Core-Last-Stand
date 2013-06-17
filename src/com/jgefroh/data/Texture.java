@@ -48,7 +48,7 @@ public class Texture
 	// GETTERS
 	//////////
 	/**
-	 * Get the OpenGL assigned texture id.
+	 * Gets the OpenGL assigned texture id.
 	 * @return	the OpenGL assigned texture id
 	 */
 	public int getTextureID()
@@ -57,7 +57,7 @@ public class Texture
 	}
 	
 	/**
-	 * Get the width of the image.
+	 * Gets the width of the image.
 	 * @return	the pixel width of the image
 	 */
 	public int getImageWidth()
@@ -66,7 +66,7 @@ public class Texture
 	}
 	
 	/**
-	 * Get the height of the image.
+	 * Gets the height of the image.
 	 * @return	the pixel height of the image
 	 */
 	public int getImageHeight()
@@ -75,7 +75,7 @@ public class Texture
 	}
 	
 	/**
-	 * Get the file path of the source image.
+	 * Gets the file path of the source image.
 	 * @return	the file path to the source image
 	 */
 	public String getPath()
@@ -84,7 +84,7 @@ public class Texture
 	}
 	
 	/**
-	 * Get the calculated uMin texture coordinate for a sprite on this texture.
+	 * Gets the calculated uMin texture coordinate for a sprite on this texture.
 	 * @param spriteID	the id of the sprite
 	 * @return	the uMin texture coordinate, or -1 if there was an error
 	 */
@@ -100,7 +100,7 @@ public class Texture
 	
 
 	/**
-	 * Get the calculated uMax texture coordinate for a sprite on this texture.
+	 * Gets the calculated uMax texture coordinate for a sprite on this texture.
 	 * @param spriteID	the id of the sprite
 	 * @return	the uMax texture coordinate, or -1 if there was an error
 	 */
@@ -115,7 +115,7 @@ public class Texture
 	}
 	
 	/**
-	 * Get the calculated vMin texture coordinate for a sprite on this texture.
+	 * Gets the calculated vMin texture coordinate for a sprite on this texture.
 	 * @param spriteID	the id of the sprite
 	 * @return	the vMin texture coordinate, or -1 if there was an error
 	 */
@@ -130,7 +130,7 @@ public class Texture
 	}
 
 	/**
-	 * Get the calculated vMax texture coordinate for a sprite on this texture.
+	 * Gets the calculated vMax texture coordinate for a sprite on this texture.
 	 * @param spriteID	the id of the sprite
 	 * @return	the vMax texture coordinate, or -1 if there was an error
 	 */
@@ -145,7 +145,7 @@ public class Texture
 	}
 	
 	/**
-	 * Get the xMin pixel coordinate for a sprite on this texture.
+	 * Gets the xMin pixel coordinate for a sprite on this texture.
 	 * @param spriteID	the ID of the sprite
 	 * @return	the xMin pixel coordinate. -1 if there was an error.
 	 */
@@ -160,7 +160,7 @@ public class Texture
 	}
 	
 	/**
-	 * Get the xMax pixel coordinate for a sprite on this texture.
+	 * Gets the xMax pixel coordinate for a sprite on this texture.
 	 * @param spriteID	the ID of the sprite
 	 * @return	the xMax pixel coordinate. -1 if there was an error.
 	 */
@@ -175,7 +175,7 @@ public class Texture
 	}
 	
 	/**
-	 * Get the yMin pixel coordinate for a sprite on this texture.
+	 * Gets the yMin pixel coordinate for a sprite on this texture.
 	 * @param spriteID	the ID of the sprite
 	 * @return	the yMin pixel coordinate. -1 if there was an error.
 	 */
@@ -190,7 +190,7 @@ public class Texture
 	}
 	
 	/**
-	 * Get the yMax pixel coordinate for a sprite on this texture.
+	 * Gets the yMax pixel coordinate for a sprite on this texture.
 	 * @param spriteID	the ID of the sprite
 	 * @return	the yMax pixel coordinate. -1 if there was an error.
 	 */
@@ -205,7 +205,7 @@ public class Texture
 	}
 	
 	/**
-	 * Get the number of sprites stored for this texture.
+	 * Gets the number of sprites stored for this texture.
 	 * @return	the number of sprites associated with this texture
 	 */
 	public int getNumSprites()
@@ -216,7 +216,7 @@ public class Texture
 	// SETTERS
 	//////////
 	/**
-	 * Set the texture ID associated with this texture.
+	 * Sets the texture ID associated with this texture.
 	 * @param textureID	the ID of the texture
 	 */
 	public void setTextureID(final int textureID)
@@ -226,7 +226,7 @@ public class Texture
 	
 	
 	/**
-	 * Set the width of the source image.
+	 * Sets the width of the source image.
 	 * @param imageWidth	the pixel width of the source image
 	 */
 	public void setImageWidth(final int imageWidth)
@@ -235,7 +235,7 @@ public class Texture
 	}
 	
 	/**
-	 * Set the height of the source image.
+	 * Sets the height of the source image.
 	 * @param imageHeight	the pixel height of the source image
 	 */
 	public void setImageHeight(final int imageHeight)
@@ -244,7 +244,7 @@ public class Texture
 	}
 	
 	/**
-	 * Set the image path of this texture.
+	 * Sets the image path of this texture.
 	 * @param path	the file path of the source image
 	 */
 	public void setPath(final String path)
@@ -260,7 +260,7 @@ public class Texture
 	}
 	
 	/**
-	 * Set the sprite texture coordinate.
+	 * Sets the sprite texture coordinate.
 	 * @param spriteID	the ID of the sprite
 	 * @param uMin	the texture coordinate
 	 */
@@ -275,7 +275,7 @@ public class Texture
 	}
 	
 	/**
-	 * Set the sprite texture coordinate.
+	 * Sets the sprite texture coordinate.
 	 * @param spriteID	the ID of the sprite
 	 * @param uMax	the texture coordinate
 	 */
@@ -290,7 +290,7 @@ public class Texture
 	}
 	
 	/**
-	 * Set the sprite texture coordinate.
+	 * Sets the sprite texture coordinate.
 	 * @param spriteID	the ID of the sprite
 	 * @param vMin	the texture coordinate
 	 */
@@ -305,7 +305,7 @@ public class Texture
 	}
 	
 	/**
-	 * Set the sprite texture coordinate.
+	 * Sets the sprite texture coordinate.
 	 * @param spriteID	the ID of the sprite
 	 * @param vMax	the texture coordinate
 	 */
@@ -320,7 +320,7 @@ public class Texture
 	}
 	
 	/**
-	 * Set the sprites.
+	 * Sets the sprites.
 	 * @param sprites	
 	 */
 	public void setSprites(final HashMap<Integer, Sprite> sprites)
@@ -336,7 +336,7 @@ public class Texture
 	}
 	
 	/**
-	 * Set the width and the height of the image. Convenience method.
+	 * Sets the width and the height of the image. Convenience method.
 	 * @param imageWidth
 	 * @param imageHeight
 	 */

@@ -39,12 +39,16 @@ public class Weapon
 	/**The number of shots this weapon fires per fire attempt.*/
 	private int numShots;
 	
+	/**The speed the projectiles from this weapon travel.*/
 	private double shotSpeed; 
 	
+	/**The number of shots fired per burst.*/
 	private int burstSize;
 	
+	/**The number of shots fired this burst.*/
 	private int shotsFiredThisBurst;
 	
+	/**The time to wait after a burst.*/
 	private long delayAfterBurst;
 	//////////
 	// INIT

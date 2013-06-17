@@ -12,7 +12,8 @@ import com.jgefroh.infopacks.AIInfoPack;
 
 
 /**
- * This system controls the behavior of the AI for the alien enemies.
+ * This system controls the behavior of the AI for the enemies.
+ * Date: 16JUNE13
  * @author Joseph Gefroh
  */
 public class AISystem implements ISystem
@@ -37,15 +38,8 @@ public class AISystem implements ISystem
 	
 	/**Logger for debug purposes.*/
 	private final Logger LOGGER 
-		= LoggerFactory.getLogger(this.getClass(), debugLevel);
+		= LoggerFactory.getLogger(this.getClass(), Level.ALL);
 
-
-	/**The random number generator to determine if the aliens can shoot.*/
-	private Random randNum;
-	
-	/**The odds of firing (1 in X)*/
-	private int dice;
-	
 	
 	//////////
 	// INIT
@@ -57,6 +51,8 @@ public class AISystem implements ISystem
 	public AISystem(final Core core)
 	{
 		this.core = core;
+		setDebugLevel(this.debugLevel);
+
 		init();
 	}
 	
@@ -65,11 +61,12 @@ public class AISystem implements ISystem
 	//////////
 	@Override
 	public void init()
-	{
+	{		
 		LOGGER.log(Level.FINE, "Setting system values to default.");
+		core.setInterested(this, "IN_RANGE_OF_TARGET");
+		core.setInterested(this, "IS_WITHIN_BOUNDS");
 		this.isRunning = true;
-		this.randNum = new Random();
-		this.dice = 1000;
+
 	}
 	
 	@Override
@@ -124,14 +121,24 @@ public class AISystem implements ISystem
 	public void recv(final String id, final String... message)
 	{
 		LOGGER.log(Level.FINEST, "Received message: " + id);
+		
+		if(id.equals("IN_RANGE_OF_TARGET"))
+		{
+			setInRange(message);
+		}
+		else if(id.equals("IS_WITHIN_BOUNDS"))
+		{
+			setActive(message);
+		}
 	}
 	
 	
 	//////////
 	// SYSTEM METHODS
 	//////////
-
-
+	/**
+	 * Goes through all AI entities and attempts an attack.
+	 */
 	private void attack()
 	{
 		Iterator<AIInfoPack> packs = core.getInfoPacksOfType(AIInfoPack.class);
@@ -140,7 +147,10 @@ public class AISystem implements ISystem
 		{
 			AIInfoPack each = packs.next();
 			
-			rollForAttack(each);
+			if(each.isInRangeOfTarget()&&each.isActive())
+			{				
+				rollForAttack(each);
+			}
 		}
 	}
 	
@@ -149,8 +159,57 @@ public class AISystem implements ISystem
 	 * @param each	the AIInfoPack of the entity that is rolling
 	 */
 	private void rollForAttack(final AIInfoPack each)
-	{
+	{		
 		core.send("REQUEST_FIRE", each.getOwner().getID());
+	}
+	
+	/**
+	 * Sets the flag that indicates the entity is in range of its target.
+	 * @param message	[0] contains the entity's ID
+	 * 					[1] contains the boolean flag indicating if in range
+	 */
+	private void setInRange(final String[] message)
+	{
+		if(message.length>=1)
+		{
+			AIInfoPack pack 
+				= core.getInfoPackFrom(message[0], AIInfoPack.class);
+			
+			if(pack!=null)
+			{
+				boolean isInRange = Boolean.parseBoolean(message[1]);
+				if(pack.isInRangeOfTarget()!=isInRange)
+				{
+					pack.setInRangeOfTarget(isInRange);
+					LOGGER.log(Level.FINE, 
+							pack.getOwner().getName() + "(" + message[0]
+									+ ") in range?: " + isInRange);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Sets the flag that indicates the entity should be processed by the AI.
+	 * @param message	[0] contains the entity's ID
+	 * 					[1] contains the boolean flag 
+	 */
+	private void setActive(final String[] message)
+	{
+		if(message.length>=1)
+		{
+			AIInfoPack pack 
+				= core.getInfoPackFrom(message[0], AIInfoPack.class);
+
+			if(pack!=null)
+			{				
+				boolean isActive = Boolean.parseBoolean(message[1]);
+				pack.setActive(isActive);
+				LOGGER.log(Level.FINE, 
+						pack.getOwner().getName() + "(" + message[0]
+								+ ") is active?: " + isActive);
+			}
+		}
 	}
 	
 	/**

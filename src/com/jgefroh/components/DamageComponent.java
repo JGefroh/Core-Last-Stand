@@ -4,6 +4,10 @@ import com.jgefroh.core.IComponent;
 import com.jgefroh.core.IEntity;
 
 /**
+ * Contains data allowing an entity to do damage to another entity.
+ * 
+ * 
+ * Date: 17JUN13
  * @author Joseph Gefroh
  */
 public class DamageComponent implements IComponent
@@ -21,7 +25,7 @@ public class DamageComponent implements IComponent
 	// INIT
 	//////////
 	/**
-	 * Create a new instance of this {@code Component}.
+	 * Creates a new instance of this {@code Component}.
 	 * @param owner	the IEntity owner of this component
 	 */
 	public DamageComponent(final IEntity owner)
@@ -44,7 +48,11 @@ public class DamageComponent implements IComponent
 	{
 		return this.owner;
 	}
-
+	
+	/**
+	 * Gets the amount of damage done.
+	 * @return	the amount of damage
+	 */
 	public int getDamage()
 	{
 		return this.damage;
@@ -59,6 +67,11 @@ public class DamageComponent implements IComponent
 		this.owner = owner;
 	}
 	
+	
+	/**
+	 * Sets the amount of damage done.
+	 * @param damage	the amount of damage
+	 */
 	public void setDamage(final int damage)
 	{
 		this.damage = damage;

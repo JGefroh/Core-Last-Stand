@@ -12,6 +12,7 @@ import com.jgefroh.components.HealthComponent;
 import com.jgefroh.components.InputComponent;
 import com.jgefroh.components.MaxRangeComponent;
 import com.jgefroh.components.MouseTrackComponent;
+import com.jgefroh.components.OutOfBoundsComponent;
 import com.jgefroh.components.RenderComponent;
 import com.jgefroh.components.TargetComponent;
 import com.jgefroh.components.TargetTrackComponent;
@@ -52,11 +53,11 @@ public class EntityCreationSystem implements ISystem
 	private long last;
 	
 	/**The level of detail in debug messages.*/
-	private Level debugLevel = Level.FINE;
+	private Level debugLevel = Level.INFO;
 	
 	/**Logger for debug purposes.*/
 	private final Logger LOGGER 
-		= LoggerFactory.getLogger(this.getClass(), debugLevel);
+		= LoggerFactory.getLogger(this.getClass(), Level.ALL);
 	
 	private double bearing;
 	//////////
@@ -69,6 +70,8 @@ public class EntityCreationSystem implements ISystem
 	public EntityCreationSystem(final Core core)
 	{
 		this.core = core;
+		setDebugLevel(this.debugLevel);
+
 		init();
 	}
 	
@@ -79,6 +82,8 @@ public class EntityCreationSystem implements ISystem
 	@Override
 	public void init()
 	{
+		setDebugLevel(this.debugLevel);
+
 		core.setInterested(this, "BEARING_TO_MOUSE");
 	}
 	
@@ -140,8 +145,9 @@ public class EntityCreationSystem implements ISystem
 		TransformComponent tc = new TransformComponent(bg);
 			tc.setXPos(1366/2);
 			tc.setYPos(768/2);
-			tc.setWidth(1366);
-			tc.setHeight(768);
+			tc.setWidth(768);
+			tc.setHeight(1366);
+			tc.setBearing(90);
 			bg.add(tc);
 		RenderComponent rc = new RenderComponent(bg);
 			rc.setSpriteID(0);
@@ -182,6 +188,7 @@ public class EntityCreationSystem implements ISystem
 			ic.setInterested("MOVE_LEFT");	
 			ic.setInterested("MOVE_RIGHT");	
 			ic.setInterested("FIRE");	
+			ic.setInterested("FIRE0");	
 			
 			ic.setInterested("SWITCH_WEAPON_1");
 			ic.setInterested("SWITCH_WEAPON_2");
@@ -213,7 +220,7 @@ public class EntityCreationSystem implements ISystem
 			weapon.setName("gun1");
 			weapon.setAmmo(999999);
 			weapon.setDamage(5);
-			weapon.setMaxRange(2000);
+			weapon.setMaxRange(1500);
 			weapon.setSlot(1);
 			weapon.setMaxSpread(5);
 			weapon.setCurSpread(0);
@@ -232,12 +239,12 @@ public class EntityCreationSystem implements ISystem
 			player.add(mc);
 		
 		HealthComponent hc = new HealthComponent(player);
-			hc.setCurHealth(100);
+			hc.setCurHealth(500000);
 			player.add(hc);
 			
 		HealthBarComponent hbc = new HealthBarComponent(player);
-			hbc.setHealthBar(createHealthBar(player));
-			player.add(hbc);
+		//	hbc.setHealthBar(createHealthBar(player));
+		//	player.add(hbc);
 			
 		TargetComponent tarc = new TargetComponent(player);
 			player.add(tarc);
@@ -245,7 +252,6 @@ public class EntityCreationSystem implements ISystem
 		core.add(player);
 	}
 	
-
 	public void createEnemy0_0(final int x, final int y)
 	{
 		IEntity enemy = new Entity();
@@ -282,7 +288,7 @@ public class EntityCreationSystem implements ISystem
 			weapon.setAmmo(100000);
 			weapon.setFiringRate(500);
 			weapon.setDamage(10);
-			weapon.setMaxRange(2000);
+			weapon.setMaxRange(1500);
 			weapon.setSlot(1);
 			weapon.setMaxSpread(0);
 			weapon.setCurSpread(0);
@@ -310,8 +316,11 @@ public class EntityCreationSystem implements ISystem
 			
 		AIComponent ai = new AIComponent(enemy);
 			ai.setAttackChance(1);
+			ai.setInRangeOfTarget(true);
 			enemy.add(ai);
 			
+		OutOfBoundsComponent oobc = new OutOfBoundsComponent(enemy);
+			enemy.add(oobc);
 		core.add(enemy);
 	}
 	
@@ -351,7 +360,7 @@ public class EntityCreationSystem implements ISystem
 			weapon.setAmmo(100000);
 			weapon.setFiringRate(500);
 			weapon.setDamage(10);
-			weapon.setMaxRange(2000);
+			weapon.setMaxRange(1500);
 			weapon.setSlot(1);
 			weapon.setMaxSpread(0);
 			weapon.setCurSpread(0);
@@ -376,11 +385,15 @@ public class EntityCreationSystem implements ISystem
 			enemy.add(vc);
 		
 		TargetTrackComponent ttc = new TargetTrackComponent(enemy);
+			ttc.setTargetRange(1500);
 			enemy.add(ttc);
 			
 		AIComponent ai = new AIComponent(enemy);
 			ai.setAttackChance(1);
 			enemy.add(ai);
+			
+		OutOfBoundsComponent oobc = new OutOfBoundsComponent(enemy);
+			enemy.add(oobc);
 		core.add(enemy);
 	}
 
@@ -421,7 +434,7 @@ public class EntityCreationSystem implements ISystem
 			weapon.setAmmo(100000);
 			weapon.setFiringRate(100);
 			weapon.setDamage(10);
-			weapon.setMaxRange(2000);
+			weapon.setMaxRange(1500);
 			weapon.setSlot(1);
 			weapon.setMaxSpread(0);
 			weapon.setCurSpread(0);
@@ -449,7 +462,11 @@ public class EntityCreationSystem implements ISystem
 
 		AIComponent ai = new AIComponent(enemy);
 			ai.setAttackChance(1);
+			ai.setInRangeOfTarget(true);
 			enemy.add(ai);
+		
+		OutOfBoundsComponent oobc = new OutOfBoundsComponent(enemy);
+		enemy.add(oobc);
 		core.add(enemy);
 	}
 
@@ -489,14 +506,14 @@ public class EntityCreationSystem implements ISystem
 			weapon.setAmmo(100000);
 			weapon.setFiringRate(100);
 			weapon.setDamage(10);
-			weapon.setMaxRange(2000);
+			weapon.setMaxRange(1500);
 			weapon.setSlot(1);
 			weapon.setMaxSpread(0);
 			weapon.setCurSpread(0);
 			weapon.setIncSpread(0);
 			weapon.setNumShots(1);
 			weapon.setBurstSize(2);
-			weapon.setDelayAfterBurst(200);
+			weapon.setDelayAfterBurst(300);
 			wc.addWeapon(weapon);
 			wc.setCurrentWeapon("enemy_Weapon");
 			enemy.add(wc);
@@ -516,11 +533,16 @@ public class EntityCreationSystem implements ISystem
 			enemy.add(vc);
 
 		TargetTrackComponent ttc = new TargetTrackComponent(enemy);
+			ttc.setTargetRange(1500);
 			enemy.add(ttc);
 			
 		AIComponent ai = new AIComponent(enemy);
 			ai.setAttackChance(1);
 			enemy.add(ai);
+			
+			OutOfBoundsComponent oobc = new OutOfBoundsComponent(enemy);
+			enemy.add(oobc);
+			
 		core.add(enemy);
 	}
 
@@ -570,7 +592,8 @@ public class EntityCreationSystem implements ISystem
 			
 		AIComponent ai = new AIComponent(enemy);
 			enemy.add(ai);
-			
+			OutOfBoundsComponent oobc = new OutOfBoundsComponent(enemy);
+			enemy.add(oobc);	
 		core.add(enemy);
 	}
 
@@ -609,9 +632,9 @@ public class EntityCreationSystem implements ISystem
 			Weapon weapon = new Weapon();
 			weapon.setName("enemy_Weapon");
 			weapon.setAmmo(100000);
-			weapon.setFiringRate(2000);
+			weapon.setFiringRate(1500);
 			weapon.setDamage(5);
-			weapon.setMaxRange(2000);
+			weapon.setMaxRange(500);
 			weapon.setSlot(1);
 			weapon.setMaxSpread(360);
 			weapon.setCurSpread(360);
@@ -634,15 +657,76 @@ public class EntityCreationSystem implements ISystem
 			vc.setTotalMovementVector(v);
 			enemy.add(vc);
 		
+		TargetTrackComponent ttc = new TargetTrackComponent(enemy);
+			ttc.setTargetRange(500);
+			enemy.add(ttc);
 			
 		AIComponent ai = new AIComponent(enemy);
 			ai.setAttackChance(1);
-	
 			enemy.add(ai);
 			
+		OutOfBoundsComponent oobc = new OutOfBoundsComponent(enemy);
+			enemy.add(oobc);	
 		core.add(enemy);
 	}
 
+	public void createFormation(final int formation, final int xOffset)
+	{
+		int x = 1366+xOffset;
+		int y = 0;
+		
+		switch(formation)
+		{
+			case 0:
+				createEnemy0_0(x+100, y+128);
+				createEnemy0_0(x+100, y+256);
+				createEnemy0_0(x+100, y+384);
+				createEnemy0_0(x+100, y+512);
+				createEnemy0_0(x+100, y+640);
+				break;
+			case 1:
+				createEnemy1_0(x+100, y+128);
+				createEnemy0_0(x+100, y+256);
+				createEnemy0_0(x+100, y+384);
+				createEnemy0_0(x+100, y+512);
+				createEnemy1_0(x+100, y+640);
+				break;
+			case 2:
+				createEnemy1_0(x+100, y+128);
+				createEnemy0_2(x+50, y+128);
+				createEnemy0_0(x+100, y+256);
+				createEnemy0_1(x+100, y+384);
+				createEnemy0_2(x+50, y+384);
+				createEnemy0_0(x+100, y+512);
+				createEnemy1_0(x+100, y+640);
+				createEnemy0_2(x+50, y+640);
+				break;
+			case 3:
+				createEnemy3_0(x+100, y+128);
+				createEnemy0_2(x+50, y+128);
+				createEnemy1_0(x+100, y+256);
+				createEnemy0_1(x+100, y+384);
+				createEnemy0_2(x+50, y+384);
+				createEnemy1_0(x+100, y+512);
+				createEnemy3_0(x+100, y+640);
+				createEnemy0_2(x+50, y+640);
+				break;
+			case 4:
+				createEnemy2_0(x+100, y+128);
+				createEnemy2_0(x+50, y+128);
+				createEnemy2_0(x+100, y+192);
+				createEnemy2_0(x+100, y+256);
+				createEnemy2_0(x+100, y+384);
+				createEnemy2_0(x+50, y+384);
+				createEnemy2_0(x+100, y+512);
+				createEnemy2_0(x+100, y+576);
+				createEnemy2_0(x+100, y+640);
+				createEnemy2_0(x+50, y+640);
+				break;
+		}
+		
+
+	}
 
 	public void createBullet(final IEntity owner,
 							final int damage, final int maxRange, final double spread)
@@ -718,6 +802,9 @@ public class EntityCreationSystem implements ISystem
 		DamageComponent dc = new DamageComponent(bullet);
 			dc.setDamage(damage);
 			bullet.add(dc);
+			
+		OutOfBoundsComponent oobc = new OutOfBoundsComponent(bullet);
+			bullet.add(oobc);	
 		core.addEntity(bullet);
 		
 		
@@ -773,12 +860,19 @@ public class EntityCreationSystem implements ISystem
 	
 	public void createFormation(final int x, final int y, final int form)
 	{
-
-
+		
 	}
 
 
-
+	
+	/**
+	 * Sets the debug level of this {@code System}.
+	 * @param level	the Level to set
+	 */
+	public void setDebugLevel(final Level level)
+	{
+		this.LOGGER.setLevel(level);
+	}
 
 
 	

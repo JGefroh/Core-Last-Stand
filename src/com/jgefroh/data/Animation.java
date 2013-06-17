@@ -40,7 +40,7 @@ public class Animation
 	// GETTERS
 	//////////
 	/**
-	 * Get the sequence of sprite indexes that make up this animation.
+	 * Gets the sequence of sprite indexes that make up this animation.
 	 * @return	the sequence of sprite indexes
 	 */
 	public int[] getSequence()
@@ -56,7 +56,7 @@ public class Animation
 	}
 	
 	/**
-	 * Get the name of this animation.
+	 * Gets the name of this animation.
 	 * @return	the name of this animation
 	 */
 	public String getName()
@@ -65,7 +65,7 @@ public class Animation
 	}
 	
 	/**
-	 * Get the time to wait between updates.
+	 * Gets the time to wait between updates.
 	 * @return	the time to wait between frame updates, in ms.
 	 */
 	public long getInterval()
@@ -74,7 +74,7 @@ public class Animation
 	}
 	
 	/**
-	 * Get the number of frames in this animation.
+	 * Gets the number of frames in this animation.
 	 * @return	the number of frames in this animation.
 	 */
 	public int getNumberOfFrames()
@@ -83,7 +83,7 @@ public class Animation
 	}
 	
 	/**
-	 * Get the sprite id associated with the given frame of the animation.
+	 * Gets the sprite id associated with the given frame of the animation.
 	 * Returns -1 if the frame is out of bounds.
 	 * @param frame	the current frame of the animation
 	 * @return	the sprite id associated with the frame of the animation
@@ -103,7 +103,7 @@ public class Animation
 	// SETTERS
 	//////////
 	/**
-	 * Set the name of this animation.
+	 * Sets the name of this animation.
 	 * @param name	a unique name
 	 */
 	public void setName(final String name)
@@ -119,7 +119,7 @@ public class Animation
 	}
 	
 	/**
-	 * Set the animation sequence.
+	 * Sets the animation sequence.
 	 * @param sequence	the sequence of sprite indexes
 	 */
 	public void setSequence(final int[] sequence)
@@ -135,7 +135,7 @@ public class Animation
 	}
 	
 	/**
-	 * Set the minimum time to wait between frame updates.
+	 * Sets the minimum time to wait between frame updates.
 	 * @param interval	the time to wait between updates, in ms.
 	 */
 	public void setInterval(final long interval)

@@ -35,23 +35,25 @@ public class TransformSystem implements ISystem
 	private long last;
 	
 	/**The level of detail in debug messages.*/
-	private Level debugLevel = Level.FINE;
+	private Level debugLevel = Level.INFO;
 	
 	/**Logger for debug purposes.*/
 	private final Logger LOGGER 
-		= LoggerFactory.getLogger(this.getClass(), debugLevel);
+		= LoggerFactory.getLogger(this.getClass(), Level.ALL);
 	
 	
 	//////////
 	// INIT
 	//////////
 	/**
-	 * Create a new TransformSystem.
+	 * Creates a new instance of this {@code System}.
 	 * @param core	 a reference to the Core controlling this system
 	 */
 	public TransformSystem(final Core core)
 	{
 		this.core = core;
+		setDebugLevel(this.debugLevel);
+
 		init();
 	}
 	
@@ -156,11 +158,24 @@ public class TransformSystem implements ISystem
 		}
 	}
 	
-
+	/**
+	 * Sets the movement interval of the given entity
+	 * @param entity	the Entity to set the interval for
+	 * @param interval	the interval, in ms
+	 */
 	public void setInterval(final IEntity entity, final long interval)
 	{
 		MovementInfoPack pack =
 				core.getInfoPackFrom(entity, MovementInfoPack.class);
 		pack.setInterval(interval);
+	}
+	
+	/**
+	 * Sets the debug level of this {@code System}.
+	 * @param level	the Level to set
+	 */
+	public void setDebugLevel(final Level level)
+	{
+		this.LOGGER.setLevel(level);
 	}
 }

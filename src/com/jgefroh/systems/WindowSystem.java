@@ -43,11 +43,11 @@ public class WindowSystem implements ISystem
 	private long last;
 	
 	/**The level of detail in debug messages.*/
-	private Level debugLevel = Level.FINE;
+	private Level debugLevel = Level.OFF;
 	
 	/**Logger for debug purposes.*/
 	private final Logger LOGGER 
-		= LoggerFactory.getLogger(this.getClass(), debugLevel);
+		= LoggerFactory.getLogger(this.getClass(), Level.ALL);
 	
 	/**Flag that shows if vSync is enabled or disabled.*/
 	@SuppressWarnings("unused")
@@ -68,6 +68,8 @@ public class WindowSystem implements ISystem
 	public WindowSystem(final Core core, final int width, final int height, final String title)
 	{
 		this.core = core;
+		setDebugLevel(this.debugLevel);
+
 		init();
 		setSize(width, height);
 		setTitle(title);
@@ -339,5 +341,15 @@ public class WindowSystem implements ISystem
 	public void setVSyncEnabled(final boolean vSync)
 	{
 		Display.setVSyncEnabled(vSync);
+	}
+	
+	
+	/**
+	 * Sets the debug level of this {@code System}.
+	 * @param level	the Level to set
+	 */
+	public void setDebugLevel(final Level level)
+	{
+		this.LOGGER.setLevel(level);
 	}
 }

@@ -43,11 +43,11 @@ public class RenderSystem implements ISystem
 	private long last;
 	
 	/**The level of detail in debug messages.*/
-	private Level debugLevel = Level.FINE;
+	private Level debugLevel = Level.INFO;
 	
 	/**Logger for debug purposes.*/
 	private final Logger LOGGER 
-		= LoggerFactory.getLogger(this.getClass(), debugLevel);
+		= LoggerFactory.getLogger(this.getClass(), Level.ALL);
 	
 	/**Holds the texture metadata.*/
 	private HashMap<Integer, Texture> textures;
@@ -67,6 +67,8 @@ public class RenderSystem implements ISystem
 	public RenderSystem(final Core core)
 	{		
 		this.core = core;
+		setDebugLevel(this.debugLevel);
+
 		init();
 	}
 	
@@ -393,7 +395,6 @@ public class RenderSystem implements ISystem
 	{
 		LOGGER.log(Level.FINE, "Calculating UV coordinates for " 
 						+ meta.getPath());
-		System.out.println(meta);
 		Iterator<Sprite> sprites = meta.getSpriteIterator();
 		while(sprites.hasNext())
 		{
@@ -410,6 +411,12 @@ public class RenderSystem implements ISystem
 		}
 	}
 	
+	/**
+	 * Resizes the render area and viewport to maintain compatibility with
+	 * all window sizes.
+	 * @param width		the width of the window
+	 * @param height	the height of the window
+	 */
 	private void resizeDrawableArea(final int width, final int height)
 	{
 		GL11.glMatrixMode(GL11.GL_VIEWPORT);
@@ -423,11 +430,14 @@ public class RenderSystem implements ISystem
 	 * Sets the debug level of this {@code System}.
 	 * @param level	the Level to set
 	 */
-	public void setDebug(final Level level)
+	public void setDebugLevel(final Level level)
 	{
 		this.LOGGER.setLevel(level);
 	}
 	
+	/**
+	 * Toggles the display of wireframes.
+	 */
 	private void toggleWireframeMode()
 	{
 		if(this.wireframeEnabled==false)

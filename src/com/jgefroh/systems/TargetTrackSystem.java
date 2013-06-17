@@ -13,6 +13,7 @@ import com.jgefroh.infopacks.TargetTrackInfoPack;
 
 
 /**
+ * Rotates entities towards a specific target.
  * @author Joseph Gefroh
  */
 public class TargetTrackSystem implements ISystem
@@ -33,11 +34,11 @@ public class TargetTrackSystem implements ISystem
 	private long last;
 	
 	/**The level of detail in debug messages.*/
-	private Level debugLevel = Level.FINE;
+	private Level debugLevel = Level.INFO;
 	
 	/**Logger for debug purposes.*/
 	private final Logger LOGGER 
-		= LoggerFactory.getLogger(this.getClass(), debugLevel);
+		= LoggerFactory.getLogger(this.getClass(), Level.ALL);
 
 	//////////
 	// INIT
@@ -49,6 +50,8 @@ public class TargetTrackSystem implements ISystem
 	public TargetTrackSystem(final Core core)
 	{
 		this.core = core;
+		setDebugLevel(this.debugLevel);
+
 		init();
 	}
 	
@@ -60,7 +63,6 @@ public class TargetTrackSystem implements ISystem
 	public void init()
 	{
 		isRunning = true;
-		core.setInterested(this, "CALC_DISTANCE_TO_TARGET");
 	}
 
 	@Override
@@ -114,40 +116,49 @@ public class TargetTrackSystem implements ISystem
 	public void recv(final String id, final String... message)
 	{
 		LOGGER.log(Level.FINEST, "Received message: " + id);
-		
-		if(id.equals("GET_DISTANCE_TO_TARGET"))
-		{
-			calcDistanceToTarget(message);
-		}
 	}
 	
 	//////////
 	// SYSTEM METHODS
 	//////////
+	/**
+	 * Selects and tracks targets.
+	 */
 	private void track()
 	{
 		Iterator<TargetTrackInfoPack> packs 
 			= core.getInfoPacksOfType(TargetTrackInfoPack.class);
 		while(packs.hasNext())
 		{
+			//Get all trackers
 			TargetTrackInfoPack each = packs.next();
 			
+			//Get target if it already has one...
 			TargetInfoPack target 
 				= core.getInfoPackFrom(each.getTarget(), TargetInfoPack.class);
 			
 			if(target==null)
-			{
-				target = pickTarget(each);
+			{//If the entity does not already have a target...
+				target = pickTarget(each);	//Pick a target...
 				if(target!=null)
-				{					
+				{//if a target was succesfully chosen...
 					each.setTarget(target.getOwner());
 				}
 			}
-			turnTowardsTarget(each, target);
+			
+			//If the target is in range...
+			if(checkTargetInRange(each, target))
+			{
+				turnTowardsTarget(each, target);
+			}
 		}
-		
 	}
 	
+	/**
+	 * Selects a target from the available targets.
+	 * @param each	the InfoPack of the entity that wants a target
+	 * @return		a target if one is found;null otherwise
+	 */
 	private TargetInfoPack pickTarget(final TargetTrackInfoPack each)
 	{
 		Iterator<TargetInfoPack> possibleTargets 
@@ -162,58 +173,57 @@ public class TargetTrackSystem implements ISystem
 		return null;
 	}
 	
+	/**
+	 * Turns entities towards their targets.
+	 * @param each		the tracker
+	 * @param target	the target
+	 */
 	private void turnTowardsTarget(final TargetTrackInfoPack each,
 									final TargetInfoPack target)
 	{
 		if(target!=null)
 		{
-			double bearing 
-			= calculateBearing(each.getXPos(), each.getYPos(), 
-								target.getXPos(), target.getYPos());
-			
+			double adj = target.getXPos()-each.getXPos();
+			double opp = target.getYPos()-each.getYPos();
+			double bearing = Math.toDegrees(Math.atan2(opp, adj));
 			each.setBearing(bearing);
 		}
 	}
 	
 	/**
-	 * Calculates the angle necessary to face the mouse from a given position.
-	 * @param x	the x coordinate of the object
-	 * @param y	the y coordinate of the object
-	 * @return	the angle to turn the object in order to face the mouse
+	 * Checks to see if the target is in range.
+	 * @param each		the tracker
+	 * @param target	the target
+	 * @return			true if the target is in range; false otherwise
 	 */
-	private double calculateBearing(final double xSource, final double ySource,
-									final double xTarget, final double yTarget)
+	private boolean checkTargetInRange(final TargetTrackInfoPack each, final TargetInfoPack target)
 	{
-		double adj = xTarget-xSource;
-		double opp = yTarget-ySource;
-		
-		double bearing = Math.toDegrees(Math.atan2(opp, adj));
-		return bearing;
-	}
-	
-	private void calcDistanceToTarget(final String[] message)
-	{
-		if(message.length>0)
+		if(target!=null)
 		{
-			String entityID = message[0];
+			double adj = target.getXPos()-each.getXPos();
+			double opp = target.getYPos()-each.getYPos();
+			double dist = Math.sqrt(adj*adj+opp*opp);
 			
-			TargetTrackInfoPack pack 
-				= core.getInfoPackFrom(entityID, TargetTrackInfoPack.class);
-			
-			if(pack!=null)
+			if(dist<=each.getTargetRange())
 			{
-				TargetInfoPack target 
-					= core.getInfoPackFrom(pack.getTarget(), TargetInfoPack.class);
-				if(target!=null)
-				{
-					double adj = pack.getXPos()-target.getXPos();
-					double opp = pack.getYPos()-target.getYPos();
-					
-					double dist = Math.sqrt(adj*adj+opp*opp);
-					pack.setDistanceToTarget(dist);
-				}
+				core.send("IN_RANGE_OF_TARGET", each.getOwner().getID(), true + "");
+				return true;
+			}
+			else
+			{
+				core.send("IN_RANGE_OF_TARGET", each.getOwner().getID(), false + "");
+				return false;
 			}
 		}
+		return false;
 	}
 	
+	/**
+	 * Sets the debug level of this {@code System}.
+	 * @param level	the Level to set
+	 */
+	public void setDebugLevel(final Level level)
+	{
+		this.LOGGER.setLevel(level);
+	}
 }

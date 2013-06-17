@@ -5,6 +5,9 @@ import com.jgefroh.core.IEntity;
 
 /**
  * Contains data related to the object's internal position.
+ * 
+ * 
+ * Date: 17JUN13
  * @author Joseph Gefroh
  */
 public class TransformComponent implements IComponent
@@ -46,7 +49,7 @@ public class TransformComponent implements IComponent
 	// INIT
 	//////////
 	/**
-	 * Create a new TransformComponent
+	 * Creates a new instance of this {@code Component}.
 	 * @param owner	the IEntity owner of the component
 	 */
 	public TransformComponent(final IEntity owner)
@@ -78,7 +81,7 @@ public class TransformComponent implements IComponent
 	}
 	
 	/**
-	 * Get the direction the object is facing, in degrees.
+	 * Gets the direction the object is facing, in degrees.
 	 * @return	the direction the object is facing, in degrees
 	 */
 	public double getBearing()
@@ -86,7 +89,7 @@ public class TransformComponent implements IComponent
 		return this.bearing;
 	}
 	/**
-	 * Get the X position of the entity
+	 * Gets the X position of the entity
 	 * @return	the X coordinate of the entity
 	 */
 	public double getXPos()
@@ -95,7 +98,7 @@ public class TransformComponent implements IComponent
 	}
 	
 	/**
-	 * Get the Y position of the entity
+	 * Gets the Y position of the entity
 	 * @return	the Y coordinate of the entity
 	 */
 	public double getYPos()
@@ -104,7 +107,7 @@ public class TransformComponent implements IComponent
 	}
 	
 	/**
-	 * Get the Z position of the entity
+	 * Gets the Z position of the entity
 	 * @return	the Z coordinate of the entity
 	 */
 	public double getZPos()
@@ -113,7 +116,7 @@ public class TransformComponent implements IComponent
 	}
 	
 	/**
-	 * Get the previous X position of the entity
+	 * Gets the previous X position of the entity
 	 * @return	the previous X position of the entity
 	 */
 	public int getLastXPos()
@@ -122,7 +125,7 @@ public class TransformComponent implements IComponent
 	}
 	
 	/**
-	 * Get the previous Y position of the entity
+	 * Gets the previous Y position of the entity
 	 * @return	the previous Y position of the entity
 	 */
 	public int getLastYPos()
@@ -131,7 +134,7 @@ public class TransformComponent implements IComponent
 	}
 	
 	/**
-	 * Get the previous Z position of the entity
+	 * Gets the previous Z position of the entity
 	 * @return	the previous Z position of the entity
 	 */
 	public int getLastZPos()
@@ -140,7 +143,7 @@ public class TransformComponent implements IComponent
 	}
 	
 	/**
-	 * Get the width of the entity
+	 * Gets the width of the entity
 	 * @return	the width of the entity
 	 */
 	public double getWidth()
@@ -149,7 +152,7 @@ public class TransformComponent implements IComponent
 	}
 	
 	/**
-	 * Get the height of the entity
+	 * Gets the height of the entity
 	 * @return	the height of the entity
 	 */
 	public double getHeight()
@@ -176,7 +179,7 @@ public class TransformComponent implements IComponent
 		this.bearing = bearing;
 	}
 	/**
-	 * Set the X coordinate position of the entity.
+	 * Sets the X coordinate position of the entity.
 	 * @param xPos	the X coordinate of the entity
 	 */
 	public void setXPos(final double xPos)
@@ -185,7 +188,7 @@ public class TransformComponent implements IComponent
 	}
 	
 	/**
-	 * Set the Y coordinate position of the entity.
+	 * Sets the Y coordinate position of the entity.
 	 * @param yPos	the Y coordinate of the entity
 	 */
 	public void setYPos(final double yPos)
@@ -194,7 +197,7 @@ public class TransformComponent implements IComponent
 	}
 	
 	/**
-	 * Set the Z coordinate position of the entity.
+	 * Sets the Z coordinate position of the entity.
 	 * @param zPos	the Z coordinate of the entity
 	 */
 	public void setZPos(final double zPos)
@@ -203,7 +206,7 @@ public class TransformComponent implements IComponent
 	}
 	
 	/**
-	 * Set the width of the entity.
+	 * Sets the width of the entity.
 	 * @param width	the width of the entity
 	 */
 	public void setWidth(final double width)
@@ -212,7 +215,7 @@ public class TransformComponent implements IComponent
 	}
 	
 	/**
-	 * Set the height of the entity.
+	 * Sets the height of the entity.
 	 * @param height the height of the entity
 	 */
 	public void setHeight(final double height)

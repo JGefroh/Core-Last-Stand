@@ -5,6 +5,9 @@ import com.jgefroh.core.IEntity;
 
 /**
  * Contains data that allows objects to collide.
+ * 
+ * 
+ * Date: 17JUN13
  * @author Joseph Gefroh
  */
 public class CollisionComponent implements IComponent
@@ -22,7 +25,7 @@ public class CollisionComponent implements IComponent
 	// INIT
 	//////////
 	/**
-	 * Create a new CollisionComponent
+	 * Creates a new instance of this {@code Component}.
 	 * @param owner	the IEntity owner of this component
 	 */
 	public CollisionComponent(final IEntity owner)
@@ -46,8 +49,9 @@ public class CollisionComponent implements IComponent
 	{
 		return this.owner;
 	}
+	
 	/**
-	 * Return the collision group the entity belongs to.
+	 * Returns the collision group the entity belongs to.
 	 * @return	the collision group the entity is a part of
 	 */
 	public int getCollisionGroup()
@@ -66,7 +70,7 @@ public class CollisionComponent implements IComponent
 	}
 	
 	/**
-	 * Set the collision group the entity belongs to.
+	 * Sets the collision group the entity belongs to.
 	 * @param collisionGroup	the collision group the entity belongs to
 	 */
 	public void setCollisionGroup(final int collisionGroup)

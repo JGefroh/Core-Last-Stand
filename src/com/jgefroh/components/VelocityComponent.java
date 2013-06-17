@@ -10,10 +10,14 @@ import com.jgefroh.data.Vector;
 
 /**
  * Contains data used to move entities.
+ * 
+ * 
+ * Date: 17JUN13
  * @author Joseph Gefroh
  */
 public class VelocityComponent implements IComponent
 {
+	//TODO: Clean up, remove unnecessary stuff.
 	//////////
 	// DATA
 	//////////
@@ -36,7 +40,7 @@ public class VelocityComponent implements IComponent
 	// INIT
 	//////////
 	/**
-	 * Create a new VelocityComponent.
+	 * Creates a new instance of this {@code Component}.
 	 * @param owner	the IEntity owner of the component
 	 */
 	public VelocityComponent(final IEntity owner)
@@ -82,11 +86,20 @@ public class VelocityComponent implements IComponent
 		return this.lastUpdated;
 	}
 	
+	/**
+	 * Gets a vector from a specific source.
+	 * @param source	the int ID of the source
+	 * @return			the vector from the source; null if nonexistent
+	 */
 	public Vector getVector(final int source)
 	{
 		return vectors.get(source);
 	}
 	
+	/**
+	 * Gets all vectors applied to this Entity.
+	 * @return	all of the vectors
+	 */
 	public HashMap<Integer, Vector> getVectors()
 	{
 		return vectors;
@@ -102,7 +115,7 @@ public class VelocityComponent implements IComponent
 	}
 		
 	/**
-	 * Set the update interval of the component.
+	 * Sets the update interval of the component.
 	 * @param interval	the time, in ms, to wait before attempting a move
 	 */
 	public void setInterval(final long interval)
@@ -111,7 +124,7 @@ public class VelocityComponent implements IComponent
 	}
 	
 	/**
-	 * Set the time the component was last updated.
+	 * Sets the time the component was last updated.
 	 * @param lastUpdated	the time, in ms, the component was last updated
 	 */
 	public void setLastUpdated(final long lastUpdated)
@@ -141,7 +154,7 @@ public class VelocityComponent implements IComponent
 	}
 	
 	/**
-	 * Add a vector to this object
+	 * Adds a vector to this object
 	 * @param vector
 	 */
 	public void addVector(final Vector vector)
@@ -158,6 +171,10 @@ public class VelocityComponent implements IComponent
 		vectors.remove(vector);
 	}
 	
+	/**
+	 * Gets the vector that describes the total translation.
+	 * @return	the total movement vector
+	 */
 	public Vector getTotalMovementVector()
 	{
 		return this.totalMovementVector;

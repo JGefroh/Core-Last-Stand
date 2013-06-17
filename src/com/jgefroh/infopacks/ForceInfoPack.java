@@ -6,16 +6,6 @@ import com.jgefroh.core.IEntity;
 import com.jgefroh.core.IInfoPack;
 import com.jgefroh.data.Vector;
 
-
-/**
- * Intended to be used by the TransformSystem.
- * 
- * Controls access to the following components:
- * TransformComponent
- * VelocityComponent
- * 
- * @author Joseph Gefroh
- */
 public class ForceInfoPack implements IInfoPack
 {
 	//////////

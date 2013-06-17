@@ -5,6 +5,9 @@ import com.jgefroh.core.IEntity;
 
 /**
  * Entities with this component will face the mouse's position.
+ * 
+ * 
+ * Date: 17JUN13
  * @author Joseph Gefroh
  */
 public class MouseTrackComponent implements IComponent
@@ -23,7 +26,7 @@ public class MouseTrackComponent implements IComponent
 	// INIT
 	//////////
 	/**
-	 * Create a new Render component.
+	 * Creates a new instance of this {@code Component}.
 	 * @param owner	the IEntity owner of this component
 	 */
 	public MouseTrackComponent(final IEntity owner)

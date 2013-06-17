@@ -9,11 +9,10 @@ import com.jgefroh.core.Core;
 import com.jgefroh.core.ISystem;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.infopacks.MaxRangeInfoPack;
-import com.jgefroh.infopacks.MouseTrackInfoPack;
 
 
 /**
- * Rotates entities towards the mouse.
+ * Destroys entities that move a certain distance away from their origin.
  * @author Joseph Gefroh
  */
 public class MaxRangeSystem implements ISystem
@@ -34,11 +33,11 @@ public class MaxRangeSystem implements ISystem
 	private long last;
 	
 	/**The level of detail in debug messages.*/
-	private Level debugLevel = Level.FINE;
+	private Level debugLevel = Level.INFO;
 	
 	/**Logger for debug purposes.*/
 	private final Logger LOGGER 
-		= LoggerFactory.getLogger(this.getClass(), debugLevel);
+		= LoggerFactory.getLogger(this.getClass(), Level.ALL);
 	
 	//////////
 	// INIT
@@ -50,6 +49,8 @@ public class MaxRangeSystem implements ISystem
 	public MaxRangeSystem(final Core core)
 	{
 		this.core = core;
+		setDebugLevel(this.debugLevel);
+
 		init();
 	}
 	
@@ -121,9 +122,9 @@ public class MaxRangeSystem implements ISystem
 	//////////
 	public void checkPassed(final long now)
 	{
-		core.send("REQUEST_CURSOR_POSITION");
 		Iterator<MaxRangeInfoPack> packs 
 			= core.getInfoPacksOfType(MaxRangeInfoPack.class);
+		
 		while(packs.hasNext())
 		{
 			MaxRangeInfoPack each = packs.next();
@@ -138,11 +139,23 @@ public class MaxRangeSystem implements ISystem
 				double distance = Math.sqrt(diffX*diffX+diffY*diffY);
 				if(distance>each.getMaxRange())
 				{
+					LOGGER.log(Level.FINE, 
+							each.getOwner().getName() + "(" 
+									+ each.getOwner().getID()
+									+ ") destroyed (reached max range).");
 					core.removeEntity(each.getOwner());
 				}
 			}
 		}
 	}
 	
+	/**
+	 * Sets the debug level of this {@code System}.
+	 * @param level	the Level to set
+	 */
+	public void setDebugLevel(final Level level)
+	{
+		this.LOGGER.setLevel(level);
+	}
 	
 }

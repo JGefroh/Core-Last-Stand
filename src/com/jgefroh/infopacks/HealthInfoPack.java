@@ -4,14 +4,6 @@ import com.jgefroh.components.HealthComponent;
 import com.jgefroh.core.IEntity;
 import com.jgefroh.core.IInfoPack;
 
-/**
- * Intended to be used by the HealthCheckSystem.
- * 
- * Controls access to the following components:
- * HealthComponent
- * 
- * @author Joseph Gefroh
- */
 public class HealthInfoPack implements IInfoPack
 {
 	//////////

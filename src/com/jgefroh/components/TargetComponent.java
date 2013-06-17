@@ -4,6 +4,10 @@ import com.jgefroh.core.IComponent;
 import com.jgefroh.core.IEntity;
 
 /**
+ * Marker that indicates the owning Entity is targetable by the AI.
+ * 
+ * 
+ * Date: 17JUN13
  * @author Joseph Gefroh
  */
 public class TargetComponent implements IComponent
@@ -22,7 +26,7 @@ public class TargetComponent implements IComponent
 	// INIT
 	//////////
 	/**
-	 * Create a new instance of this {@code Component}.
+	 * Creates a new instance of this {@code Component}.
 	 * @param owner	the IEntity owner of this component
 	 */
 	public TargetComponent(final IEntity owner)

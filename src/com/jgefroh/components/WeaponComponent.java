@@ -7,11 +7,15 @@ import com.jgefroh.core.IEntity;
 import com.jgefroh.data.Weapon;
 
 /**
- * Contains data allowing an entity to be armed and have a weapon.
+ * Contains data allowing an entity to have and use weapons.
+ * 
+ * 
+ * Date: 17JUN13
  * @author Joseph Gefroh
  */
 public class WeaponComponent implements IComponent
 {
+	//TODO: simplify, allow for multiple fire modes
 	//////////
 	// DATA
 	//////////
@@ -24,10 +28,10 @@ public class WeaponComponent implements IComponent
 	/**The weapons this entity owns.*/
 	private ArrayList<Weapon> weapons;
 	
-	/**The amount of time to wait in-between updates, in milliseconds.*/
+	/**The amount of time to wait in-between shots, in milliseconds.*/
 	private long interval;
 	
-	/**The time the velocity was last updated.*/
+	/**The time a weapon was last fired.*/
 	private long lastUpdated;
 	
 	/**Flag that indicates a weapon fire request.*/
@@ -36,11 +40,16 @@ public class WeaponComponent implements IComponent
 	//////////
 	// INIT
 	//////////
+	/**
+	 * Creates a new instance of this {@code Component}.
+	 * @param owner	the IEntity owner of the component
+	 */
 	public WeaponComponent(final IEntity owner)
 	{
 		setOwner(owner);
 		init();
 	}
+	
 	@Override
 	public void init()
 	{
@@ -76,7 +85,7 @@ public class WeaponComponent implements IComponent
 	}
 	
 	/**
-	 * Get the currently equipped weapon
+	 * Gets the currently equipped weapon.
 	 * @return	the currently equipped weapon
 	 */
 	public Weapon getCurrentWeapon()
@@ -184,6 +193,10 @@ public class WeaponComponent implements IComponent
 		return 0;
 	}
 	
+	/**
+	 * Gets the number of shots fired so far as part of the burst.
+	 * @return	the number of shots fired so far
+	 */
 	public int getShotsFiredThisBurst()
 	{
 		if(currentWeapon!=null)
@@ -193,6 +206,10 @@ public class WeaponComponent implements IComponent
 		return 0;
 	}
 	
+	/**
+	 * Gets the number of shots of the burst.
+	 * @return the number of shots to fire in the burst
+	 */
 	public int getBurstSize()
 	{
 		if(currentWeapon!=null)
@@ -202,6 +219,10 @@ public class WeaponComponent implements IComponent
 		return 0;
 	}
 	
+	/**
+	 * Gets the delay after the burst.
+	 * @return	the time to wait until the gun is ready
+	 */
 	public long getDelayAfterBurst()
 	{
 		if(currentWeapon!=null)
@@ -352,6 +373,10 @@ public class WeaponComponent implements IComponent
 		}
 	}
 	
+	/**
+	 * Sets the size of the burst.
+	 * @param burstSize	the number of shots to fire as part of the burst
+	 */
 	public void setBurstSize(final int burstSize)
 	{
 		if(currentWeapon!=null)
@@ -360,6 +385,10 @@ public class WeaponComponent implements IComponent
 		}
 	}
 	
+	/**
+	 * Sets the number of shots fired this burst.
+	 * @param shotsFiredThisBurst	the number of shots fired as part of the burst
+	 */
 	public void setShotsFiredThisBurst(final int shotsFiredThisBurst)
 	{
 		if(currentWeapon!=null)
@@ -368,6 +397,10 @@ public class WeaponComponent implements IComponent
 		}
 	}
 	
+	/**
+	 * Sets the delay after the burst.
+	 * @param delayAfterBurst	the time to wait after the burst.
+	 */
 	public void setDelayAfterBurst(final long delayAfterBurst)
 	{
 		if(currentWeapon!=null)

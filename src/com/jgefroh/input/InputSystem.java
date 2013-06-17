@@ -92,6 +92,7 @@ public class InputSystem implements ISystem, IInputSystem
 		BindMap kbs = new BindMap();
 		BindMap mbs = new BindMap();
 		kbs.bind(Keyboard.KEY_SPACE, "FIRE", InputSystem.HOLD);
+		kbs.bind(Keyboard.KEY_SPACE, "FIRE0", InputSystem.RELEASE);
 		kbs.bind(Keyboard.KEY_W, "MOVE_UP", InputSystem.HOLD);
 		kbs.bind(Keyboard.KEY_A, "MOVE_LEFT", InputSystem.HOLD);
 		kbs.bind(Keyboard.KEY_S, "MOVE_DOWN", InputSystem.HOLD);
@@ -228,11 +229,11 @@ public class InputSystem implements ISystem, IInputSystem
 		{
 			core.send("GENERATE_FORCE", message[0], 5 +"", 0+"");
 		}
-			
 		else if(id.equals("FIRE"))
 		{
 			core.send("REQUEST_FIRE", message[0]);
 		}
+
 	}
 	//////////
 	// IIINPUTSYSTEM INTERFACE

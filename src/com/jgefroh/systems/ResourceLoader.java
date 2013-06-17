@@ -51,11 +51,11 @@ public class ResourceLoader implements ISystem
 	private long last;
 	
 	/**The level of detail in debug messages.*/
-	private Level debugLevel = Level.ALL;
+	private Level debugLevel = Level.INFO;
 	
 	/**Logger for debug purposes.*/
 	private final Logger LOGGER 
-		= LoggerFactory.getLogger(this.getClass(), debugLevel);
+		= LoggerFactory.getLogger(this.getClass(), Level.ALL);
 	
 	
 	//////////
@@ -68,6 +68,8 @@ public class ResourceLoader implements ISystem
 	public ResourceLoader(final Core core)
 	{
 		this.core = core;
+		setDebugLevel(this.debugLevel);
+
 		init();
 	}
 	
@@ -141,7 +143,7 @@ public class ResourceLoader implements ISystem
 	 */
 	public boolean isValidFile(final String path)
 	{
-		LOGGER.log(Level.INFO, "Checking validity of: " + path);
+		LOGGER.log(Level.FINE, "Checking validity of: " + path);
 
 		File loadThis = new File(path);
 		if(loadThis.isFile())
@@ -258,7 +260,7 @@ public class ResourceLoader implements ISystem
 			}
 			
 			buffer.flip();
-			LOGGER.log(Level.INFO, "Converted " + path + " to ByteBuffer.");			
+			LOGGER.log(Level.FINE, "Converted " + path + " to ByteBuffer.");			
 			return buffer;
 		}
 		catch(IOException e)
@@ -271,7 +273,7 @@ public class ResourceLoader implements ISystem
 			LOGGER.log(Level.SEVERE, "Error creating: " + path);
 			e.printStackTrace();
 		}
-		LOGGER.log(Level.INFO, "Failed to convert " + path + " to ByteBuffer.");			
+		LOGGER.log(Level.WARNING, "Failed to convert " + path + " to ByteBuffer.");			
 
 		return null;
 	}
@@ -374,5 +376,14 @@ public class ResourceLoader implements ISystem
 		}
 
 		return null;
+	}
+	
+	/**
+	 * Sets the debug level of this {@code System}.
+	 * @param level	the Level to set
+	 */
+	public void setDebugLevel(final Level level)
+	{
+		this.LOGGER.setLevel(level);
 	}
 }

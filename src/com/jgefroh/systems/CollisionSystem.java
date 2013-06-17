@@ -41,7 +41,7 @@ public class CollisionSystem implements ISystem
 	
 	/**Logger for debug purposes.*/
 	private final Logger LOGGER 
-		= LoggerFactory.getLogger(this.getClass(), debugLevel);
+		= LoggerFactory.getLogger(this.getClass(), Level.ALL);
 	
 	//Combine with below?
 	/**Contains the collision pairs that determines whether objects collide.*/
@@ -59,6 +59,8 @@ public class CollisionSystem implements ISystem
 	public CollisionSystem(final Core core)
 	{
 		this.core = core;
+		setDebugLevel(this.debugLevel);
+
 		init();
 	}
 	
@@ -69,6 +71,7 @@ public class CollisionSystem implements ISystem
 	@Override
 	public void init()
 	{
+
 		LOGGER.log(Level.FINE, "Setting system values to default.");
 		collisionTable = new boolean[9][9];	
 		isRunning = true;
@@ -250,7 +253,7 @@ public class CollisionSystem implements ISystem
 	 * Sets the debug level of this {@code System}.
 	 * @param level	the Level to set
 	 */
-	public void setDebug(final Level level)
+	public void setDebugLevel(final Level level)
 	{
 		this.LOGGER.setLevel(level);
 	}

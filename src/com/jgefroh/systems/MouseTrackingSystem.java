@@ -33,11 +33,11 @@ public class MouseTrackingSystem implements ISystem
 	private long last;
 	
 	/**The level of detail in debug messages.*/
-	private Level debugLevel = Level.FINE;
+	private Level debugLevel = Level.INFO;
 	
 	/**Logger for debug purposes.*/
 	private final Logger LOGGER 
-		= LoggerFactory.getLogger(this.getClass(), debugLevel);
+		= LoggerFactory.getLogger(this.getClass(), Level.ALL);
 	
 	/**The X world position of the mouse.*/
 	private double mouseX;
@@ -54,6 +54,8 @@ public class MouseTrackingSystem implements ISystem
 	public MouseTrackingSystem(final Core core)
 	{
 		this.core = core;
+		setDebugLevel(this.debugLevel);
+
 		init();
 	}
 	
@@ -193,4 +195,12 @@ public class MouseTrackingSystem implements ISystem
 		return bearing;
 	}
 	
+	/**
+	 * Sets the debug level of this {@code System}.
+	 * @param level	the Level to set
+	 */
+	public void setDebugLevel(final Level level)
+	{
+		this.LOGGER.setLevel(level);
+	}
 }

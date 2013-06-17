@@ -4,6 +4,10 @@ import com.jgefroh.core.IComponent;
 import com.jgefroh.core.IEntity;
 
 /**
+ * Contains data allowing an Entity to turn towards and track a target.
+ * 
+ * 
+ * Date: 17JUN13
  * @author Joseph Gefroh
  */
 public class TargetTrackComponent implements IComponent
@@ -20,12 +24,13 @@ public class TargetTrackComponent implements IComponent
 	/**The target to track.*/
 	private IEntity target;
 	
-	private double distanceToTarget;
+	/**The range to the target.*/
+	private double targetRange;
 	//////////
 	// INIT
 	//////////
 	/**
-	 * Create a new instance of this {@code Component}.
+	 * Creates a new instance of this {@code Component}.
 	 * @param owner	the IEntity owner of this component
 	 */
 	public TargetTrackComponent(final IEntity owner)
@@ -50,15 +55,24 @@ public class TargetTrackComponent implements IComponent
 		return this.owner;
 	}
 	
+	/**
+	 * Gets the Entity that is currently being targeted.
+	 * @return	the entity that is currently being targeted
+	 */
 	public IEntity getTarget()
 	{
 		return this.target;
 	}
 	
-	public double getDistanceToTarget()
+	/**
+	 * Gets the range to the targeted Entity.
+	 * @return	gets the range to the target
+	 */
+	public double getTargetRange()
 	{
-		return this.distanceToTarget;
+		return this.targetRange;
 	}
+	
 	
 	//////////
 	// SETTERS
@@ -69,13 +83,21 @@ public class TargetTrackComponent implements IComponent
 		this.owner = owner;
 	}
 	
+	/**
+	 * Sets the target of this {@code Entity}.
+	 * @param target	the targeted Entity
+	 */
 	public void setTarget(final IEntity target)
 	{
 		this.target = target;
 	}
 	
-	public void setDistanceToTarget(final double distanceToTarget)
+	/**
+	 * Sets the range to the target.
+	 * @param targetRange	the range to the target
+	 */
+	public void setTargetRange(final double targetRange)
 	{
-		this.distanceToTarget = distanceToTarget;
+		this.targetRange = targetRange;
 	}
 }

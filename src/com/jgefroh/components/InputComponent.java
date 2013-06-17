@@ -8,6 +8,9 @@ import com.jgefroh.core.IEntity;
 
 /**
  * Contains data necessary for an entity to receive input.
+ * 
+ * 
+ * Date: 17JUN13
  * @author Joseph Gefroh
  */
 public class InputComponent implements IComponent
@@ -26,7 +29,7 @@ public class InputComponent implements IComponent
 	// INIT
 	//////////
 	/**
-	 * Create a new InputComponent.
+	 * Creates a new instance of this {@code Component}.
 	 * @param owner	the IEntity owner of this component
 	 */
 	public InputComponent(final IEntity owner)
@@ -52,9 +55,9 @@ public class InputComponent implements IComponent
 	}
 	
 	/**
-	 * Check to see if the entity is interested in the input command.
+	 * Checks to see if the entity is interested in the input command.
 	 * @param command	the String command of the input
-	 * @return	true if it is interested, false otherwise.
+	 * @return	true if it is interested; false otherwise.
 	 */
 	public boolean checkInterested(final String command)
 	{
@@ -76,7 +79,7 @@ public class InputComponent implements IComponent
 	}
 	
 	/**
-	 * Make the entity respond to the command.
+	 * Marks this Entity as interested in the given input.
 	 * @param command the input command
 	 */
 	public void setInterested(final String command)
@@ -88,7 +91,7 @@ public class InputComponent implements IComponent
 	}
 	
 	/**
-	 * Make the entity ignore the command if it is not already.
+	 * Marks the entity to ignore the command if it is not already.
 	 * @param command the input command
 	 */
 	public void setUninterested(final String command)

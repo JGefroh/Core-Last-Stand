@@ -11,8 +11,7 @@ import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.infopacks.HealthInfoPack;
 
 /**
- * This system goes through all entities with health and marks ones with no
- * health as dead.
+ * This system goes through all entities with health and removes dead entities.
  * @author Joseph Gefroh
  */
 public class HealthMonitorSystem implements ISystem
@@ -37,7 +36,7 @@ public class HealthMonitorSystem implements ISystem
 	
 	/**Logger for debug purposes.*/
 	private final Logger LOGGER 
-		= LoggerFactory.getLogger(this.getClass(), debugLevel);
+		= LoggerFactory.getLogger(this.getClass(), Level.ALL);
 	
 	
 	//////////
@@ -50,6 +49,8 @@ public class HealthMonitorSystem implements ISystem
 	public HealthMonitorSystem(final Core core)
 	{
 		this.core = core;
+		setDebugLevel(this.debugLevel);
+
 		init();
 	}
 	
@@ -121,7 +122,7 @@ public class HealthMonitorSystem implements ISystem
 	// SYSTEM METHODS
 	//////////
 	/**
-	 * Check the health of all entities and destroy those below 0 health.
+	 * Checks the health of all entities and destroy those below 0 health.
 	 */
 	private void checkHealth()
 	{
@@ -135,6 +136,9 @@ public class HealthMonitorSystem implements ISystem
 				if(each.getCurHealth()<=0)
 				{
 					core.send("DESTROYING_ENTITY", each.getOwner().getID());
+					LOGGER.log(Level.FINE, 
+							each.getOwner().getName() + "(" + each.getOwner().getID()
+									+ ") destroyed.");
 					core.removeEntity(each.getOwner());
 				}
 			}
@@ -145,7 +149,7 @@ public class HealthMonitorSystem implements ISystem
 	 * Sets the debug level of this {@code System}.
 	 * @param level	the Level to set
 	 */
-	public void setDebug(final Level level)
+	public void setDebugLevel(final Level level)
 	{
 		this.LOGGER.setLevel(level);
 	}

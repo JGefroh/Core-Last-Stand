@@ -1,39 +1,27 @@
 package com.jgefroh.infopacks;
 
-import com.jgefroh.components.AIComponent;
+import com.jgefroh.components.OutOfBoundsComponent;
 import com.jgefroh.components.TransformComponent;
 import com.jgefroh.core.IEntity;
 import com.jgefroh.core.IInfoPack;
 
 
-/**
- * Intended to be used by the AISystem.
- * 
- * Controls access to the following components:
- * AIComponent
- * TransformComponent
- * 
- * @author Joseph Gefroh
- */
-public class AIInfoPack implements IInfoPack
+public class OutOfBoundsInfoPack implements IInfoPack
 {
 	//////////
 	// DATA
 	//////////
-	
 	/**The entity associated with this InfoPack.*/
 	private IEntity owner;
 	
 	/**A component this InfoPack depends on.*/
-	private AIComponent ac;
+	private TransformComponent tc;
 	
 	/**A component this InfoPack depends on.*/
-	private TransformComponent tc;
+	private OutOfBoundsComponent oc;
 	
 	/**Flag that indicates the InfoPack is invalid and unreliable.*/
 	private boolean isDirty;
-
-	
 	//////////
 	// INIT
 	//////////
@@ -41,10 +29,11 @@ public class AIInfoPack implements IInfoPack
 	 * Create a new instance of this InfoPack.
 	 * @param owner	the entity associated with this InfoPack
 	 */
-	public AIInfoPack(final IEntity owner)
+	public OutOfBoundsInfoPack(final IEntity owner)
 	{
 		this.owner = owner;
 	}
+	
 	
 	//////////
 	// GETTERS
@@ -55,8 +44,8 @@ public class AIInfoPack implements IInfoPack
 		if(owner.hasChanged())
 		{
 			tc = owner.getComponent(TransformComponent.class);
-			ac = owner.getComponent(AIComponent.class);			
-			if(tc==null||ac==null)
+			oc = owner.getComponent(OutOfBoundsComponent.class);			
+			if(tc==null||oc==null)
 			{
 				setDirty(true);
 				return true;
@@ -71,26 +60,50 @@ public class AIInfoPack implements IInfoPack
 	{
 		return this.owner;
 	}
-
-	public double getAttackChance()
+	
+	/**
+	 * @see TransformComponent#getXPos() 
+	 */
+	public double getXPos()
 	{
-		return ac.getAttackChance();
-	}
-
-
-	public String getAIType()
+		return tc.getXPos();
+	}	
+	
+	/**
+	 * @see TransformComponent#getYPos() 
+	 */
+	public double getYPos()
 	{
-		return ac.getAIType();
+		return tc.getYPos();
 	}
 	
-	public boolean isInRangeOfTarget()
+	/**
+	 * @see TransformComponent#getZPos() 
+	 */
+	public double getZPos()
 	{
-		return ac.isInRangeOfTarget();
+		return tc.getZPos();
 	}
 	
-	public boolean isActive()
+	/**
+	 * @see TransformComponent#getWidth() 
+	 */
+	public double getWidth()
 	{
-		return ac.isActive();
+		return tc.getWidth();
+	}
+	
+	/**
+	 * @see TransformComponent#getHeight() 
+	 */
+	public double getHeight()
+	{
+		return tc.getHeight();
+	}
+
+	public boolean isChecking()
+	{
+		return oc.isChecking();
 	}
 	//////////
 	// SETTERS
@@ -101,23 +114,9 @@ public class AIInfoPack implements IInfoPack
 		this.isDirty = isDirty;
 	}
 	
-	public void setAttackChance(final double attackChance)
+	public void setChecking(final boolean isChecking)
 	{
-		ac.setAttackChance(attackChance);
+		oc.setChecking(isChecking);
 	}
-	
-	public void setAIType(final String aiType)
-	{
-		ac.setAIType(aiType);
-	}
-	
-	public void setInRangeOfTarget(final boolean isInRangeOfTarget)
-	{
-		ac.setInRangeOfTarget(isInRangeOfTarget);
-	}
-	
-	public void setActive(final boolean isActive)
-	{
-		ac.setActive(isActive);
-	}
+
 }

@@ -56,7 +56,7 @@ public class Sprite
 	// GETTERS
 	//////////
 	/**
-	 * Get the unique ID of the sprite.
+	 * Gets the unique ID of the sprite.
 	 * @return	the ID of the sprite
 	 */
 	public int getSpriteID()
@@ -65,7 +65,7 @@ public class Sprite
 	}
 	
 	/**
-	 * Get the human readable name of the sprite.
+	 * Gets the human readable name of the sprite.
 	 * @return the human readble name of the sprite.
 	 */
 	public String getName()
@@ -74,7 +74,7 @@ public class Sprite
 	}
 	
 	/**
-	 * Get the pixel X-coordinate for the top left corner of the sprite.
+	 * Gets the pixel X-coordinate for the top left corner of the sprite.
 	 * @return	the pixel x coordinate
 	 */
 	public int getXMin()
@@ -83,7 +83,7 @@ public class Sprite
 	}
 	
 	/**
-	 * Get the pixel X-coordinate for the bottom right corner of the sprite.
+	 * Gets the pixel X-coordinate for the bottom right corner of the sprite.
 	 * @return	the pixel x coordinate
 	 */
 	public int getXMax()
@@ -92,7 +92,7 @@ public class Sprite
 	}
 	
 	/**
-	 * Get the pixel Y-coordinate for the top left corner of the sprite.
+	 * Gets the pixel Y-coordinate for the top left corner of the sprite.
 	 * @return	the pixel Y-coordinate
 	 */
 	public int getYMin()
@@ -101,7 +101,7 @@ public class Sprite
 	}
 	
 	/**
-	 * Get the pixel Y-coordinate for the bottom right corner of the sprite.
+	 * Gets the pixel Y-coordinate for the bottom right corner of the sprite.
 	 * @return	the pixel Y-coordinate
 	 */
 	public int getYMax()
@@ -110,7 +110,7 @@ public class Sprite
 	}
 	
 	/**
-	 * Get the texture U-coordinate for the top left corner of the sprite.
+	 * Gets the texture U-coordinate for the top left corner of the sprite.
 	 * @return	the texture U-coordinate
 	 */
 	public float getUMin()
@@ -119,7 +119,7 @@ public class Sprite
 	}
 	
 	/**
-	 * Get the texture U-coordinate for the bottom right corner of the sprite.
+	 * Gets the texture U-coordinate for the bottom right corner of the sprite.
 	 * @return	the texture U-coordinate
 	 */
 	public float getUMax()
@@ -128,7 +128,7 @@ public class Sprite
 	}
 	
 	/**
-	 * Get the texture V-coordinate for the top left corner of the sprite.
+	 * Gets the texture V-coordinate for the top left corner of the sprite.
 	 * @return	the texture V-coordinate
 	 */
 	public float getVMin()
@@ -137,7 +137,7 @@ public class Sprite
 	}
 	
 	/**
-	 * Get the texture V-coordinate for the bottom right corner of the sprite.
+	 * Gets the texture V-coordinate for the bottom right corner of the sprite.
 	 * @return	the texture V-coordinate
 	 */
 	public float getVMax()
@@ -150,7 +150,7 @@ public class Sprite
 	// SETTERS
 	//////////
 	/**
-	 * Set the unique ID of the sprite. It should be positive.
+	 * Sets the unique ID of the sprite. It should be positive.
 	 * @param spriteID	the ID of the sprite
 	 */
 	public void setSpriteID(final int spriteID)
@@ -159,7 +159,7 @@ public class Sprite
 	}
 	
 	/**
-	 * Set the human readable name of the sprite.
+	 * Sets the human readable name of the sprite.
 	 * @param name	the human readable name of the sprite
 	 */
 	public void setName(final String name)
@@ -167,7 +167,7 @@ public class Sprite
 		this.name = name;
 	}
 	/**
-	 * Set the pixel X-coordinate for the top left corner of the sprite.
+	 * Sets the pixel X-coordinate for the top left corner of the sprite.
 	 * @param xMin	the pixel X-coordinate
 	 */
 	public void setXMin(final int xMin)
@@ -176,7 +176,7 @@ public class Sprite
 	}
 	
 	/**
-	 * Set the pixel X-coordinate for the bottom right corner of the sprite.
+	 * Sets the pixel X-coordinate for the bottom right corner of the sprite.
 	 * @param xMax	the pixel X-coordinate
 	 */
 	public void setXMax(final int xMax)
@@ -185,7 +185,7 @@ public class Sprite
 	}
 	
 	/**
-	 * Set the pixel Y-coordinate for the top left corner of the sprite.
+	 * Sets the pixel Y-coordinate for the top left corner of the sprite.
 	 * @param yMin	the pixel Y-coordinate
 	 */
 	public void setYMin(final int yMin)
@@ -194,7 +194,7 @@ public class Sprite
 	}
 	
 	/**
-	 * Set the pixel Y-coordinate for the bottom right corner of the sprite.
+	 * Sets the pixel Y-coordinate for the bottom right corner of the sprite.
 	 * @param yMax	the pixel Y-coordinate
 	 */
 	public void setYMax(final int yMax)
@@ -203,7 +203,7 @@ public class Sprite
 	}
 	
 	/**
-	 * Set the texture U-coordinate for the top left corner of the sprite.
+	 * Sets the texture U-coordinate for the top left corner of the sprite.
 	 * @param uMin	the pixel U-coordinate
 	 */
 	public void setUMin(final float uMin)
@@ -212,7 +212,7 @@ public class Sprite
 	}
 	
 	/**
-	 * Set the texture U-coordinate for the bottom right corner of the sprite.
+	 * Sets the texture U-coordinate for the bottom right corner of the sprite.
 	 * @param uMax	the pixel U-coordinate
 	 */
 	public void setUMax(final float uMax)
@@ -221,7 +221,7 @@ public class Sprite
 	}
 	
 	/**
-	 * Set the texture V-coordinate for the top left corner of the sprite.
+	 * Sets the texture V-coordinate for the top left corner of the sprite.
 	 * @param vMin	the pixel V-coordinate
 	 */
 	public void setVMin(final float vMin)
@@ -230,7 +230,7 @@ public class Sprite
 	}
 	
 	/**
-	 * Set the texture V-coordinate for the bottom right corner of the sprite.
+	 * Sets the texture V-coordinate for the bottom right corner of the sprite.
 	 * @param vMax	the pixel V-coordinate
 	 */
 	public void setVMax(final float vMax)

@@ -37,7 +37,7 @@ public class AnimationInfoPack implements IInfoPack
 	// INIT
 	//////////
 	/**
-	 * Create a new instance of this InfoPack.
+	 * Creates a new instance of this InfoPack.
 	 * @param owner	the entity associated with this InfoPack
 	 */
 	public AnimationInfoPack(final IEntity owner)

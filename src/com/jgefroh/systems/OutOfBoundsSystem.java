@@ -8,20 +8,15 @@ import java.util.logging.Logger;
 import com.jgefroh.core.Core;
 import com.jgefroh.core.ISystem;
 import com.jgefroh.core.LoggerFactory;
-import com.jgefroh.infopacks.AnimationInfoPack;
+import com.jgefroh.infopacks.AIInfoPack;
+import com.jgefroh.infopacks.OutOfBoundsInfoPack;
 
 
 /**
- * This system handles changing the sprite image at the required intervals.
- * 
- * 
- * 
- * DATE: 05JUN13
  * @author Joseph Gefroh
- * @version 0.3.0
  */
-public class AnimationSystem implements ISystem
-{	
+public class OutOfBoundsSystem implements ISystem
+{
 	//////////
 	// DATA
 	//////////
@@ -29,6 +24,7 @@ public class AnimationSystem implements ISystem
 	private Core core;
 	
 	/**Flag that shows whether the system is running or not.*/
+	@SuppressWarnings("unused")
 	private boolean isRunning;
 	
 	/**The time to wait between executions of the system.*/
@@ -44,49 +40,43 @@ public class AnimationSystem implements ISystem
 	private final Logger LOGGER 
 		= LoggerFactory.getLogger(this.getClass(), Level.ALL);
 	
-
 	
 	//////////
 	// INIT
 	//////////
 	/**
-	 * Create a new instance of this System.
-	 * @param core	a reference to the Core controlling this system
+	 * Create a new instance of this {@code System}.
+	 * @param core	 a reference to the Core controlling this system
 	 */
-	public AnimationSystem(final Core core)
+	public OutOfBoundsSystem(final Core core)
 	{
 		this.core = core;
 		setDebugLevel(this.debugLevel);
 
 		init();
 	}
-	
-	
-	//////////
+
+	/////////
 	// ISYSTEM INTERFACE
-	//////////
+	/////////
 	@Override
 	public void init()
 	{
 		LOGGER.log(Level.FINE, "Setting system values to default.");
-		isRunning = true;
-		core.setInterested(this, "ADVANCE_FRAME");
+		isRunning = true;		
 	}
 	
 	@Override
 	public void start()
 	{
 		LOGGER.log(Level.INFO, "System started.");
-		isRunning = true;			
+		isRunning = true;
 	}
 
 	@Override
 	public void work(final long now)
-	{		
-		if(isRunning)
-		{			
-			animate(now);
-		}
+	{
+		checkOutOfBounds();
 	}
 
 	@Override
@@ -125,63 +115,60 @@ public class AnimationSystem implements ISystem
 	public void recv(final String id, final String... message)
 	{
 		LOGGER.log(Level.FINEST, "Received message: " + id);
-
-		if(id.equals("ADVANCE_FRAME"))
-		{
-			nextFrame(core.getInfoPackFrom(message[0], AnimationInfoPack.class));
-		}
 	}
-	
-	
-	//////////
+	/////////
 	// SYSTEM METHODS
-	//////////
-	/**
-	 * Updates all animations and advances their frames.
-	 * @param now	the current time
-	 */
-	private void animate(final long now)
+	/////////
+	
+	private void checkOutOfBounds()
 	{
-		Iterator<AnimationInfoPack> infoPacks = 
-				core.getInfoPacksOfType(AnimationInfoPack.class);
-		while(infoPacks.hasNext())
+		Iterator<OutOfBoundsInfoPack> packs
+			= core.getInfoPacksOfType(OutOfBoundsInfoPack.class);
+		
+		while(packs.hasNext())
 		{
-			AnimationInfoPack pack = infoPacks.next();
-			if(pack.isDirty()==false)
+			OutOfBoundsInfoPack pack = packs.next();
+			
+			if(pack.isChecking()&&
+					(pack.getXPos()+pack.getWidth()/2<0
+					|| pack.getXPos()-pack.getWidth()/2>1366
+					|| pack.getYPos()+pack.getHeight()/2<0
+					|| pack.getYPos()-pack.getHeight ()/2>768))
 			{
-				if(now-pack.getLastUpdateTime()>=pack.getInterval())
-				{	
-					nextFrame(pack);
-					pack.setLastUpdateTime(now);
+				core.send("DESTROYING_ENTITY", pack.getOwner().getID());
+				LOGGER.log(Level.FINEST, 
+					"Entity " + pack.getOwner().getID() + " out of bounds.");
+				core.removeEntity(pack.getOwner());
+			}
+			else if(pack.isChecking()==false)
+			{
+				boolean isChecking = checkWithinBounds(pack);
+				if(isChecking==true)
+				{					
+					pack.setChecking(isChecking);
+					core.send("IS_WITHIN_BOUNDS", 
+							pack.getOwner().getID(), 
+							true + "");
+					LOGGER.log(Level.FINE, 
+							pack.getOwner().getName() + "(" 
+									+ pack.getOwner().getID()
+									+ ") crossed threshold.");
 				}
 			}
 		}
 	}
 	
-	/**
-	 * Advances the frame of the animation.
-	 * @param pack	the AnimationInfoPack of the entity
-	 */
-	private void nextFrame(final AnimationInfoPack pack)
+	private boolean checkWithinBounds(final OutOfBoundsInfoPack pack)
 	{
-		if(pack!=null)
+		if(pack.getXPos()-pack.getWidth()/2>=0
+		&& pack.getXPos()+pack.getWidth()/2<=1366
+		&& pack.getYPos()-pack.getHeight()/2>=0
+		&& pack.getYPos()+pack.getHeight()/2<=768)
 		{
-			int currentFrame = pack.getCurrentFrame();
-			int numberOfFrames = pack.getNumberOfFrames();
-			if(currentFrame<=numberOfFrames-1)
-			{
-				//If the end of the animation has not yet been reached...
-				pack.setAnimationSprite(pack.getAnimationSprite());
-				pack.setCurrentFrame(currentFrame+1);
-			}
-			else
-			{
-				//Restart the animation from the first frame.
-				pack.setCurrentFrame(0);
-			}
+			return true;
 		}
+		return false;
 	}
-	
 	/**
 	 * Sets the debug level of this {@code System}.
 	 * @param level	the Level to set

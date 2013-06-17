@@ -35,11 +35,11 @@ public class ForceSystem implements ISystem
 	private long last;
 	
 	/**The level of detail in debug messages.*/
-	private Level debugLevel = Level.OFF;
+	private Level debugLevel = Level.INFO;
 	
 	/**Logger for debug purposes.*/
 	private final Logger LOGGER 
-		= LoggerFactory.getLogger(this.getClass(), debugLevel);
+		= LoggerFactory.getLogger(this.getClass(), Level.ALL);
 
 	
 	//////////
@@ -52,6 +52,7 @@ public class ForceSystem implements ISystem
 	public ForceSystem(final Core core)
 	{
 		this.core = core;
+		setDebugLevel(this.debugLevel);
 		init();
 	}
 	
@@ -62,6 +63,8 @@ public class ForceSystem implements ISystem
 	@Override
 	public void init()
 	{
+		setDebugLevel(this.debugLevel);
+
 		isRunning = true;
 		core.setInterested(this, "GENERATE_FORCE");
 	}
@@ -129,6 +132,10 @@ public class ForceSystem implements ISystem
 	//////////
 	// SYSTEM METHODS
 	//////////
+	/**
+	 * Integrates all the vectors acting on a object into a single vector.
+	 * @param now	the current time
+	 */
 	public void integrate(final long now)
 	{
 		Iterator<ForceInfoPack> packs
@@ -147,6 +154,12 @@ public class ForceSystem implements ISystem
 		}
 	}
 	
+	/**
+	 * Generates a vector force for a specific entity.
+	 * @param message	[0] contains the entityID
+	 * 					[1] contains the vector's magnitude (double)
+	 * 					[2] contains the vector's angle		(double)
+	 */
 	private void generate(final String[] message)
 	{
 		if(message.length>=3)
@@ -174,12 +187,25 @@ public class ForceSystem implements ISystem
 			{
 				Vector vector = new Vector();
 				vector.setAngle(angle);
-				vector.setMaxMagnitude(5);
+				vector.setMaxMagnitude(1000);
 				vector.setMagnitude(vecMag);
 				vector.setID(0);
 				vector.setContinuous(false);
 				fip.getGeneratedForce().add(vector);
+				LOGGER.log(Level.FINE, 
+						mip.getOwner().getName() + "(" + entityID
+								+ ") generated force with " + 
+								vecMag + " magnitude at " + angle + " degrees.");
 			}
 		}
+	}
+	
+	/**
+	 * Sets the debug level of this {@code System}.
+	 * @param level	the Level to set
+	 */
+	public void setDebugLevel(final Level level)
+	{
+		this.LOGGER.setLevel(level);
 	}
 }

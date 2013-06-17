@@ -34,11 +34,11 @@ public class DamageSystem implements ISystem
 	private long last;
 	
 	/**The level of detail in debug messages.*/
-	private Level debugLevel = Level.OFF;
+	private Level debugLevel = Level.INFO;
 	
 	/**Logger for debug purposes.*/
 	private final Logger LOGGER 
-		= LoggerFactory.getLogger(this.getClass(), debugLevel);
+		= LoggerFactory.getLogger(this.getClass(), Level.ALL);
 	
 	
 	//////////
@@ -51,6 +51,8 @@ public class DamageSystem implements ISystem
 	public DamageSystem(final Core core)
 	{
 		this.core = core;
+		setDebugLevel(this.debugLevel);
+
 		init();
 	}
 
@@ -60,8 +62,9 @@ public class DamageSystem implements ISystem
 	@Override
 	public void init()
 	{
+		setDebugLevel(this.debugLevel);
+
 		LOGGER.log(Level.FINE, "Setting system values to default.");
-		isRunning = true;		
 		core.setInterested(this, "BULLET_HIT");
 	}
 	
@@ -121,8 +124,12 @@ public class DamageSystem implements ISystem
 	}
 	/////////
 	// SYSTEM METHODS
-	/////////
-
+	////////
+	/**
+	 * Deals damage to an entity based on source's damage value.
+	 * @param message	[0] contains the entityID of the bullet
+	 * 					[1] contains the entityID of the victim
+	 */
 	private void calculateDamage(final String[] message)
 	{
 		if(message.length>=2)
@@ -140,6 +147,11 @@ public class DamageSystem implements ISystem
 			{				
 				victimHealth.setCurHealth(victimHealth.getCurHealth()
 						-sourceDamage.getDamage());
+				LOGGER.log(Level.FINE, 
+						victimHealth.getOwner().getName() + "(" + victimID
+								+ ") took " + sourceDamage.getDamage() + " dmg "
+								+ "(" + victimHealth.getCurHealth() 
+								+ " hp left).");
 			}
 			
 			core.removeEntity(bulletID);
@@ -150,7 +162,7 @@ public class DamageSystem implements ISystem
 	 * Sets the debug level of this {@code System}.
 	 * @param level	the Level to set
 	 */
-	public void setDebug(final Level level)
+	public void setDebugLevel(final Level level)
 	{
 		this.LOGGER.setLevel(level);
 	}
