@@ -7,6 +7,8 @@ Last Stand is a WIP 2D shooter.
 * Space - Fire
 * W - Move Up
 * S - Move Down
+* A - Move Left
+* D - Move Right
 
 ###Dependencies
 1. [LWJGL 2.8.5](http://www.lwjgl.org)
@@ -18,7 +20,7 @@ Have fun!
 ==========
 Current State:
 
-![Random Spawns](/ss/19JUN13.png)
+![Random Spawns](/ss/19JUN13_1.png)
 
 ==========
 [Core](https://github.com/JGefroh/core)
