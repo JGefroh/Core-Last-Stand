@@ -1,5 +1,5 @@
 {
-	"width":32,
+	"width":48,
 	"height":16,
 	"sprites":
 		[
@@ -16,6 +16,20 @@
 				"xmax":32,
 				"ymin":0,
 				"ymax":16
+			},
+			{
+				"id":2,
+				"xmin":32,
+				"xmax":40,
+				"ymin":0,
+				"ymax":10
+			},
+			{
+				"id":3,
+				"xmin":40,
+				"xmax":48,
+				"ymin":0,
+				"ymax":10
 			}
 		]
 }

@@ -10,6 +10,7 @@ import com.jgefroh.core.ISystem;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.infopacks.AIInfoPack;
 import com.jgefroh.infopacks.OutOfBoundsInfoPack;
+import com.jgefroh.tests.Benchmark;
 
 
 /**
@@ -34,12 +35,13 @@ public class OutOfBoundsSystem implements ISystem
 	private long last;
 	
 	/**The level of detail in debug messages.*/
-	private Level debugLevel = Level.INFO;
+	private Level debugLevel = Level.FINER;
 	
 	/**Logger for debug purposes.*/
 	private final Logger LOGGER 
 		= LoggerFactory.getLogger(this.getClass(), Level.ALL);
 	
+
 	
 	//////////
 	// INIT
@@ -149,7 +151,7 @@ public class OutOfBoundsSystem implements ISystem
 					core.send("IS_WITHIN_BOUNDS", 
 							pack.getOwner().getID(), 
 							true + "");
-					LOGGER.log(Level.FINE, 
+					LOGGER.log(Level.FINEST, 
 							pack.getOwner().getName() + "(" 
 									+ pack.getOwner().getID()
 									+ ") crossed threshold.");

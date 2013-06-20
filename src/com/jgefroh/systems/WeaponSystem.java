@@ -10,6 +10,7 @@ import com.jgefroh.core.IEntity;
 import com.jgefroh.core.ISystem;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.infopacks.WeaponInfoPack;
+import com.jgefroh.tests.Benchmark;
 
 
 /**
@@ -34,13 +35,15 @@ public class WeaponSystem implements ISystem
 	private long last;
 	
 	/**The level of detail in debug messages.*/
-	private Level debugLevel = Level.INFO;
+	private Level debugLevel = Level.FINER;
 	
 	/**Logger for debug purposes.*/
 	private final Logger LOGGER 
 		= LoggerFactory.getLogger(this.getClass(), Level.ALL);
-
 	
+	public static enum FireMode {SEMI, AUTO, BURST}
+	
+
 	//////////
 	// INIT
 	//////////
@@ -147,27 +150,34 @@ public class WeaponSystem implements ISystem
 			WeaponInfoPack each = packs.next();
 			if(each.isDirty()==false)
 			{
-				if(now-each.getLastUpdated()>=each.getInterval())
+				if(each.isFireRequested()||each.isInBurst())
 				{
-					//If the weapon has cycled...
-					if(each.isFireRequested())
+					if(now-each.getLastFired()>=each.getConsecutiveShotDelay())
 					{
-						//If the trigger was pulled...
-						each.setLastUpdated(now);
-						if(each.getAmmo()>0)
-						{							
-							//If there is enough ammo...
-							fire(now, each);	//Fire
-							decAmmo(each);		//Decrement the ammo
-							incSpread(each);	//Add recoil
+						fire(now, each);
+						each.setLastFired(now);
+							
+						if(each.getFireMode()==FireMode.SEMI.ordinal())
+						{//Fire mode = semi automatic
+							each.setFireRequested(false);
+						}
+						else if(each.getFireMode()==FireMode.BURST.ordinal())
+						{//Fire mode = burst fire
+							if(each.getShotsThisBurst()<each.getBurstSize()-1)
+							{//If still in a burst...
+								each.setInBurst(true);
+								each.setShotsThisBurst(each.getShotsThisBurst()+1);
+							}
+							else
+							{//If burst is over.
+								each.setInBurst(false);
+								each.setShotsThisBurst(0);
+								each.setLastFired(now+each.getBurstDelay());
+							}
 						}
 					}
-					else
-					{
-						decSpread(each);	//Decrement the recoil (change)
-						each.setShotsFiredThisBurst(0);
-					}
 				}
+
 			}
 		}
 	}
@@ -179,95 +189,56 @@ public class WeaponSystem implements ISystem
 	 */
 	private void fire(final long now, final WeaponInfoPack pack)
 	{
-		if(pack.getShotsFiredThisBurst()<pack.getBurstSize())
+		EntityCreationSystem ecs = core.getSystem(EntityCreationSystem.class);
+		for(int shotNum = 0; shotNum < pack.getNumShots(); shotNum++)
 		{
-			//If firing as part of a burst or single request
-			EntityCreationSystem ecs = core.getSystem(EntityCreationSystem.class);
-			for(int shot = 0;shot<pack.getNumShots();shot++)
-			{			
-				ecs.createBullet(pack.getOwner(), pack.getDamage(), pack.getMaxRange(), pack.getCurSpread());	
-			}
-			pack.setShotsFiredThisBurst(pack.getShotsFiredThisBurst()+1);
-		}
-		else if(pack.getBurstSize()==0)
-		{
-			EntityCreationSystem ecs = core.getSystem(EntityCreationSystem.class);
-			for(int shot = 0;shot<pack.getNumShots();shot++)
-			{			
-				ecs.createBullet(pack.getOwner(), pack.getDamage(), pack.getMaxRange(), pack.getCurSpread());	
-			}
-			pack.setFireRequested(false);
-		}
-		else
-		{
-			//If burst limit reached
-			pack.setShotsFiredThisBurst(0);
-			pack.setFireRequested(false);
-			pack.setLastUpdated(now+pack.getDelayAfterBurst());
+			ecs.createBullet(pack.getOwner(),
+					pack.getShotType(),
+					pack.getDamage(),
+					pack.getMaxRange());
 		}
 	}
 	
 	/**
-	 * Requests a shot to be fired.
-	 * @param message [0] contains the entityID of the entity that is firing
+	 * Requests a shot to be fired or not.
+	 * @param message 	[0] contains the entityID of the entity that is firing
+	 * 				 	[1] contains whether a shot is requested or not
 	 */
 	private void requestFire(final String[] message)
 	{
-		if(message.length>0)
+		if(message.length>1)
 		{
 			WeaponInfoPack wip = 
 					core.getInfoPackFrom(message[0], WeaponInfoPack.class);
 
 			if(wip!=null)
 			{	
-				wip.setFireRequested(true);
+				wip.setFireRequested(Boolean.parseBoolean(message[1]));
 			}
 		}
 	}
 	
-	/**
-	 * Decreases the total amount of ammunition.
-	 * @param pack	the InfoPack of the entity
-	 */
-	private void decAmmo(final WeaponInfoPack pack)
+	private void requestMode(final String[] message)
 	{
-		pack.setAmmo(pack.getAmmo()-1);
-		pack.setCurSpread(pack.getCurSpread()+pack.getIncSpread());
-	}
+		if(message.length>1)
+		{
+			WeaponInfoPack wip =
+					core.getInfoPackFrom(message[0], WeaponInfoPack.class);
 
-	
-	/**
-	 * Increases the current level of recoil.
-	 * @param pack	the InfoPack of the entity
-	 */
-	private void incSpread(final WeaponInfoPack pack)
-	{
-		if(pack.getCurSpread()+pack.getIncSpread()<pack.getMaxSpread())
-		{
-			pack.setCurSpread(pack.getCurSpread()+pack.getIncSpread());
-		}
-		else
-		{
-			pack.setCurSpread(pack.getMaxSpread());
+			if(wip!=null)
+			{
+				try
+				{				
+					int fireMode = Integer.parseInt(message[1]);
+					wip.setFireMode(fireMode);
+				}
+				catch(NumberFormatException e)
+				{
+					LOGGER.log(Level.WARNING, "Error switching fire mode.");
+				}
+			}
 		}
 	}
-	
-	/**
-	 * Decreases the current level of recoil
-	 * @param pack	the InfoPack of the entity
-	 */
-	private void decSpread(final WeaponInfoPack pack)
-	{
-		if(pack.getCurSpread()-pack.getIncSpread()>0)
-		{
-			pack.setCurSpread(pack.getCurSpread()-pack.getIncSpread());
-		}
-		else
-		{
-			pack.setCurSpread(0);
-		}
-	}
-	
 	/**
 	 * Sets the debug level of this {@code System}.
 	 * @param level	the Level to set

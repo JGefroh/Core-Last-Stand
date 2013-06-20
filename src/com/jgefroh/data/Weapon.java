@@ -13,9 +13,9 @@ public class Weapon
 	private String name;
 	
 	/**The time, in ms, to wait in between between shots*/
-	private long firingRate;
+	private long consecutiveShotDelay;
 
-	/**The amount of ammo the weapon has left.*/
+	/**The amount of ammo this weapon has left.*/
 	private int ammo;
 	
 	/**The amount of damage this weapon does.*/
@@ -24,179 +24,217 @@ public class Weapon
 	/**The maximum range of this weapon.*/
 	private int maxRange;
 	
-	/**The numeric slot of this weapon*/
-	private int slot; //TODO: Remove
+	/**The firing mode of the weapon.*/
+	private int fireMode;
 	
-	/**The maximum spread, in degrees, of this weapon.*/
-	private double maxSpread;
-	
-	/**The current spread, in degrees, of this weapon.*/
-	private double curSpread;
-	
-	/**The amount the spread is increased by per shot.*/
-	private double incSpread;
-	
-	/**The number of shots this weapon fires per fire attempt.*/
-	private int numShots;
-	
-	/**The speed the projectiles from this weapon travel.*/
-	private double shotSpeed; 
-	
-	/**The number of shots fired per burst.*/
+	/**The number of shots to fire per burst.*/
 	private int burstSize;
 	
 	/**The number of shots fired this burst.*/
-	private int shotsFiredThisBurst;
+	private int shotsThisBurst;
 	
-	/**The time to wait after a burst.*/
-	private long delayAfterBurst;
+	/**The amount of time this weapon needs to wait after firing a burst.*/
+	private long burstDelay;
+	
+	/**The type of shot this weapon fires.*/
+	private int shotType;
+	
+	/**The number of shots fired by a single fire request.*/
+	private int numShots;
 	//////////
 	// INIT
 	//////////
 	public Weapon()
-	{
-		
+	{	
+		init();
 	}
 
+	private void init()
+	{
+		this.consecutiveShotDelay = 1000;
+		this.damage = 10;
+		this.maxRange = 1500;
+		this.fireMode = 0;
+		this.burstSize = 0;
+		this.shotsThisBurst = 0;
+		this.burstDelay = 500;
+		this.shotType = 0;
+		this.numShots = 1;
+	}
 	
 	//////////
 	// GETTERS
 	//////////
+	/**
+	 * Get the human readable name of this {@code Weapon}.
+	 * @return	the human readable name, if it has one
+	 */
 	public String getName()
 	{
 		return this.name;
 	}
 	
-	public long getFiringRate()
+	/**
+	 * Gets the time to wait in between shots, in ms.
+	 * @return	the time to wait between shots, in ms
+	 */
+	public long getConsecutiveShotDelay()
 	{
-		return this.firingRate;
+		return this.consecutiveShotDelay;
 	}
 	
-	public int getAmmo()
+	/**
+	 * Gets the fire mode of the weapon.
+	 * @return	the fire mode
+	 */
+	public int getFireMode()
 	{
-		return this.ammo;
+		return this.fireMode;
 	}
 	
+	/**
+	 * Gets the damage done by this weapon.
+	 * @return	the amount of damage done by this weapon
+	 */
 	public int getDamage()
 	{
 		return this.damage;
 	}
 	
+	/**
+	 * Gets the maximum range projectiles from this weapon can travel.
+	 * @return	the maximum range
+	 */
 	public int getMaxRange()
 	{
 		return this.maxRange;
-	}
+	}	
 	
-	public int getSlot()
-	{
-		return this.slot;
-	}
-	
-	public double getMaxSpread()
-	{
-		return this.maxSpread;
-	}
-	
-	public double getCurSpread()
-	{
-		return this.curSpread;
-	}
-	
-	public double getIncSpread()
-	{
-		return this.incSpread;
-	}
-	
-	public int getNumShots()
-	{
-		return this.numShots;
-	}
-	
-	public double getShotSpeed()
-	{
-		return this.shotSpeed;
-	}
-	
+	/**
+	 * Gets the number of shots fired in a single burst by this {@code Weapon}.
+	 * @return	the burst size
+	 */
 	public int getBurstSize()
 	{
 		return this.burstSize;
 	}
-	
-	public int getShotsFiredThisBurst()
+
+	/**
+	 * Gets the number of shots fired so far in the burst.
+	 * @return	the number of shots fired within the last burst
+	 */
+	public int getShotsThisBurst()
 	{
-		return this.shotsFiredThisBurst;
+		return this.shotsThisBurst;
 	}
 	
-	public long getDelayAfterBurst()
+	/**
+	 * Gets the amount of time the weapon must wait after a burst to fire.
+	 * @return	the amount of time, in ms
+	 */
+	public long getBurstDelay()
 	{
-		return this.delayAfterBurst;
+		return this.burstDelay;
+	}
+	
+	/**
+	 * Gets the type of shot this weapon fires.
+	 * @return	the type of shot
+	 */
+	public int getShotType()
+	{
+		return this.shotType;
+	}
+	
+	/**
+	 * Gets the number of shots fired by a single fire request.
+	 * @return	the number of shots
+	 */
+	public int getNumShots()
+	{
+		return this.numShots;
 	}
 	//////////
 	// SETTERS
 	//////////
-	public void setName(final String name)
+	/**
+	 * Sets the human readable name of this {@code Weapon}.
+	 * @param name	the human readable name of this {@code Weapon}.
+	 */
+	public void setName(final String name) 
 	{
 		this.name = name;
 	}
-	
-	public void setFiringRate(final long firingRate)
+	 
+	/**
+	 * Sets the time to wait in between shots, in ms.
+	 * @param consecutiveShotDelay	the time to wait between shots, in ms
+	 */
+	public void setConsecutiveShotDelay(final long consecutiveShotDelay)
 	{
-		this.firingRate = firingRate;
+		this.consecutiveShotDelay = consecutiveShotDelay;
+	}	
+	
+	/**
+	 * Sets the fire mode of the weapon.
+	 * @param fireMode	the fire mode of the weapon
+	 */
+	public void setFireMode(final int fireMode)
+	{
+		this.fireMode = fireMode;
 	}
 	
-	public void setAmmo(final int ammo)
-	{
-		this.ammo = ammo;
-	}
-	
+	/**
+	 * Sets the amount of damage done by this weapon.
+	 * @param damage	the amount of damage this weapon does
+	 */
 	public void setDamage(final int damage)
 	{
 		this.damage = damage;
 	}
 	
+	/**
+	 * Sets the maximum range of this {@code Weapon}.
+	 * @param maxRange	the maximum range of this weapon
+	 */
 	public void setMaxRange(final int maxRange)
 	{
 		this.maxRange = maxRange;
 	}
 	
-	public void setSlot(final int slot)
-	{
-		this.slot = slot;
-	}
-	
-	public void setMaxSpread(final double maxSpread)
-	{
-		this.maxSpread = maxSpread;
-	}
-	public void setCurSpread(final double curSpread)
-	{
-		this.curSpread = curSpread;
-	}
-	public void setIncSpread(final double incSpread)
-	{
-		this.incSpread = incSpread;
-	}
-	public void setNumShots(final int numShots)
-	{
-		this.numShots = numShots;
-	}
-	
-	public void setShotSpeed(final double shotSpeed)
-	{
-		this.shotSpeed = shotSpeed;
-	}
-	
+	/**
+	 * Sets the number of shots fired in a single burst by this {@code Weapon}.
+	 * @param burstSize	the burst size
+	 */
 	public void setBurstSize(final int burstSize)
 	{
 		this.burstSize = burstSize;
 	}
 	
-	public void setShotsFiredThisBurst(final int shotsFiredThisBurst)
+	/**
+	 * Sets the number of shots fired so far in the burst.
+	 * @param shotsThisBurst	the number of shots fired so far
+	 */
+	public void setShotsThisBurst(final int shotsThisBurst)
 	{
-		this.shotsFiredThisBurst = shotsFiredThisBurst;
+		this.shotsThisBurst = shotsThisBurst;
 	}
-	public void setDelayAfterBurst(final long delayAfterBurst)
+	
+	/**
+	 * Sets the amount of time the weapon must wait after a burst to fire.
+	 * @param burstDelay	the amount of time, in ms
+	 */
+	public void setBurstDelay(final long burstDelay)
 	{
-		this.delayAfterBurst = delayAfterBurst;
+		this.burstDelay = burstDelay;
+	}
+	
+	/**
+	 * Sets the type of shot this weapon fires.
+	 * @param shotType the type of shot
+	 */
+	public void setShotType(final int shotType)
+	{
+		this.shotType = shotType;
 	}
 }

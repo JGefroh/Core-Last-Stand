@@ -91,8 +91,8 @@ public class InputSystem implements ISystem, IInputSystem
 		//TODO: Move somewhere else.
 		BindMap kbs = new BindMap();
 		BindMap mbs = new BindMap();
-		kbs.bind(Keyboard.KEY_SPACE, "FIRE", InputSystem.HOLD);
-		kbs.bind(Keyboard.KEY_SPACE, "FIRE0", InputSystem.RELEASE);
+		kbs.bind(Keyboard.KEY_SPACE, "+FIRE1", InputSystem.PRESS);
+		kbs.bind(Keyboard.KEY_SPACE, "-FIRE1", InputSystem.RELEASE);
 		kbs.bind(Keyboard.KEY_W, "MOVE_UP", InputSystem.HOLD);
 		kbs.bind(Keyboard.KEY_A, "MOVE_LEFT", InputSystem.HOLD);
 		kbs.bind(Keyboard.KEY_S, "MOVE_DOWN", InputSystem.HOLD);
@@ -108,7 +108,6 @@ public class InputSystem implements ISystem, IInputSystem
 		kbs.bind(Keyboard.KEY_9, "SWITCH_WEAPON_9", InputSystem.PRESS);
 		kbs.bind(Keyboard.KEY_0, "SWITCH_WEAPON_0", InputSystem.PRESS);
 		kbs.bind(Keyboard.KEY_NUMPAD0, "TOGGLE_WIREFRAME", InputSystem.RELEASE);
-		mbs.bind(0, "FIRE", InputSystem.HOLD);
 
 		setBindSystem(IInputSystem.KEYBOARD, kbs);
 		setBindSystem(IInputSystem.MOUSE, mbs);	
@@ -136,7 +135,8 @@ public class InputSystem implements ISystem, IInputSystem
 		core.setInterested(this,"MOVE_DOWN");
 		core.setInterested(this,"MOVE_LEFT");
 		core.setInterested(this,"MOVE_RIGHT");
-		core.setInterested(this,"FIRE");
+		core.setInterested(this,"+FIRE1");
+		core.setInterested(this,"-FIRE1");
 		
 		this.windowWidth = 1366;
 		this.windowHeight = 768;
@@ -229,11 +229,14 @@ public class InputSystem implements ISystem, IInputSystem
 		{
 			core.send("GENERATE_FORCE", message[0], 5 +"", 0+"");
 		}
-		else if(id.equals("FIRE"))
+		else if(id.equals("+FIRE1"))
 		{
-			core.send("REQUEST_FIRE", message[0]);
+			core.send("REQUEST_FIRE", message[0], true + "");
 		}
-
+		else if(id.equals("-FIRE1"))
+		{
+			core.send("REQUEST_FIRE", message[0], false + "");
+		}
 	}
 	//////////
 	// IIINPUTSYSTEM INTERFACE

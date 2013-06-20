@@ -65,44 +65,29 @@ public class WeaponInfoPack implements IInfoPack
 		return this.owner;
 	}
 	
-	/**
-	 * @see WeaponComponent#getCurrentWeapon()
-	 */
 	public Weapon getCurrentWeapon()
 	{
 		return wc.getCurrentWeapon();
 	}
 	
-	/**
-	 * @see WeaponComponent#getInterval() 
-	 */
-	public long getInterval()
+	public long getConsecutiveShotDelay()
 	{
-		return wc.getInterval();
+		return wc.getConsecutiveShotDelay();
 	}
 	
-	/**
-	 * @see WeaponComponent#getLastUpdated()
-	 */
-	public long getLastUpdated()
+	public long getLastFired()
 	{
-		return wc.getLastUpdated();
+		return wc.getLastFired();
 	}
 	
-	/**
-	 * @see WeaponComponent#isFireRequested()
-	 */
 	public boolean isFireRequested()
 	{
 		return wc.isFireRequested();
 	}
 	
-	/**
-	 * @see WeaponComponent#getAmmo()
-	 */
-	public int getAmmo()
+	public int getFireMode()
 	{
-		return wc.getAmmo();
+		return wc.getFireMode();
 	}
 	
 	public int getDamage()
@@ -114,40 +99,34 @@ public class WeaponInfoPack implements IInfoPack
 	{
 		return wc.getMaxRange();
 	}
-	
-	public double getCurSpread()
-	{
-		return wc.getCurSpread();
-	}
-	
-	public double getIncSpread()
-	{
-		return wc.getIncSpread();
-	}
-	
-	public double getMaxSpread()
-	{
-		return wc.getMaxSpread();
-	}
-	
-	public int getNumShots()
-	{
-		return wc.getNumShots();
-	}
-	
-	public int getShotsFiredThisBurst()
-	{
-		return wc.getShotsFiredThisBurst();
-	}
-	
+
 	public int getBurstSize()
 	{
 		return wc.getBurstSize();
 	}
 	
-	public long getDelayAfterBurst()
+	public int getShotsThisBurst()
 	{
-		return wc.getDelayAfterBurst();
+		return wc.getShotsThisBurst();
+	}
+	public boolean isInBurst()
+	{
+		return wc.isInBurst();
+	}
+	
+	public long getBurstDelay()
+	{
+		return wc.getBurstDelay();
+	}
+	
+	public int getShotType()
+	{
+		return wc.getShotType();
+	}
+	
+	public int getNumShots()
+	{
+		return wc.getNumShots();
 	}
 	//////////
 	// SETTERS
@@ -158,50 +137,26 @@ public class WeaponInfoPack implements IInfoPack
 		this.isDirty = isDirty;
 	}
 	
-	/**
-	 * @see WeaponComponent#setInterval(long) 
-	 */
 	public void setInterval(final long interval)
 	{
-		wc.setInterval(interval);
+		wc.setConsecutiveShotDelay(interval);
 	}
 	
-	/**
-	 * @see WeaponComponent#setLastUpdated(long)
-	 */
-	public void setLastUpdated(final long lastUpdateTime)
+	public void setLastFired(final long lastFired)
 	{
-		wc.setLastUpdated(lastUpdateTime);
+		wc.setLastFired(lastFired);
 	}
 	
-	/**
-	 * @see WeaponComponent#setFireRequested(boolean)
-	 */
 	public void setFireRequested(final boolean fireRequested)
 	{
 		wc.setFireRequested(fireRequested);
 	}
 	
-	/**
-	 * @see WeaponComponent#setCurrentWeapon(String) 
-	 */
 	public void setCurrentWeapon(final String weaponName)
 	{
 		wc.setCurrentWeapon(weaponName);
 	}
-	
-	public void setCurrentWeapon(final int slot)
-	{
-		wc.setCurrentWeapon(slot);
-	}
-	
-	/**
-	 * @see WeaponComponent#setAmmo(int)
-	 */
-	public void setAmmo(final int ammo)
-	{
-		wc.setAmmo(ammo);
-	}
+
 	
 	public void setDamage(final int damage)
 	{
@@ -213,19 +168,9 @@ public class WeaponInfoPack implements IInfoPack
 		wc.setMaxRange(maxRange);
 	}
 	
-	public void setCurSpread(final double curSpread)
+	public void setFireMode(final int fireMode)
 	{
-		wc.setCurSpread(curSpread);
-	}
-	
-	public void setMaxSpread(final double maxSpread)
-	{
-		wc.setMaxSpread(maxSpread);
-	}
-	
-	public void setNumShots(final int numShots)
-	{
-		wc.setNumShots(numShots);
+		wc.setFireMode(fireMode);
 	}
 	
 	public void setBurstSize(final int burstSize)
@@ -233,14 +178,24 @@ public class WeaponInfoPack implements IInfoPack
 		wc.setBurstSize(burstSize);
 	}
 	
-	public void setShotsFiredThisBurst(final int shotsFiredThisBurst)
+	public void setShotsThisBurst(final int shotsThisBurst)
 	{
-		wc.setShotsFiredThisBurst(shotsFiredThisBurst);
+		wc.setShotsThisBurst(shotsThisBurst);
+	}
+	public void setInBurst(final boolean isInBurst)
+	{
+		wc.setInBurst(isInBurst);
 	}
 	
-	public void setDelayAfterBurst(final long delayAfterBurst)
+	public void setBurstDelay(final long burstDelay)
 	{
-		wc.setDelayAfterBurst(delayAfterBurst);
+		wc.setBurstDelay(burstDelay);
 	}
+	
+	public void setShotType(final int shotType)
+	{
+		wc.setShotType(shotType);
+	}
+	
 	
 }

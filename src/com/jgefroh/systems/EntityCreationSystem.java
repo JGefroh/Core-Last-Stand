@@ -26,6 +26,7 @@ import com.jgefroh.core.ISystem;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.data.Vector;
 import com.jgefroh.data.Weapon;
+import com.jgefroh.systems.WeaponSystem.FireMode;
 
 
 
@@ -187,8 +188,8 @@ public class EntityCreationSystem implements ISystem
 			ic.setInterested("MOVE_DOWN");	
 			ic.setInterested("MOVE_LEFT");	
 			ic.setInterested("MOVE_RIGHT");	
-			ic.setInterested("FIRE");	
-			ic.setInterested("FIRE0");	
+			ic.setInterested("+FIRE1");	
+			ic.setInterested("-FIRE1");	
 			
 			ic.setInterested("SWITCH_WEAPON_1");
 			ic.setInterested("SWITCH_WEAPON_2");
@@ -214,20 +215,16 @@ public class EntityCreationSystem implements ISystem
 			player.add(fgc);
 		
 		WeaponComponent wc = new WeaponComponent(player);
-		
 			Weapon weapon = new Weapon();
-			weapon.setFiringRate(100);
+			weapon.setConsecutiveShotDelay(300);
+			weapon.setFireMode(FireMode.AUTO.ordinal());
 			weapon.setName("gun1");
-			weapon.setAmmo(999999);
-			weapon.setDamage(5);
+			weapon.setDamage(10);
 			weapon.setMaxRange(1500);
-			weapon.setSlot(1);
-			weapon.setMaxSpread(5);
-			weapon.setCurSpread(0);
-			weapon.setIncSpread(0.25);
-			weapon.setNumShots(1);
 			weapon.setBurstSize(3);
-			weapon.setDelayAfterBurst(900);
+			weapon.setBurstDelay(500);
+			weapon.setShotType(0);
+		
 			wc.addWeapon(weapon);
 
 			wc.setCurrentWeapon("gun1");
@@ -239,12 +236,12 @@ public class EntityCreationSystem implements ISystem
 			player.add(mc);
 		
 		HealthComponent hc = new HealthComponent(player);
-			hc.setCurHealth(500000);
+			hc.setCurHealth(100);
 			player.add(hc);
 			
 		HealthBarComponent hbc = new HealthBarComponent(player);
-		//	hbc.setHealthBar(createHealthBar(player));
-		//	player.add(hbc);
+			hbc.setHealthBar(createHealthBar(player));
+			player.add(hbc);
 			
 		TargetComponent tarc = new TargetComponent(player);
 			player.add(tarc);
@@ -275,7 +272,7 @@ public class EntityCreationSystem implements ISystem
 			enemy.add(cc);
 		
 		HealthComponent hc = new HealthComponent(enemy);
-			hc.setCurHealth(20);
+			hc.setCurHealth(30);
 			enemy.add(hc);
 			
 		HealthBarComponent hbc = new HealthBarComponent(enemy);
@@ -285,15 +282,11 @@ public class EntityCreationSystem implements ISystem
 		WeaponComponent wc = new WeaponComponent(enemy);
 			Weapon weapon = new Weapon();
 			weapon.setName("enemy_Weapon");
-			weapon.setAmmo(100000);
-			weapon.setFiringRate(500);
-			weapon.setDamage(10);
+			weapon.setConsecutiveShotDelay(800);
+			weapon.setDamage(15);
 			weapon.setMaxRange(1500);
-			weapon.setSlot(1);
-			weapon.setMaxSpread(0);
-			weapon.setCurSpread(0);
-			weapon.setIncSpread(0);
-			weapon.setNumShots(1);
+			weapon.setShotType(1);
+
 			wc.addWeapon(weapon);
 			wc.setCurrentWeapon("enemy_Weapon");
 			enemy.add(wc);
@@ -347,7 +340,7 @@ public class EntityCreationSystem implements ISystem
 			enemy.add(cc);
 		
 		HealthComponent hc = new HealthComponent(enemy);
-			hc.setCurHealth(20);
+			hc.setCurHealth(30);
 			enemy.add(hc);
 			
 		HealthBarComponent hbc = new HealthBarComponent(enemy);
@@ -357,15 +350,10 @@ public class EntityCreationSystem implements ISystem
 		WeaponComponent wc = new WeaponComponent(enemy);
 			Weapon weapon = new Weapon();
 			weapon.setName("enemy_Weapon");
-			weapon.setAmmo(100000);
-			weapon.setFiringRate(500);
-			weapon.setDamage(10);
+			weapon.setConsecutiveShotDelay(800);
+			weapon.setDamage(15);
 			weapon.setMaxRange(1500);
-			weapon.setSlot(1);
-			weapon.setMaxSpread(0);
-			weapon.setCurSpread(0);
-			weapon.setIncSpread(0);
-			weapon.setNumShots(1);
+			weapon.setShotType(1);
 			wc.addWeapon(weapon);
 			wc.setCurrentWeapon("enemy_Weapon");
 			enemy.add(wc);
@@ -431,17 +419,13 @@ public class EntityCreationSystem implements ISystem
 		WeaponComponent wc = new WeaponComponent(enemy);
 			Weapon weapon = new Weapon();
 			weapon.setName("enemy_Weapon");
-			weapon.setAmmo(100000);
-			weapon.setFiringRate(100);
-			weapon.setDamage(10);
+			weapon.setConsecutiveShotDelay(100);
+			weapon.setDamage(3);
 			weapon.setMaxRange(1500);
-			weapon.setSlot(1);
-			weapon.setMaxSpread(0);
-			weapon.setCurSpread(0);
-			weapon.setIncSpread(0);
-			weapon.setNumShots(1);
-			weapon.setBurstSize(2);
-			weapon.setDelayAfterBurst(200);
+			weapon.setBurstSize(3);
+			weapon.setBurstDelay(1000);
+			weapon.setFireMode(FireMode.BURST.ordinal());
+			weapon.setShotType(2);
 			wc.addWeapon(weapon);
 			wc.setCurrentWeapon("enemy_Weapon");
 			enemy.add(wc);
@@ -503,17 +487,14 @@ public class EntityCreationSystem implements ISystem
 		WeaponComponent wc = new WeaponComponent(enemy);
 			Weapon weapon = new Weapon();
 			weapon.setName("enemy_Weapon");
-			weapon.setAmmo(100000);
-			weapon.setFiringRate(100);
-			weapon.setDamage(10);
+			weapon.setConsecutiveShotDelay(100);
+			weapon.setDamage(3);
 			weapon.setMaxRange(1500);
-			weapon.setSlot(1);
-			weapon.setMaxSpread(0);
-			weapon.setCurSpread(0);
-			weapon.setIncSpread(0);
-			weapon.setNumShots(1);
-			weapon.setBurstSize(2);
-			weapon.setDelayAfterBurst(300);
+			weapon.setBurstSize(3);
+			weapon.setBurstDelay(1000);
+			weapon.setFireMode(FireMode.BURST.ordinal());
+			weapon.setShotType(2);
+
 			wc.addWeapon(weapon);
 			wc.setCurrentWeapon("enemy_Weapon");
 			enemy.add(wc);
@@ -545,6 +526,76 @@ public class EntityCreationSystem implements ISystem
 			
 		core.add(enemy);
 	}
+
+
+	public void createEnemy0_1(final int x, final int y)
+	{	
+		IEntity enemy = new Entity();
+		enemy.setName("ENEMY");
+		
+		TransformComponent tc = new TransformComponent(enemy);
+			tc.setYPos(y);
+			tc.setXPos(x);
+			tc.setWidth(32);
+			tc.setHeight(32);
+			tc.setBearing(90);
+			enemy.add(tc);
+		
+		RenderComponent rc = new RenderComponent(enemy);
+			rc.setSpriteID(2);
+			rc.setTexturePath("res/enemy.png");
+			enemy.add(rc);
+		
+		CollisionComponent cc = new CollisionComponent(enemy);
+			cc.setCollisionGroup(1);
+			enemy.add(cc);
+		
+		HealthComponent hc = new HealthComponent(enemy);
+			hc.setCurHealth(30);
+			enemy.add(hc);
+			
+		HealthBarComponent hbc = new HealthBarComponent(enemy);
+			hbc.setHealthBar(createHealthBar(enemy));
+			enemy.add(hbc);
+	
+		WeaponComponent wc = new WeaponComponent(enemy);
+			Weapon weapon = new Weapon();
+			weapon.setName("enemy_Weapon");
+			weapon.setConsecutiveShotDelay(1500);
+			weapon.setDamage(3);
+			weapon.setMaxRange(500);
+			weapon.setShotType(2);
+	
+			wc.addWeapon(weapon);
+			wc.setCurrentWeapon("enemy_Weapon");
+			enemy.add(wc);
+		
+		VelocityComponent vc = new VelocityComponent(enemy);
+			vc.setInterval(4);
+			
+	
+		Vector v = new Vector();
+			v.setAngle(180);
+			v.setMaxMagnitude(900);
+			v.setMagnitude(1);
+			v.setContinuous(true);
+			v.calcComponents();
+			vc.setTotalMovementVector(v);
+			enemy.add(vc);
+		
+		TargetTrackComponent ttc = new TargetTrackComponent(enemy);
+			ttc.setTargetRange(500);
+			enemy.add(ttc);
+			
+		AIComponent ai = new AIComponent(enemy);
+			ai.setAttackChance(1);
+			enemy.add(ai);
+			
+		OutOfBoundsComponent oobc = new OutOfBoundsComponent(enemy);
+			enemy.add(oobc);	
+		core.add(enemy);
+	}
+
 
 	public void createEnemy0_2(final int x, final int y)
 	{	
@@ -597,78 +648,6 @@ public class EntityCreationSystem implements ISystem
 		core.add(enemy);
 	}
 
-
-	public void createEnemy0_1(final int x, final int y)
-	{	
-		IEntity enemy = new Entity();
-		enemy.setName("ENEMY");
-		
-		TransformComponent tc = new TransformComponent(enemy);
-			tc.setYPos(y);
-			tc.setXPos(x);
-			tc.setWidth(32);
-			tc.setHeight(32);
-			tc.setBearing(90);
-			enemy.add(tc);
-		
-		RenderComponent rc = new RenderComponent(enemy);
-			rc.setSpriteID(2);
-			rc.setTexturePath("res/enemy.png");
-			enemy.add(rc);
-		
-		CollisionComponent cc = new CollisionComponent(enemy);
-			cc.setCollisionGroup(1);
-			enemy.add(cc);
-		
-		HealthComponent hc = new HealthComponent(enemy);
-			hc.setCurHealth(30);
-			enemy.add(hc);
-			
-		HealthBarComponent hbc = new HealthBarComponent(enemy);
-			hbc.setHealthBar(createHealthBar(enemy));
-			enemy.add(hbc);
-	
-		WeaponComponent wc = new WeaponComponent(enemy);
-			Weapon weapon = new Weapon();
-			weapon.setName("enemy_Weapon");
-			weapon.setAmmo(100000);
-			weapon.setFiringRate(1500);
-			weapon.setDamage(5);
-			weapon.setMaxRange(500);
-			weapon.setSlot(1);
-			weapon.setMaxSpread(360);
-			weapon.setCurSpread(360);
-			weapon.setIncSpread(0);
-			weapon.setNumShots(20);
-			wc.addWeapon(weapon);
-			wc.setCurrentWeapon("enemy_Weapon");
-			enemy.add(wc);
-		
-		VelocityComponent vc = new VelocityComponent(enemy);
-			vc.setInterval(4);
-			
-	
-		Vector v = new Vector();
-			v.setAngle(180);
-			v.setMaxMagnitude(900);
-			v.setMagnitude(1);
-			v.setContinuous(true);
-			v.calcComponents();
-			vc.setTotalMovementVector(v);
-			enemy.add(vc);
-		
-		TargetTrackComponent ttc = new TargetTrackComponent(enemy);
-			ttc.setTargetRange(500);
-			enemy.add(ttc);
-			
-		AIComponent ai = new AIComponent(enemy);
-			ai.setAttackChance(1);
-			enemy.add(ai);
-			
-		OutOfBoundsComponent oobc = new OutOfBoundsComponent(enemy);
-			enemy.add(oobc);	
-		core.add(enemy);
-	}
 
 	public void createFormation(final int formation, final int xOffset)
 	{
@@ -728,8 +707,8 @@ public class EntityCreationSystem implements ISystem
 
 	}
 
-	public void createBullet(final IEntity owner,
-							final int damage, final int maxRange, final double spread)
+	public void createBullet(final IEntity owner, final int type,
+							final int damage, final int maxRange)
 	{
 		TransformComponent otc = owner.getComponent(TransformComponent.class);
 		int x = 0;
@@ -750,21 +729,13 @@ public class EntityCreationSystem implements ISystem
 		TransformComponent tc = new TransformComponent(bullet);
 			tc.setXPos(otc.getXPos()+rotatedX);
 			tc.setYPos(otc.getYPos()+rotatedY);
-			tc.setWidth(16);
-			tc.setHeight(16);
+			tc.setWidth(8);
+			tc.setHeight(10);
 			tc.setBearing(0);
 			bullet.add(tc);
 		
 
 		RenderComponent rc = new RenderComponent(bullet);
-			if(owner.getName().equalsIgnoreCase("PLAYER"))
-			{
-				rc.setSpriteID(1);
-			}
-			else
-			{
-				rc.setSpriteID(0);
-			}
 			rc.setTexturePath("res/bullet.png");
 			bullet.add(rc);
 
@@ -772,25 +743,17 @@ public class EntityCreationSystem implements ISystem
 			vc.setInterval(4);
 			
 
+
 		Vector v = new Vector();
-			v.setAngle(otc.getBearing()+Math.random()*spread-Math.random()*spread);
+			v.setAngle(otc.getBearing());
 			v.setMaxMagnitude(900);
-			v.setMagnitude(15);
+			v.setMagnitude(20);
 			v.setContinuous(true);
 			v.calcComponents();
 			vc.setTotalMovementVector(v);
 			bullet.add(vc);
 		
 		CollisionComponent cc = new CollisionComponent(bullet);
-		
-		if(owner.getName().equalsIgnoreCase("player"))
-		{
-			cc.setCollisionGroup(2);
-		}
-		else
-		{
-			cc.setCollisionGroup(3);			
-		}
 			bullet.add(cc);
 		
 		MaxRangeComponent mc = new MaxRangeComponent(bullet);
@@ -804,7 +767,35 @@ public class EntityCreationSystem implements ISystem
 			bullet.add(dc);
 			
 		OutOfBoundsComponent oobc = new OutOfBoundsComponent(bullet);
-			bullet.add(oobc);	
+			bullet.add(oobc);
+			
+		switch(type)
+		{
+			case 0:
+				tc.setWidth(8);
+				tc.setHeight(10);
+				rc.setSpriteID(3);
+				break;
+			case 1:
+				tc.setWidth(16);
+				tc.setHeight(16);
+				rc.setSpriteID(0);
+				break;
+			case 2:
+				tc.setWidth(8);
+				tc.setHeight(8);
+				rc.setSpriteID(1);
+				break;
+		}
+		
+		if(owner.getName().equalsIgnoreCase("PLAYER"))
+		{
+			cc.setCollisionGroup(2);
+		}
+		else
+		{
+			cc.setCollisionGroup(3);
+		}
 		core.addEntity(bullet);
 		
 		
@@ -858,9 +849,42 @@ public class EntityCreationSystem implements ISystem
 		return healthBar;
 	}
 	
-	public void createFormation(final int x, final int y, final int form)
+	public void createEnemy(final int xOffset, final int y, final int type)
 	{
-		
+		int x = 1366 + xOffset;
+		switch(type)
+		{
+			case 0:
+				createEnemy0_0(x, y);
+				break;
+			case 1:
+				createEnemy1_0(x, y);
+				break;
+			case 2:
+				createEnemy2_0(x, y);
+				break;
+			case 3:
+				createEnemy3_0(x, y);
+				break;
+			case 4:
+				createEnemy1_0(x, y);
+
+				break;
+			case 5:
+				createEnemy0_1(x, y);
+				break;
+			case 6:
+				createEnemy0_2(x, y);
+				break;
+			case 7:
+				createEnemy1_0(x, y);
+
+				break;
+			case 8:
+				createEnemy0_0(x, y);
+
+				break;
+		}
 	}
 
 

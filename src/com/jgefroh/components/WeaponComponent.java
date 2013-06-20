@@ -29,14 +29,16 @@ public class WeaponComponent implements IComponent
 	private ArrayList<Weapon> weapons;
 	
 	/**The amount of time to wait in-between shots, in milliseconds.*/
-	private long interval;
+	private long consecutiveShotDelay;
 	
 	/**The time a weapon was last fired.*/
-	private long lastUpdated;
+	private long lastFired;
 	
 	/**Flag that indicates a weapon fire request.*/
 	private boolean isFireRequested;
 	
+	/**Flag that indicates the weapon is in the middle of a burst.*/
+	private boolean isInBurst;
 	//////////
 	// INIT
 	//////////
@@ -70,18 +72,18 @@ public class WeaponComponent implements IComponent
 	 * Gets the update interval of the component.
 	 * @return	the time, in ms, to wait before attempting an update
 	 */
-	public long getInterval()
+	public long getConsecutiveShotDelay()
 	{
-		return this.interval;
+		return this.consecutiveShotDelay;
 	}
 	
 	/**
-	 * Gets the time the component was last updated.
+	 * Gets the time a weapon was last fired
 	 * @return	the time, in ms, the component was last updated
 	 */
-	public long getLastUpdated()
+	public long getLastFired()
 	{
-		return this.lastUpdated;
+		return this.lastFired;
 	}
 	
 	/**
@@ -101,19 +103,7 @@ public class WeaponComponent implements IComponent
 	{
 		return this.isFireRequested;
 	}
-	
-	/**
-	 * Gets the amount of ammunition left for the current weapon.
-	 * @return	the amount of ammo left;0 if no current weapon
-	 */
-	public int getAmmo()
-	{
-		if(currentWeapon!=null)
-		{
-			return currentWeapon.getAmmo();
-		}
-		return 0;
-	}
+
 	
 	/**
 	 * Gets the amount of damage the current weapon does.
@@ -142,73 +132,21 @@ public class WeaponComponent implements IComponent
 	}
 	
 	/**
-	 * Gets the current spread of the weapon, in degrees.
-	 * @return	the current spread of the weapon, in degrees.
+	 * Gets the fire mode of the current weapon.
+	 * @return	the fire mode
 	 */
-	public double getCurSpread()
-	{
-		if(currentWeapon!=null)
-		{
-			return currentWeapon.getCurSpread();
-		}
-		return 0;
-	}
-	
-	/**
-	 * Gets the spread increment.
-	 * @return	the amount the spread increases by every time it is fired
-	 */
-	public double getIncSpread()
+	public int getFireMode()
 	{
 		if(currentWeapon!=null)
 		{			
-			return currentWeapon.getIncSpread();
+			return currentWeapon.getFireMode();
 		}
 		return 0;
 	}
 	
 	/**
-	 * Gets the maximum spread of the weapon.
-	 * @return	the maximum spread of the weapon, in degrees
-	 */
-	public double getMaxSpread()
-	{
-		if(currentWeapon!=null)
-		{			
-			return currentWeapon.getMaxSpread();
-		}
-		return 0;
-	}
-	
-	/**
-	 * Gets the number of shots the weapon fires per fire request
-	 * @return	the number of shots the weapon fires per fire request
-	 */
-	public int getNumShots()
-	{
-		if(currentWeapon!=null)
-		{			
-			return currentWeapon.getNumShots();
-		}
-		return 0;
-	}
-	
-	/**
-	 * Gets the number of shots fired so far as part of the burst.
-	 * @return	the number of shots fired so far
-	 */
-	public int getShotsFiredThisBurst()
-	{
-		if(currentWeapon!=null)
-		{
-			return currentWeapon.getShotsFiredThisBurst();
-		}
-		return 0;
-	}
-	
-	/**
-	 * Gets the number of shots of the burst.
-	 * @return the number of shots to fire in the burst
+	 * Gets the number of shots fired in a single burst by this {@code Weapon}.
+	 * @return	the burst size
 	 */
 	public int getBurstSize()
 	{
@@ -220,17 +158,58 @@ public class WeaponComponent implements IComponent
 	}
 	
 	/**
-	 * Gets the delay after the burst.
-	 * @return	the time to wait until the gun is ready
+	 * Gets the number of shots fired so far in the burst.
+	 * @return	the number of shots fired within the last burst
 	 */
-	public long getDelayAfterBurst()
+	public int getShotsThisBurst()
 	{
 		if(currentWeapon!=null)
 		{
-			return currentWeapon.getDelayAfterBurst();
+			return currentWeapon.getShotsThisBurst();
 		}
 		return 0;
 	}
+	
+	/**
+	 * Gets the flag that indicates the weapon is in a burst.
+	 * @return	true if in a burst; false otherwise
+	 */
+	public boolean isInBurst()
+	{
+		return this.isInBurst;
+	}
+	
+	/**
+	 * Gets the amount of time the weapon must wait after a burst to fire.
+	 * @return	the amount of time, in ms
+	 */
+	public long getBurstDelay()
+	{
+		if(currentWeapon!=null)
+		{			
+			return currentWeapon.getBurstDelay();
+		}
+		return 0;
+	}
+	
+	public int getShotType()
+	{
+		if(currentWeapon!=null)
+		{
+			return currentWeapon.getShotType();
+		}
+		return 0;
+	}
+	
+	public int getNumShots()
+	{
+		if(currentWeapon!=null)
+		{
+			return currentWeapon.getNumShots();
+		}
+		return 0;
+	}
+	
 	//////////
 	// SETTERS
 	//////////
@@ -244,18 +223,18 @@ public class WeaponComponent implements IComponent
 	 * Set the update interval of the component.
 	 * @param interval	the time, in ms, to wait before attempting an update
 	 */
-	public void setInterval(final long interval)
+	public void setConsecutiveShotDelay(final long consecutiveShotDelay)
 	{
-		this.interval = interval;
+		this.consecutiveShotDelay = consecutiveShotDelay;
 	}
 	
 	/**
-	 * Set the time the component was last updated.
+	 * Sets the time a weapon was last fired.
 	 * @param lastUpdated	the time, in ms, the component was last updated
 	 */
-	public void setLastUpdated(final long lastUpdated)
+	public void setLastFired(final long lastFired)
 	{
-		this.lastUpdated = lastUpdated;
+		this.lastFired = lastFired;
 	}
 	
 	/**
@@ -278,43 +257,15 @@ public class WeaponComponent implements IComponent
 			if(each.getName().equals(weapon))
 			{
 				this.currentWeapon = each;
-				setInterval(currentWeapon.getFiringRate());
+				setConsecutiveShotDelay(currentWeapon.getConsecutiveShotDelay());
 				setFireRequested(false);
 			}
 		}
 	}
 	
-	/**
-	 * Sets the currently used weapon of the entity.
-	 * @param slot	the slot of the weapon
-	 */
-	public void setCurrentWeapon(final int slot)
-	{
-		for(Weapon each:weapons)
-		{
-			if(each.getSlot()==slot)
-			{
-				this.currentWeapon = each;
-				setInterval(currentWeapon.getFiringRate());
-				setFireRequested(false);
-			}
-		}
-	}
 	
 	/**
-	 * Sets the amount of ammo the weapon has
-	 * @param ammo	the amount of ammo
-	 */
-	public void setAmmo(final int ammo)
-	{
-		if(currentWeapon!=null)
-		{			
-			this.currentWeapon.setAmmo(ammo);
-		}
-	}
-	
-	/**
-	 * Sets the amount of damage the weapon does
+	 * Sets the amount of damage the currently equipped weapon does
 	 * @param damage	the amount of damage
 	 */
 	public void setDamage(final int damage)
@@ -326,7 +277,7 @@ public class WeaponComponent implements IComponent
 	}
 	
 	/**
-	 * Sets the maximum range of the weapon
+	 * Sets the maximum range of the currently equipped weapon
 	 * @param maxRange	the maximum range
 	 */
 	public void setMaxRange(final int maxRange)
@@ -338,44 +289,20 @@ public class WeaponComponent implements IComponent
 	}
 	
 	/**
-	 * Sets the current spread of the weapon
-	 * @param curSpread	the current spread, in degrees
+	 * Sets the fire mode of the currently equipped weapon.
+	 * @param fireMode	the fire mode to set
 	 */
-	public void setCurSpread(final double curSpread)
+	public void setFireMode(final int fireMode)
 	{
 		if(currentWeapon!=null)
 		{
-			this.currentWeapon.setCurSpread(curSpread);
+			this.currentWeapon.setFireMode(fireMode);
 		}
 	}
 	
 	/**
-	 * Sets the maximum spread of the weapon
-	 * @param maxSpread	the maximum spread, in degrees
-	 */
-	public void setMaxSpread(final double maxSpread)
-	{
-		if(currentWeapon!=null)
-		{
-			this.currentWeapon.setMaxSpread(maxSpread);
-		}
-	}
-	
-	/**
-	 * Sets the number of shots fired by the weapon
-	 * @param numShots	the number of shots
-	 */
-	public void setNumShots(final int numShots)
-	{
-		if(currentWeapon!=null)
-		{
-			this.currentWeapon.setNumShots(numShots);
-		}
-	}
-	
-	/**
-	 * Sets the size of the burst.
-	 * @param burstSize	the number of shots to fire as part of the burst
+	 * Sets the number of shots fired in a single burst by this {@code Weapon}.
+	 * @param burstSize	the burst size
 	 */
 	public void setBurstSize(final int burstSize)
 	{
@@ -386,26 +313,47 @@ public class WeaponComponent implements IComponent
 	}
 	
 	/**
-	 * Sets the number of shots fired this burst.
-	 * @param shotsFiredThisBurst	the number of shots fired as part of the burst
+	 * Sets the number of shots fired so far in the burst.
+	 * @param shotsThisBurst	the number of shots fired so far
 	 */
-	public void setShotsFiredThisBurst(final int shotsFiredThisBurst)
+	public void setShotsThisBurst(final int shotsThisBurst)
 	{
 		if(currentWeapon!=null)
-		{
-			this.currentWeapon.setShotsFiredThisBurst(shotsFiredThisBurst);
+		{			
+			this.currentWeapon.setShotsThisBurst(shotsThisBurst);
 		}
 	}
 	
 	/**
-	 * Sets the delay after the burst.
-	 * @param delayAfterBurst	the time to wait after the burst.
+	 * Sets the flag that indicates the weapon is in the middle of a burst.
+	 * @param isInBurst	true if in a burst; false otherwise
 	 */
-	public void setDelayAfterBurst(final long delayAfterBurst)
+	public void setInBurst(final boolean isInBurst)
+	{
+		this.isInBurst = isInBurst;
+	}
+	
+	/**
+	 * Sets the amount of time the weapon must wait after a burst to fire.
+	 * @param burstDelay	the amount of time, in ms
+	 */
+	public void setBurstDelay(final long burstDelay)
+	{
+		if(currentWeapon!=null)
+		{			
+			this.currentWeapon.setBurstDelay(burstDelay);
+		}
+	}
+	
+	/**
+	 * Sets the type of shot this weapon fires.
+	 * @param shotType	the type of shot
+	 */
+	public void setShotType(final int shotType)
 	{
 		if(currentWeapon!=null)
 		{
-			this.currentWeapon.setDelayAfterBurst(delayAfterBurst);
+			this.currentWeapon.setShotType(shotType);
 		}
 	}
 	//////////

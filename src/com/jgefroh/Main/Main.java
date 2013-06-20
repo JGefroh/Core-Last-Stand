@@ -25,6 +25,7 @@ import com.jgefroh.input.InputSystem;
 import com.jgefroh.systems.AISystem;
 import com.jgefroh.systems.CollisionSystem;
 import com.jgefroh.systems.DamageSystem;
+import com.jgefroh.systems.EnemySpawnSystem;
 import com.jgefroh.systems.EntityCreationSystem;
 import com.jgefroh.systems.ForceSystem;
 import com.jgefroh.systems.GUIHealthBarSystem;
@@ -104,6 +105,10 @@ public class Main
 		core.addSystem(aiSys);
 		core.addSystem(new TargetTrackSystem(core));
 		core.addSystem(new OutOfBoundsSystem(core));
+		EnemySpawnSystem eSpawn = new EnemySpawnSystem(core);
+		eSpawn.setWait(25000);
+		eSpawn.setLast(core.now()-30000);
+		core.addSystem(eSpawn); 
 		rl = new ResourceLoader(core);
 	}
 	
@@ -148,13 +153,13 @@ public class Main
 		EntityCreationSystem ecs = 
 				core.getSystem(EntityCreationSystem.class);
 		ecs.createPlayer(32, 384);
-		
+	/*	
 		ecs.createFormation(0, 100);	
 		ecs.createFormation(1, 500);
 		ecs.createFormation(2, 900);
 		ecs.createFormation(3, 1300);
 		ecs.createFormation(4, 1700);
-		
+	*/
 
 		core.getSystem(CollisionSystem.class).setCollision(1, 2, true);	//alien, pbullet
 		core.getSystem(CollisionSystem.class).setCollision(0, 3, true);	//player, abullet

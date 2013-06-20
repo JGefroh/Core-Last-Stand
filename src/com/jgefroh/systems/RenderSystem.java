@@ -121,7 +121,7 @@ public class RenderSystem implements ISystem
 	public void work(final long now)
 	{
 		if(isRunning)
-		{					
+		{	
 			render();
 		}
 	}

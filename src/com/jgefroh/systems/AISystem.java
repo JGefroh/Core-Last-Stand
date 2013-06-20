@@ -160,7 +160,7 @@ public class AISystem implements ISystem
 	 */
 	private void rollForAttack(final AIInfoPack each)
 	{		
-		core.send("REQUEST_FIRE", each.getOwner().getID());
+		core.send("REQUEST_FIRE", each.getOwner().getID(), true + "");
 	}
 	
 	/**

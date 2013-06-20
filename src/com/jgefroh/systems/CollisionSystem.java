@@ -2,6 +2,7 @@ package com.jgefroh.systems;
 
 
 import java.awt.Rectangle;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.logging.Level;
@@ -13,6 +14,7 @@ import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.effects.BulletHitEffect;
 import com.jgefroh.effects.IEffect;
 import com.jgefroh.infopacks.CollisionInfoPack;
+import com.jgefroh.tests.Benchmark;
 
 /**
  * This system handles collision checking for entities.
@@ -37,7 +39,7 @@ public class CollisionSystem implements ISystem
 	private long last;
 	
 	/**The level of detail in debug messages.*/
-	private Level debugLevel = Level.INFO;
+	private Level debugLevel = Level.FINER;
 	
 	/**Logger for debug purposes.*/
 	private final Logger LOGGER 
@@ -49,6 +51,9 @@ public class CollisionSystem implements ISystem
 	
 	/**Stores effects to execute when collisions are detected.*/
 	private ArrayList<IEffect> effects;
+	
+	private Benchmark bench = new Benchmark(this.getClass().getName(), debugLevel);
+
 	//////////
 	// INIT
 	//////////
@@ -91,10 +96,12 @@ public class CollisionSystem implements ISystem
 	{
 		if(isRunning)
 		{
-			checkAll();
+			long startTime = System.nanoTime();
+			int numEntities = checkAll();
+			bench.benchmark(System.nanoTime()-startTime, numEntities);
 		}
 	}
-
+	
 	@Override
 	public void stop()
 	{
@@ -137,14 +144,16 @@ public class CollisionSystem implements ISystem
 	/**
 	 * Go through all of the collidable objects and check for collisions.
 	 */
-	public void checkAll()
+	public int checkAll()
 	{
+		int numEntities = 0;
 		//TODO: Change to smarter collision
 		Iterator<CollisionInfoPack> checkThese =
 				core.getInfoPacksOfType(CollisionInfoPack.class);
 
 		while(checkThese.hasNext())
 		{
+			numEntities++;
 			CollisionInfoPack cipA = checkThese.next();
 			
 			if(cipA.isDirty()==false)
@@ -171,6 +180,7 @@ public class CollisionSystem implements ISystem
 				}
 			}
 		}
+		return numEntities;
 	}
 	
 	

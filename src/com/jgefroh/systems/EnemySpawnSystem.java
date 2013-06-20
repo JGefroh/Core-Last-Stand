@@ -1,24 +1,20 @@
 package com.jgefroh.systems;
 
 
-import java.util.Iterator;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.jgefroh.core.Core;
-import com.jgefroh.core.IEntity;
 import com.jgefroh.core.ISystem;
 import com.jgefroh.core.LoggerFactory;
-import com.jgefroh.data.Vector;
-import com.jgefroh.infopacks.MovementInfoPack;
-import com.jgefroh.tests.Benchmark;
 
 
 /**
- * System that handles movement and repositioning of entities.
+ * Spawns enemies randomly to create an infinite wave.
  * @author Joseph Gefroh
  */
-public class TransformSystem implements ISystem
+public class EnemySpawnSystem implements ISystem
 {
 	//////////
 	// DATA
@@ -46,10 +42,10 @@ public class TransformSystem implements ISystem
 	// INIT
 	//////////
 	/**
-	 * Creates a new instance of this {@code System}.
+	 * Create a new instance of this {@code System}.
 	 * @param core	 a reference to the Core controlling this system
 	 */
-	public TransformSystem(final Core core)
+	public EnemySpawnSystem(final Core core)
 	{
 		this.core = core;
 		setDebugLevel(this.debugLevel);
@@ -70,8 +66,8 @@ public class TransformSystem implements ISystem
 	@Override
 	public void start()
 	{
-			LOGGER.log(Level.INFO, "System started.");
-			this.isRunning = true;
+		LOGGER.log(Level.INFO, "System started.");
+		this.isRunning = true;
 	}
 
 	@Override
@@ -79,11 +75,7 @@ public class TransformSystem implements ISystem
 	{
 		if(this.isRunning)
 		{
-			moveAll(now);			
-		}
-		else
-		{
-			stop();
+			decideSpawns();
 		}
 	}
 
@@ -127,52 +119,23 @@ public class TransformSystem implements ISystem
 	//////////
 	// SYSTEM METHODS
 	//////////
-	/**
-	 * Moves all entities that are requesting moves based on their velocities.
-	 */
-	public void moveAll(final long now)
+	private void decideSpawns()
 	{
-		Iterator<MovementInfoPack> packs 
-			= core.getInfoPacksOfType(MovementInfoPack.class);
-
-		while(packs.hasNext())
+		EntityCreationSystem ecs = core.getSystem(EntityCreationSystem.class);
+		Random r = new Random();
+		for(int x=32;x<600;x+=64)
 		{
-			MovementInfoPack each = packs.next();
-			if(each.isDirty()==false)
+			for(int y=64;y<700;y+=64)
 			{
-				if(now-each.getLastUpdated()>=each.getInterval())
+				double chance = r.nextInt(100);
+
+				if(chance<10)
 				{
-					move(each);
-					each.setLastUpdated(now);
+					ecs.createEnemy(x, y, r.nextInt(10));
 				}
 			}
 		}
 	}
-	
-	private void move(final MovementInfoPack each)
-	{
-		Vector totalV = each.getTotalMovementVector();
-		LOGGER.log(Level.FINEST, "Translating " + each.getOwner().getName() + " by " + totalV);
-		each.setXPos((each.getXPos()+totalV.getVX()));
-		each.setYPos((each.getYPos()+totalV.getVY()));					
-		//Translate object by total vector amount.
-		if(totalV.isContinuous()==false)
-		{						
-			each.setTotalMovementVector(new Vector());
-		}
-	}
-	/**
-	 * Sets the movement interval of the given entity
-	 * @param entity	the Entity to set the interval for
-	 * @param interval	the interval, in ms
-	 */
-	public void setInterval(final IEntity entity, final long interval)
-	{
-		MovementInfoPack pack =
-				core.getInfoPackFrom(entity, MovementInfoPack.class);
-		pack.setInterval(interval);
-	}
-	
 	/**
 	 * Sets the debug level of this {@code System}.
 	 * @param level	the Level to set
