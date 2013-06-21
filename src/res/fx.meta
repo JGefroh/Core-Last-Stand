@@ -1,0 +1,15 @@
+{
+	"width":48,
+	"height":48,
+	"sprites":
+		[
+			{
+				"id":0,
+				"name":"shield",
+				"xmin":0,
+				"xmax":48,
+				"ymin":0,
+				"ymax":48
+			}
+		]
+}

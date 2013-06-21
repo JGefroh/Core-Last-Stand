@@ -192,6 +192,10 @@ public class WeaponComponent implements IComponent
 		return 0;
 	}
 	
+	/**
+	 * Gets the type of shot that is fired.
+	 * @return	the shot type
+	 */
 	public int getShotType()
 	{
 		if(currentWeapon!=null)
@@ -201,6 +205,10 @@ public class WeaponComponent implements IComponent
 		return 0;
 	}
 	
+	/**
+	 * Gets the number of shots fired per trigger pull.
+	 * @return	the number of shots
+	 */
 	public int getNumShots()
 	{
 		if(currentWeapon!=null)
@@ -210,6 +218,70 @@ public class WeaponComponent implements IComponent
 		return 0;
 	}
 	
+	/**
+	 * Gets the current amount of recoil this {@code Weapon} has.
+	 * @return	the current amount of spread
+	 */
+	public double getRecoilCur()
+	{
+		if(currentWeapon!=null)
+		{			
+			return currentWeapon.getRecoilCur();
+		}
+		return 0;
+	}
+	
+	/**
+	 * Gets the amount the recoil is incremented by, per shot.
+	 * @return	the increment amount
+	 */
+	public double getRecoilInc()
+	{
+		if(currentWeapon!=null)
+		{			
+			return currentWeapon.getRecoilInc();
+		}
+		return 0;
+	}
+	
+	/**
+	 * Gets the amount the recoil is decremented by, per resting period.
+	 * @return	the decrement amount
+	 */
+	public double getRecoilDec()
+	{
+		if(currentWeapon!=null)
+		{			
+			return currentWeapon.getRecoilDec();
+		}
+		return 0;
+	}
+	
+	/**
+	 * Gets the maximum amount of recoil.
+	 * @return	the max recoil amount
+	 */
+	public double getRecoilMax()
+	{
+		if(currentWeapon!=null)
+		{			
+			return currentWeapon.getRecoilMax();
+		}
+		return 0;
+	}
+	
+	/**
+	 * Gets the minimum amount of recoil.
+	 * @return	the minimum recoil amount
+	 */
+	public double getRecoilMin()
+	{
+		if(currentWeapon!=null)
+		{			
+			return currentWeapon.getRecoilMin();
+		}
+		return 0;
+	}
 	//////////
 	// SETTERS
 	//////////

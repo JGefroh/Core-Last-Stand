@@ -128,6 +128,31 @@ public class WeaponInfoPack implements IInfoPack
 	{
 		return wc.getNumShots();
 	}
+	
+	public double getRecoilCur()
+	{
+		return wc.getRecoilCur();
+	}
+	
+	public double getRecoilInc()
+	{
+		return wc.getRecoilInc();
+	}
+	
+	public double getRecoilDec()
+	{
+		return wc.getRecoilDec();
+	}
+	
+	public double getRecoilMax()
+	{
+		return wc.getRecoilMax();
+	}
+	
+	public double getRecoilMin()
+	{
+		return wc.getRecoilMin();
+	}
 	//////////
 	// SETTERS
 	//////////

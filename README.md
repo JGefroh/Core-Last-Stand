@@ -9,6 +9,7 @@ Last Stand is a WIP 2D shooter.
 * S - Move Down
 * A - Move Left
 * D - Move Right
+* LCTRL -  Shield
 
 ###Dependencies
 1. [LWJGL 2.8.5](http://www.lwjgl.org)

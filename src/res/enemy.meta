@@ -58,6 +58,14 @@
 				"xmax":64,
 				"ymin":0,
 				"ymax":16
+			},
+			{
+				"id":7,
+				"name":"shotgunny",
+				"xmin":32,
+				"xmax":48,
+				"ymin":16,
+				"ymax":32
 			}
 		]
 }

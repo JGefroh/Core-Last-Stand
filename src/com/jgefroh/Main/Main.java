@@ -18,6 +18,7 @@ import com.jgefroh.infopacks.MouseTrackInfoPackFactory;
 import com.jgefroh.infopacks.MovementInfoPackFactory;
 import com.jgefroh.infopacks.OutOfBoundsInfoPackFactory;
 import com.jgefroh.infopacks.RenderInfoPackFactory;
+import com.jgefroh.infopacks.ShieldInfoPackFactory;
 import com.jgefroh.infopacks.TargetInfoPackFactory;
 import com.jgefroh.infopacks.TargetTrackInfoPackFactory;
 import com.jgefroh.infopacks.WeaponInfoPackFactory;
@@ -34,6 +35,7 @@ import com.jgefroh.systems.MaxRangeSystem;
 import com.jgefroh.systems.OutOfBoundsSystem;
 import com.jgefroh.systems.RenderSystem;
 import com.jgefroh.systems.ResourceLoader;
+import com.jgefroh.systems.ShieldSystem;
 import com.jgefroh.systems.TargetTrackSystem;
 import com.jgefroh.systems.TransformSystem;
 import com.jgefroh.systems.WeaponSystem;
@@ -109,6 +111,7 @@ public class Main
 		eSpawn.setWait(25000);
 		eSpawn.setLast(core.now()-30000);
 		core.addSystem(eSpawn); 
+		core.addSystem(new ShieldSystem(core));
 		rl = new ResourceLoader(core);
 	}
 	
@@ -130,6 +133,7 @@ public class Main
 		core.addFactory(new TargetInfoPackFactory());
 		core.addFactory(new TargetTrackInfoPackFactory());
 		core.addFactory(new OutOfBoundsInfoPackFactory());
+		core.addFactory(new ShieldInfoPackFactory());
 	}
 	
 	/**
@@ -171,5 +175,6 @@ public class Main
 		rl.loadTexture("res/bullet.png");
 		rl.loadTexture("res/enemy.png");
 		rl.loadTexture("res/bg.png");
+		rl.loadTexture("res/fx.png");
 	}
 }

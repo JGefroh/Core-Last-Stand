@@ -8,13 +8,13 @@ import java.util.logging.Logger;
 import com.jgefroh.core.Core;
 import com.jgefroh.core.ISystem;
 import com.jgefroh.core.LoggerFactory;
-import com.jgefroh.infopacks.HealthInfoPack;
+import com.jgefroh.infopacks.ShieldInfoPack;
 
 /**
- * This system goes through all entities with health and removes dead entities.
+ * Controls the display of health bars above entities.
  * @author Joseph Gefroh
  */
-public class HealthMonitorSystem implements ISystem
+public class ShieldSystem implements ISystem
 {
 	//////////
 	// DATA
@@ -46,7 +46,7 @@ public class HealthMonitorSystem implements ISystem
 	 * Create a new instance of this {@code System}.
 	 * @param core	 a reference to the Core controlling this system
 	 */
-	public HealthMonitorSystem(final Core core)
+	public ShieldSystem(final Core core)
 	{
 		this.core = core;
 		setDebugLevel(this.debugLevel);
@@ -61,6 +61,7 @@ public class HealthMonitorSystem implements ISystem
 	@Override
 	public void init()
 	{
+		core.setInterested(this, "REQUEST_SHIELD");
 	}
 	
 	@Override
@@ -75,7 +76,7 @@ public class HealthMonitorSystem implements ISystem
 	{
 		if(isRunning)
 		{
-			checkHealth();
+			updateShields();
 		}
 	}
 
@@ -115,40 +116,92 @@ public class HealthMonitorSystem implements ISystem
 	public void recv(final String id, final String... message)
 	{
 		LOGGER.log(Level.FINEST, "Received message: " + id);
-
+		
+		if(id.equals("REQUEST_SHIELD"))
+		{
+			setActive(message);
+		}
 	}
 	
 	//////////
 	// SYSTEM METHODS
 	//////////
 	/**
-	 * Checks the health of all entities and destroy those below 0 health.
+	 * Goes through all entities that can have a shield and updates them.
 	 */
-	private void checkHealth()
+	private void updateShields()
 	{
-		Iterator<HealthInfoPack> packs 
-		= core.getInfoPacksOfType(HealthInfoPack.class);
+		Iterator<ShieldInfoPack> packs =
+				core.getInfoPacksOfType(ShieldInfoPack.class);
+		
 		while(packs.hasNext())
 		{
-			HealthInfoPack each = packs.next();
-			if(each.isDirty()==false)
+			ShieldInfoPack pack = packs.next();
+			
+			if(pack.isShieldActive())
 			{
-				if(each.getCurHealth()<=0)
+				//If the user has requested the shield to be up
+				if(pack.getShield()==null)
 				{
-					core.send("DESTROYING_ENTITY", each.getOwner().getID());
-					LOGGER.log(Level.FINE, 
-							each.getOwner().getName() + "(" + each.getOwner().getID()
-									+ ") destroyed.");
-					if(each.getOwner().getName().equalsIgnoreCase("PLAYER"))
-					{
-						core.removeAllEntities();
-						core.getSystem(EntityCreationSystem.class).createPlayer(32, 384);
-					}
-					core.removeEntity(each.getOwner());
+					//If the shield does not exist, create it...
+					createShield(pack);
 				}
+				else
+				{
+					//Move the shield to the proper position
+					moveShield(pack);
+				}
+			}
+			else
+			{
+				//If the user has requested to remove the shield...
+				core.removeEntity(pack.getShield());
+				pack.setShield(null);	//IMPORTANT
+			}
+
+		}
+	}
+	
+	/**
+	 * Creates a shield for an Entity without a shield.
+	 * @param pack	the ShieldInfoPack of the entity
+	 */
+	private void createShield(final ShieldInfoPack pack)
+	{
+		EntityCreationSystem ecs = core.getSystem(EntityCreationSystem.class);
+		pack.setShield(ecs.createShield(pack.getOwner()));
+	}
+	
+	/**
+	 * Moves an entity's shield to the correct position (at the entity)
+	 * @param pack	the ShieldInfoPack of the entity
+	 */
+	private void moveShield(final ShieldInfoPack pack)
+	{
+		double xPos = pack.getXPos();
+		double yPos = pack.getYPos();
+		
+		pack.setShieldXPos(xPos);
+		pack.setShieldYPos(yPos);
+	}
+	
+	/**
+	 * Sets an entity's shield request flag.
+	 * @param message	[0] contains the ID of the entity
+	 * 					[1] contains the boolean value to set the flag to
+	 */
+	private void setActive(final String[] message)
+	{
+		if(message.length>1)
+		{
+			ShieldInfoPack pack = core.getInfoPackFrom(message[0], ShieldInfoPack.class);
+			if(pack!=null)
+			{
+				pack.setActive(Boolean.parseBoolean(message[1]));
 			}
 		}
 	}
+
 	
 	/**
 	 * Sets the debug level of this {@code System}.

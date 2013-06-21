@@ -14,9 +14,6 @@ public class Weapon
 	
 	/**The time, in ms, to wait in between between shots*/
 	private long consecutiveShotDelay;
-
-	/**The amount of ammo this weapon has left.*/
-	private int ammo;
 	
 	/**The amount of damage this weapon does.*/
 	private int damage;
@@ -41,6 +38,21 @@ public class Weapon
 	
 	/**The number of shots fired by a single fire request.*/
 	private int numShots;
+	
+	/**The current amount of recoil this weapon has.*/
+	private double recoilCur;
+	
+	/**The amount to increase the recoil by, per shot.*/
+	private double recoilInc;
+	
+	/**The amount to decrease the recoil by, per non-shot.*/
+	private double recoilDec;
+	
+	/**The maximum amount of recoil this weapon can have.*/
+	private double recoilMax;
+	
+	/**The minimum amount of recoil this weapon can have.*/
+	private double recoilMin;
 	//////////
 	// INIT
 	//////////
@@ -60,6 +72,12 @@ public class Weapon
 		this.burstDelay = 500;
 		this.shotType = 0;
 		this.numShots = 1;
+		
+		this.recoilCur = 0;
+		this.recoilDec = 0;
+		this.recoilInc = 0;
+		this.recoilMax = 360;
+		this.recoilMin = 0;
 	}
 	
 	//////////
@@ -154,6 +172,51 @@ public class Weapon
 	{
 		return this.numShots;
 	}
+	
+	/**
+	 * Gets the current amount of recoil this {@code Weapon} has.
+	 * @return	the current amount of spread
+	 */
+	public double getRecoilCur()
+	{
+		return this.recoilCur;
+	}
+	
+	/**
+	 * Gets the amount the recoil is incremented by, per shot.
+	 * @return	the increment amount
+	 */
+	public double getRecoilInc()
+	{
+		return this.recoilInc;
+	}
+	
+	/**
+	 * Gets the amount the recoil is decremented by, per resting period.
+	 * @return	the decrement amount
+	 */
+	public double getRecoilDec()
+	{
+		return this.recoilDec;
+	}
+	
+	/**
+	 * Gets the maximum amount of recoil.
+	 * @return	the max recoil amount
+	 */
+	public double getRecoilMax()
+	{
+		return this.recoilMax;
+	}
+	
+	/**
+	 * Gets the minimum amount of recoil.
+	 * @return	the minimum recoil amount
+	 */
+	public double getRecoilMin()
+	{
+		return this.recoilMin;
+	}
 	//////////
 	// SETTERS
 	//////////
@@ -236,5 +299,70 @@ public class Weapon
 	public void setShotType(final int shotType)
 	{
 		this.shotType = shotType;
+	}
+	
+	/**
+	 * Sets the number of shots fired per trigger pull.
+	 * @param numShots	the number of shots
+	 */
+	public void setNumShots(final int numShots)
+	{
+		this.numShots = numShots;
+	}
+	/**
+	 * Sets the current amount of recoil this {@code Weapon} has.
+	 * @param recoilCur	the current amount of spread
+	 */
+	public void setRecoilCur(final double recoilCur)
+	{
+		if(recoilCur<=this.recoilMax
+				&&recoilCur>=this.recoilMin)
+		{			
+			this.recoilCur = recoilCur;
+		}
+		else if(recoilCur<this.recoilMin)
+		{
+			this.recoilCur = this.recoilMin;
+		}
+		else
+		{
+			this.recoilCur = this.recoilMax;
+		}
+	}
+	
+	/**
+	 * Sets the amount the recoil is incremented by, per shot.
+	 * @param recoilInc	the increment amount
+	 */
+	public void setRecoilInc(final double recoilInc)
+	{
+		this.recoilInc = recoilInc;
+	}
+	
+	/**
+	 * Sets the amount the recoil is decremented by, per resting period.
+	 * @param recoilDec	the decrement amount
+	 */
+	public void setRecoilDec(final double recoilDec)
+	{
+		this.recoilDec = recoilDec;
+	}
+	
+	/**
+	 * Sets the maximum amount of recoil.
+	 * @param recoilMax	the max recoil amount
+	 */
+	public void setRecoilMax(final double recoilMax)
+	{
+		this.recoilMax = recoilMax;
+	}
+	
+	/**
+	 * Sets the minimum amount of recoil.
+	 * @param recoilMin	the minimum recoil amount
+	 */
+	public void setRecoilMin(final double recoilMin)
+	{
+		this.recoilMin = recoilMin;
 	}
 }

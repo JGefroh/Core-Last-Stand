@@ -195,7 +195,8 @@ public class WeaponSystem implements ISystem
 			ecs.createBullet(pack.getOwner(),
 					pack.getShotType(),
 					pack.getDamage(),
-					pack.getMaxRange());
+					pack.getMaxRange(),
+					pack.getRecoilCur());
 		}
 	}
 	

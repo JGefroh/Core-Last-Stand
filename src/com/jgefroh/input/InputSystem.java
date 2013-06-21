@@ -93,6 +93,8 @@ public class InputSystem implements ISystem, IInputSystem
 		BindMap mbs = new BindMap();
 		kbs.bind(Keyboard.KEY_SPACE, "+FIRE1", InputSystem.PRESS);
 		kbs.bind(Keyboard.KEY_SPACE, "-FIRE1", InputSystem.RELEASE);
+		kbs.bind(Keyboard.KEY_LCONTROL, "+SHIELD", InputSystem.PRESS);
+		kbs.bind(Keyboard.KEY_LCONTROL, "-SHIELD", InputSystem.RELEASE);
 		kbs.bind(Keyboard.KEY_W, "MOVE_UP", InputSystem.HOLD);
 		kbs.bind(Keyboard.KEY_A, "MOVE_LEFT", InputSystem.HOLD);
 		kbs.bind(Keyboard.KEY_S, "MOVE_DOWN", InputSystem.HOLD);
@@ -137,6 +139,8 @@ public class InputSystem implements ISystem, IInputSystem
 		core.setInterested(this,"MOVE_RIGHT");
 		core.setInterested(this,"+FIRE1");
 		core.setInterested(this,"-FIRE1");
+		core.setInterested(this,"-SHIELD");
+		core.setInterested(this,"+SHIELD");
 		
 		this.windowWidth = 1366;
 		this.windowHeight = 768;
@@ -236,6 +240,14 @@ public class InputSystem implements ISystem, IInputSystem
 		else if(id.equals("-FIRE1"))
 		{
 			core.send("REQUEST_FIRE", message[0], false + "");
+		}
+		else if(id.equals("+SHIELD"))
+		{
+			core.send("REQUEST_SHIELD", message[0], true + "");
+		}
+		else if(id.equals("-SHIELD"))
+		{
+			core.send("REQUEST_SHIELD", message[0], false + "");
 		}
 	}
 	//////////

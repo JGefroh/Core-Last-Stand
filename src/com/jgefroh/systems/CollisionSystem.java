@@ -39,7 +39,7 @@ public class CollisionSystem implements ISystem
 	private long last;
 	
 	/**The level of detail in debug messages.*/
-	private Level debugLevel = Level.FINER;
+	private Level debugLevel = Level.INFO;
 	
 	/**Logger for debug purposes.*/
 	private final Logger LOGGER 
@@ -160,7 +160,6 @@ public class CollisionSystem implements ISystem
 			{
 				Iterator<CollisionInfoPack> checkAgainst =
 						core.getInfoPacksOfType(CollisionInfoPack.class);
-				
 				while(checkAgainst.hasNext())
 				{
 					CollisionInfoPack cipB = checkAgainst.next();

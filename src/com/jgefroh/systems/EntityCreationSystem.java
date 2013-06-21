@@ -14,6 +14,7 @@ import com.jgefroh.components.MaxRangeComponent;
 import com.jgefroh.components.MouseTrackComponent;
 import com.jgefroh.components.OutOfBoundsComponent;
 import com.jgefroh.components.RenderComponent;
+import com.jgefroh.components.ShieldComponent;
 import com.jgefroh.components.TargetComponent;
 import com.jgefroh.components.TargetTrackComponent;
 import com.jgefroh.components.TransformComponent;
@@ -190,7 +191,8 @@ public class EntityCreationSystem implements ISystem
 			ic.setInterested("MOVE_RIGHT");	
 			ic.setInterested("+FIRE1");	
 			ic.setInterested("-FIRE1");	
-			
+			ic.setInterested("+SHIELD");
+			ic.setInterested("-SHIELD");
 			ic.setInterested("SWITCH_WEAPON_1");
 			ic.setInterested("SWITCH_WEAPON_2");
 			ic.setInterested("SWITCH_WEAPON_3");
@@ -245,7 +247,9 @@ public class EntityCreationSystem implements ISystem
 			
 		TargetComponent tarc = new TargetComponent(player);
 			player.add(tarc);
-			
+		
+		ShieldComponent sc = new ShieldComponent(player);
+			player.add(sc);
 		core.add(player);
 	}
 	
@@ -528,7 +532,7 @@ public class EntityCreationSystem implements ISystem
 	}
 
 
-	public void createEnemy0_1(final int x, final int y)
+	public void createEnemy2_1(final int x, final int y)
 	{	
 		IEntity enemy = new Entity();
 		enemy.setName("ENEMY");
@@ -542,7 +546,7 @@ public class EntityCreationSystem implements ISystem
 			enemy.add(tc);
 		
 		RenderComponent rc = new RenderComponent(enemy);
-			rc.setSpriteID(2);
+			rc.setSpriteID(7);
 			rc.setTexturePath("res/enemy.png");
 			enemy.add(rc);
 		
@@ -562,9 +566,11 @@ public class EntityCreationSystem implements ISystem
 			Weapon weapon = new Weapon();
 			weapon.setName("enemy_Weapon");
 			weapon.setConsecutiveShotDelay(1500);
-			weapon.setDamage(3);
-			weapon.setMaxRange(500);
+			weapon.setDamage(2);
+			weapon.setMaxRange(1500);
+			weapon.setRecoilCur(90);
 			weapon.setShotType(2);
+			weapon.setNumShots(5);
 	
 			wc.addWeapon(weapon);
 			wc.setCurrentWeapon("enemy_Weapon");
@@ -597,6 +603,78 @@ public class EntityCreationSystem implements ISystem
 	}
 
 
+	public void createEnemy1_1(final int x, final int y)
+	{	
+		IEntity enemy = new Entity();
+		enemy.setName("ENEMY");
+		
+		TransformComponent tc = new TransformComponent(enemy);
+			tc.setYPos(y);
+			tc.setXPos(x);
+			tc.setWidth(32);
+			tc.setHeight(32);
+			tc.setBearing(90);
+			enemy.add(tc);
+		
+		RenderComponent rc = new RenderComponent(enemy);
+			rc.setSpriteID(3);
+			rc.setTexturePath("res/enemy.png");
+			enemy.add(rc);
+		
+		CollisionComponent cc = new CollisionComponent(enemy);
+			cc.setCollisionGroup(1);
+			enemy.add(cc);
+		
+		HealthComponent hc = new HealthComponent(enemy);
+			hc.setCurHealth(30);
+			enemy.add(hc);
+			
+		HealthBarComponent hbc = new HealthBarComponent(enemy);
+			hbc.setHealthBar(createHealthBar(enemy));
+			enemy.add(hbc);
+	
+		WeaponComponent wc = new WeaponComponent(enemy);
+			Weapon weapon = new Weapon();
+			weapon.setName("enemy_Weapon");
+			weapon.setConsecutiveShotDelay(200);
+			weapon.setDamage(2);
+			weapon.setMaxRange(1500);
+			weapon.setRecoilCur(360);
+			weapon.setFireMode(FireMode.BURST.ordinal());
+			weapon.setBurstDelay(3000);
+			weapon.setBurstSize(20);
+			weapon.setNumShots(1);
+			weapon.setShotType(2);
+	
+			wc.addWeapon(weapon);
+			wc.setCurrentWeapon("enemy_Weapon");
+			enemy.add(wc);
+		
+		VelocityComponent vc = new VelocityComponent(enemy);
+			vc.setInterval(4);
+			
+	
+		Vector v = new Vector();
+			v.setAngle(180);
+			v.setMaxMagnitude(900);
+			v.setMagnitude(1);
+			v.setContinuous(true);
+			v.calcComponents();
+			vc.setTotalMovementVector(v);
+			enemy.add(vc);
+		
+		TargetTrackComponent ttc = new TargetTrackComponent(enemy);
+			ttc.setTargetRange(1500);
+			enemy.add(ttc);
+			
+		AIComponent ai = new AIComponent(enemy);
+			ai.setAttackChance(1);
+			enemy.add(ai);
+			
+		OutOfBoundsComponent oobc = new OutOfBoundsComponent(enemy);
+			enemy.add(oobc);	
+		core.add(enemy);
+	}
 	public void createEnemy0_2(final int x, final int y)
 	{	
 		IEntity enemy = new Entity();
@@ -674,7 +752,7 @@ public class EntityCreationSystem implements ISystem
 				createEnemy1_0(x+100, y+128);
 				createEnemy0_2(x+50, y+128);
 				createEnemy0_0(x+100, y+256);
-				createEnemy0_1(x+100, y+384);
+				createEnemy2_1(x+100, y+384);
 				createEnemy0_2(x+50, y+384);
 				createEnemy0_0(x+100, y+512);
 				createEnemy1_0(x+100, y+640);
@@ -684,7 +762,7 @@ public class EntityCreationSystem implements ISystem
 				createEnemy3_0(x+100, y+128);
 				createEnemy0_2(x+50, y+128);
 				createEnemy1_0(x+100, y+256);
-				createEnemy0_1(x+100, y+384);
+				createEnemy2_1(x+100, y+384);
 				createEnemy0_2(x+50, y+384);
 				createEnemy1_0(x+100, y+512);
 				createEnemy3_0(x+100, y+640);
@@ -708,7 +786,8 @@ public class EntityCreationSystem implements ISystem
 	}
 
 	public void createBullet(final IEntity owner, final int type,
-							final int damage, final int maxRange)
+							final int damage, final int maxRange,
+							final double recoil)
 	{
 		TransformComponent otc = owner.getComponent(TransformComponent.class);
 		int x = 0;
@@ -744,8 +823,11 @@ public class EntityCreationSystem implements ISystem
 			
 
 
+		double recoil1 = Math.random()*(recoil/2);
+		double recoil2 = Math.random()*(recoil/2);
 		Vector v = new Vector();
-			v.setAngle(otc.getBearing());
+		
+			v.setAngle(otc.getBearing()+recoil1-recoil2);
 			v.setMaxMagnitude(900);
 			v.setMagnitude(20);
 			v.setContinuous(true);
@@ -849,6 +931,31 @@ public class EntityCreationSystem implements ISystem
 		return healthBar;
 	}
 	
+	public IEntity createShield(final IEntity owner)
+	{
+		IEntity shield = new Entity();
+		shield.setName("shield");
+		TransformComponent otc = owner.getComponent(TransformComponent.class);
+		CollisionComponent occ = owner.getComponent(CollisionComponent.class);
+		
+		TransformComponent stc = new TransformComponent(shield);
+			stc.setXPos(otc.getXPos());
+			stc.setYPos(otc.getYPos());
+			stc.setWidth(128);
+			stc.setHeight(128);
+			shield.add(stc);
+			
+		RenderComponent rc = new RenderComponent(shield);
+			rc.setSpriteID(0);
+			rc.setTexturePath("res/fx.png");
+			shield.add(rc);
+		
+		CollisionComponent cc = new CollisionComponent(shield);
+			cc.setCollisionGroup(occ.getCollisionGroup());
+			shield.add(cc);
+		core.add(shield);
+		return shield;
+	}
 	public void createEnemy(final int xOffset, final int y, final int type)
 	{
 		int x = 1366 + xOffset;
@@ -868,21 +975,18 @@ public class EntityCreationSystem implements ISystem
 				break;
 			case 4:
 				createEnemy1_0(x, y);
-
 				break;
 			case 5:
-				createEnemy0_1(x, y);
+				createEnemy2_1(x, y);
 				break;
 			case 6:
 				createEnemy0_2(x, y);
 				break;
 			case 7:
 				createEnemy1_0(x, y);
-
 				break;
 			case 8:
-				createEnemy0_0(x, y);
-
+				createEnemy1_1(x, y);
 				break;
 		}
 	}
