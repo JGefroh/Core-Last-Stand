@@ -249,6 +249,14 @@ public class EntityCreationSystem implements ISystem
 			player.add(tarc);
 		
 		ShieldComponent sc = new ShieldComponent(player);
+			sc.setShieldCur(10);
+			sc.setShieldInc(1);
+			sc.setShieldDec(1);
+			sc.setShieldRechargeInterval(1000);
+			sc.setShieldRechargeDelay(1000);
+			sc.setShieldMax(10);
+			sc.setShieldMin(3);
+			sc.setShieldDrainInterval(1000);
 			player.add(sc);
 		core.add(player);
 	}

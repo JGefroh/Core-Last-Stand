@@ -76,7 +76,7 @@ public class ShieldSystem implements ISystem
 	{
 		if(isRunning)
 		{
-			updateShields();
+			updateShields(now);
 		}
 	}
 
@@ -129,7 +129,7 @@ public class ShieldSystem implements ISystem
 	/**
 	 * Goes through all entities that can have a shield and updates them.
 	 */
-	private void updateShields()
+	private void updateShields(final long now)
 	{
 		Iterator<ShieldInfoPack> packs =
 				core.getInfoPacksOfType(ShieldInfoPack.class);
@@ -138,27 +138,51 @@ public class ShieldSystem implements ISystem
 		{
 			ShieldInfoPack pack = packs.next();
 			
-			if(pack.isShieldActive())
+			if(pack.isShieldActive()
+					&&pack.getShieldCur()>0
+					&&pack.getShield()!=null)
 			{
-				//If the user has requested the shield to be up
-				if(pack.getShield()==null)
+				//If the shield is requested,
+				//and if the shield has energy
+				//and if it already exists...
+				
+				//Move a shield
+				moveShield(pack);
+				
+				if(checkTimeToDrain(pack, now))
 				{
-					//If the shield does not exist, create it...
-					createShield(pack);
+					//Drain the shield if enough time has passed.
+					decShield(pack);
+					pack.setShieldLastDrained(now);
 				}
-				else
-				{
-					//Move the shield to the proper position
-					moveShield(pack);
-				}
+				
+				pack.setShieldLastUsed(now);
+			}
+			else if(pack.isShieldActive()
+					&&pack.getShieldCur()>=pack.getShieldMin()
+					&&pack.getShield()==null)
+			{
+				//If the shield is requested,
+				//and if the shield has enough to create a new shield
+				//and if there is no shield...
+				
+				//Create a shield
+				createShield(pack);
+				decShield(pack);					
+				pack.setShieldLastUsed(now);
+				pack.setShieldLastDrained(now);
 			}
 			else
 			{
-				//If the user has requested to remove the shield...
 				core.removeEntity(pack.getShield());
 				pack.setShield(null);	//IMPORTANT
+				
+				if(checkTimeToCharge(pack, now))
+				{//If the proper time has passed to recharge the shield...
+					incShield(pack);
+					pack.setShieldLastRecharged(now);
+				}
 			}
-
 		}
 	}
 	
@@ -185,6 +209,73 @@ public class ShieldSystem implements ISystem
 		pack.setShieldYPos(yPos);
 	}
 	
+	/**
+	 * Decrements the shield's charge according to its values.
+	 * @param pack	the ShieldInfoPack of the shield
+	 */
+	private void decShield(final ShieldInfoPack pack)
+	{
+		int shield = pack.getShieldCur()-pack.getShieldDec();
+		if(shield>=0)
+		{
+			pack.setShieldCur(shield);
+		}
+		else
+		{
+			pack.setShieldCur(0);
+		}
+	}
+
+	/**
+	 * Increments the shield's charge according to its values.
+	 * @param pack	the ShieldInfoPack of the shield
+	 */
+	private void incShield(final ShieldInfoPack pack)
+	{
+		int shield = pack.getShieldCur()+pack.getShieldInc();
+		if(shield<=pack.getShieldMax())
+		{
+			pack.setShieldCur(shield);
+		}
+		else
+		{
+			pack.setShieldCur(pack.getShieldMax());
+		}
+	}
+	
+	/**
+	 * Checks to see if the right amount of time has passed to charge the shield.
+	 * @param pack	the ShieldInfoPack of the shield
+	 * @param now	the current time
+	 * @return true if the time has passed; false otherwise
+	 */
+	private boolean checkTimeToCharge(final ShieldInfoPack pack, final long now)
+	{
+		if(now-pack.getShieldLastUsed()
+		>=pack.getShieldRechargeDelay()
+		&&now-pack.getShieldLastRecharged()
+			>=pack.getShieldRechargeInterval())
+		{
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Checks to see if the right amount of time has passed to drain the shield.
+	 * @param pack	the ShieldInfoPack of the shield
+	 * @param now	the current time
+	 * @return	true if the time has passed; false otherwise
+	 */
+	private boolean checkTimeToDrain(final ShieldInfoPack pack, final long now)
+	{
+		if(now-pack.getShieldLastDrained()
+				>=pack.getShieldDrainInterval())
+		{
+			return true;
+		}
+		return false;
+	}
 	/**
 	 * Sets an entity's shield request flag.
 	 * @param message	[0] contains the ID of the entity

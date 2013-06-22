@@ -88,6 +88,60 @@ public class ShieldInfoPack implements IInfoPack
 	{
 		return sc.getShield();
 	}
+	
+	public int getShieldCur()
+	{
+		return sc.getShieldCur();
+	}
+
+	public int getShieldMin()
+	{
+		return sc.getShieldMin();
+	}
+
+	public int getShieldMax()
+	{
+		return sc.getShieldMax();
+	}
+	public int getShieldInc()
+	{
+		return sc.getShieldInc();
+	}
+	
+	public int getShieldDec()
+	{
+		return sc.getShieldDec();
+	}
+	
+	public long getShieldRechargeInterval()
+	{
+		return sc.getShieldRechargeInterval();
+	}
+	
+	public long getShieldDrainInterval()
+	{
+		return sc.getShieldDrainInterval();
+	}
+	
+	public long getShieldRechargeDelay()
+	{
+		return sc.getShieldRechargeDelay();
+	}
+
+	public long getShieldLastUsed()
+	{
+		return sc.getShieldLastUsed();
+	}
+
+	public long getShieldLastRecharged()
+	{
+		return sc.getShieldLastRecharged();
+	}
+	
+	public long getShieldLastDrained()
+	{
+		return sc.getShieldLastDrained();
+	}
 	//////////
 	// SETTERS
 	//////////
@@ -130,5 +184,44 @@ public class ShieldInfoPack implements IInfoPack
 			stc.setYPos(yPos);
 		}
 	}
+	
+	public void setShieldCur(final int shieldCur)
+	{
+		sc.setShieldCur(shieldCur);
+	}
 
+	public void setShieldMin(final int shieldMin)
+	{
+		sc.setShieldMin(shieldMin);
+	}
+
+	public void setShieldMax(final int shieldMax)
+	{
+		sc.setShieldMax(shieldMax);
+	}
+	
+	public void setShieldInc(final int shieldInc)
+	{
+		sc.setShieldInc(shieldInc);
+	}
+	
+	public void setShieldDec(final int shieldDec)
+	{
+		sc.setShieldDec(shieldDec);
+	}
+
+	public void setShieldLastUsed(final long shieldLastUsed)
+	{
+		sc.setShieldLastUsed(shieldLastUsed);
+	}
+
+	public void setShieldLastRecharged(final long shieldLastRecharged)
+	{
+		sc.setShieldLastRecharged(shieldLastRecharged);
+	}
+
+	public void setShieldLastDrained(final long shieldLastDrained)
+	{
+		sc.setShieldLastDrained(shieldLastDrained);
+	}
 }
