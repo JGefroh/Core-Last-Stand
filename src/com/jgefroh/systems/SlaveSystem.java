@@ -8,15 +8,13 @@ import java.util.logging.Logger;
 import com.jgefroh.core.Core;
 import com.jgefroh.core.ISystem;
 import com.jgefroh.core.LoggerFactory;
-import com.jgefroh.infopacks.AIInfoPack;
-import com.jgefroh.infopacks.OutOfBoundsInfoPack;
-import com.jgefroh.tests.Benchmark;
-
+import com.jgefroh.infopacks.SlaveInfoPack;
 
 /**
+ * Slaves entities to a master entity.
  * @author Joseph Gefroh
  */
-public class OutOfBoundsSystem implements ISystem
+public class SlaveSystem implements ISystem
 {
 	//////////
 	// DATA
@@ -25,7 +23,6 @@ public class OutOfBoundsSystem implements ISystem
 	private Core core;
 	
 	/**Flag that shows whether the system is running or not.*/
-	@SuppressWarnings("unused")
 	private boolean isRunning;
 	
 	/**The time to wait between executions of the system.*/
@@ -41,7 +38,6 @@ public class OutOfBoundsSystem implements ISystem
 	private final Logger LOGGER 
 		= LoggerFactory.getLogger(this.getClass(), Level.ALL);
 	
-
 	
 	//////////
 	// INIT
@@ -50,26 +46,26 @@ public class OutOfBoundsSystem implements ISystem
 	 * Create a new instance of this {@code System}.
 	 * @param core	 a reference to the Core controlling this system
 	 */
-	public OutOfBoundsSystem(final Core core)
+	public SlaveSystem(final Core core)
 	{
 		this.core = core;
 		setDebugLevel(this.debugLevel);
 
 		init();
 	}
-
-	/////////
+	
+	
+	//////////
 	// ISYSTEM INTERFACE
-	/////////
+	//////////
 	@Override
 	public void init()
 	{
-		LOGGER.log(Level.FINE, "Setting system values to default.");
-		isRunning = true;		
+		core.setInterested(this, "REQUEST_SHIELD");
 	}
 	
 	@Override
-	public void start()
+	public void start() 
 	{
 		LOGGER.log(Level.INFO, "System started.");
 		isRunning = true;
@@ -78,12 +74,16 @@ public class OutOfBoundsSystem implements ISystem
 	@Override
 	public void work(final long now)
 	{
-		checkOutOfBounds();
+		if(isRunning)
+		{
+			destroyFreed();
+			positionSlaves();
+		}
 	}
 
 	@Override
 	public void stop()
-	{
+	{	
 		LOGGER.log(Level.INFO, "System stopped.");
 		isRunning = false;
 	}
@@ -118,59 +118,37 @@ public class OutOfBoundsSystem implements ISystem
 	{
 		LOGGER.log(Level.FINEST, "Received message: " + id);
 	}
-	/////////
-	// SYSTEM METHODS
-	/////////
 	
-	private void checkOutOfBounds()
+	//////////
+	// SYSTEM METHODS
+	//////////
+	/**
+	 * Destroys all slave entities without masters.
+	 */
+	public void destroyFreed()
 	{
-		Iterator<OutOfBoundsInfoPack> packs
-			= core.getInfoPacksOfType(OutOfBoundsInfoPack.class);
+		Iterator<SlaveInfoPack> packs
+			= core.getInfoPacksOfType(SlaveInfoPack.class);
 		
 		while(packs.hasNext())
 		{
-			OutOfBoundsInfoPack pack = packs.next();
+			SlaveInfoPack pack = packs.next();
 			
-			if(pack.isChecking()&&
-					(pack.getXPos()+pack.getWidth()/2<0
-					|| pack.getXPos()-pack.getWidth()/2>1366
-					|| pack.getYPos()+pack.getHeight()/2<0
-					|| pack.getYPos()-pack.getHeight ()/2>768))
+			if(pack.getMaster()==null)
 			{
-				core.send("DESTROYING_ENTITY", pack.getOwner().getID());
-				LOGGER.log(Level.FINEST, 
-					"Entity " + pack.getOwner().getID() + " out of bounds.");
 				core.removeEntity(pack.getOwner());
-			}
-			else if(pack.isChecking()==false)
-			{
-				boolean isChecking = checkWithinBounds(pack);
-				if(isChecking==true)
-				{					
-					pack.setChecking(isChecking);
-					core.send("IS_WITHIN_BOUNDS", 
-							pack.getOwner().getID(), 
-							true + "");
-					LOGGER.log(Level.FINEST, 
-							pack.getOwner().getName() + "(" 
-									+ pack.getOwner().getID()
-									+ ") crossed threshold.");
-				}
 			}
 		}
 	}
 	
-	private boolean checkWithinBounds(final OutOfBoundsInfoPack pack)
+	/**
+	 * Positions all slave entities to be placed on top of their masters.
+	 */
+	public void positionSlaves()
 	{
-		if(pack.getXPos()-pack.getWidth()/2>=0
-		&& pack.getXPos()+pack.getWidth()/2<=1366
-		&& pack.getYPos()-pack.getHeight()/2>=0
-		&& pack.getYPos()+pack.getHeight()/2<=768)
-		{
-			return true;
-		}
-		return false;
+		
 	}
+	
 	/**
 	 * Sets the debug level of this {@code System}.
 	 * @param level	the Level to set
@@ -179,4 +157,5 @@ public class OutOfBoundsSystem implements ISystem
 	{
 		this.LOGGER.setLevel(level);
 	}
+	
 }

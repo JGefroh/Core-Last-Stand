@@ -106,10 +106,11 @@ public class Main
 			//aiSys.setWait(1000);
 		core.addSystem(aiSys);
 		core.addSystem(new TargetTrackSystem(core));
-		core.addSystem(new OutOfBoundsSystem(core));
+		OutOfBoundsSystem oobSys = new OutOfBoundsSystem(core);
+		core.addSystem(oobSys);
 		EnemySpawnSystem eSpawn = new EnemySpawnSystem(core);
-		eSpawn.setWait(25000);
-		eSpawn.setLast(core.now()-30000);
+		eSpawn.setWait(30000);
+		eSpawn.setLast(core.now()-31000);
 		core.addSystem(eSpawn); 
 		core.addSystem(new ShieldSystem(core));
 		rl = new ResourceLoader(core);
@@ -157,7 +158,9 @@ public class Main
 		EntityCreationSystem ecs = 
 				core.getSystem(EntityCreationSystem.class);
 		ecs.createPlayer(32, 384);
+		//ecs.createEnemy1_0(128, 128);
 	/*	
+	 * 
 		ecs.createFormation(0, 100);	
 		ecs.createFormation(1, 500);
 		ecs.createFormation(2, 900);

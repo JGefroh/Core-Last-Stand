@@ -176,7 +176,11 @@ public class TransformComponent implements IComponent
 	 */
 	public void setBearing(final double bearing)
 	{
-		this.bearing = bearing;
+		this.bearing = bearing%360;
+		if(this.bearing<0)
+		{
+			this.bearing+=360;
+		}
 	}
 	/**
 	 * Sets the X coordinate position of the entity.

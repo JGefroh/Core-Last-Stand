@@ -219,7 +219,7 @@ public class InputSystem implements ISystem, IInputSystem
 		}
 		else if(id.equals("MOVE_UP"))
 		{
-			core.send("GENERATE_FORCE", message[0], 5 +"", -90+"");
+			core.send("GENERATE_FORCE", message[0], 5 +"", 270+"");
 		}
 		else if(id.equals("MOVE_DOWN"))
 		{

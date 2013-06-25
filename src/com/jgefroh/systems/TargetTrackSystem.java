@@ -10,6 +10,7 @@ import com.jgefroh.core.ISystem;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.infopacks.TargetInfoPack;
 import com.jgefroh.infopacks.TargetTrackInfoPack;
+import com.jgefroh.tests.Benchmark;
 
 
 /**
@@ -39,6 +40,9 @@ public class TargetTrackSystem implements ISystem
 	/**Logger for debug purposes.*/
 	private final Logger LOGGER 
 		= LoggerFactory.getLogger(this.getClass(), Level.ALL);
+
+	/**Performance benchmark.*/
+	private Benchmark bench = new Benchmark(this.getClass().getName(), false);
 
 	//////////
 	// INIT
@@ -77,7 +81,10 @@ public class TargetTrackSystem implements ISystem
 	{
 		if(this.isRunning)
 		{
-			track();	
+			long startTime = System.nanoTime();
+			int numEntities = track(now);	
+			bench.benchmark(System.nanoTime()-startTime, numEntities);
+			
 		}
 	}
 
@@ -124,10 +131,12 @@ public class TargetTrackSystem implements ISystem
 	/**
 	 * Selects and tracks targets.
 	 */
-	private void track()
+	private int track(final long now)
 	{
 		Iterator<TargetTrackInfoPack> packs 
 			= core.getInfoPacksOfType(TargetTrackInfoPack.class);
+		
+		int numEntities = 0;
 		while(packs.hasNext())
 		{
 			//Get all trackers
@@ -147,11 +156,15 @@ public class TargetTrackSystem implements ISystem
 			}
 			
 			//If the target is in range...
-			if(checkTargetInRange(each, target))
+			if(now-each.getLastTurned()>=each.getTurnInterval()
+					&&checkTargetInRange(each, target))
 			{
 				turnTowardsTarget(each, target);
+				each.setLastTurned(now);
 			}
+			numEntities++;
 		}
+		return numEntities;
 	}
 	
 	/**
@@ -185,8 +198,76 @@ public class TargetTrackSystem implements ISystem
 		{
 			double adj = target.getXPos()-each.getXPos();
 			double opp = target.getYPos()-each.getYPos();
-			double bearing = Math.toDegrees(Math.atan2(opp, adj));
-			each.setBearing(bearing);
+			
+			//The angle the target is at relative to the source
+			double targetAngle = Math.toDegrees(Math.atan2(opp, adj));
+			
+			//The angle the source is currently facing
+			double sourceAngle = each.getBearing();
+			
+			//The smallest difference between the two angles
+			double angleDifference;
+
+			//The difference between the two angles on the left side.
+			double angleLeft;
+			
+			//The difference between the two angles on the right side.
+			double angleRight;
+			
+			//FLAG: Turn right to reach target angle.
+			boolean turnRight = false;
+
+			//Step 1: Normalize angle to target
+			targetAngle = targetAngle%360;	//Normalizes angle, [0-360)
+			if(targetAngle<0)
+			{
+				//Done because Java's mod operator is weird with negatives.
+				targetAngle+=360;
+			}
+			
+			//Step 2: Get the difference in the two angles from left and right
+			if(targetAngle>sourceAngle)
+			{
+				angleLeft = targetAngle - sourceAngle; //Diff turning left
+				angleRight = 360+sourceAngle - targetAngle;	//Diff turning right
+			}
+			else
+			{
+				angleLeft = 360+targetAngle - sourceAngle;	//Diff turning left
+				angleRight = sourceAngle - targetAngle;		//Diff turning right
+			}
+			
+			//Step 3: Get the shorter of the two paths
+			if(angleLeft<=angleRight)
+			{
+				//If turning left is faster than turning right
+				angleDifference  = angleLeft;
+				turnRight = false;
+			}
+			else
+			{
+				angleDifference = angleRight;
+				turnRight = true;
+			}
+			
+			//Step 4: Turn
+			if(Math.abs(angleDifference)<=each.getTurnSpeed())
+			{//If the turn is within the turn speed...
+				each.setBearing(targetAngle);	//face it
+			}
+			else
+			{	
+				if(turnRight==false)
+				{
+					//If turning right...
+					each.setBearing(sourceAngle+each.getTurnSpeed());					
+				}
+				else
+				{
+					//If turning left
+					each.setBearing(sourceAngle-each.getTurnSpeed());					
+				}
+			}
 		}
 	}
 	

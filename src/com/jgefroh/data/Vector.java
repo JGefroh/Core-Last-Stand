@@ -141,7 +141,7 @@ public class Vector
 	 * @param angle	the angle of this vector, in degrees
 	 */
 	public void setAngle(final double angle)
-	{
+	{		
 		this.angle = angle;
 	}
 	

@@ -94,8 +94,25 @@ public class TargetTrackInfoPack implements IInfoPack
 		return ttc.getTargetRange();
 	}
 	
+	public long getLastTurned()
+	{
+		return ttc.getLastTurned();
+	}
 	
+	public long getTurnInterval()
+	{
+		return ttc.getTurnInterval();
+	}
 	
+	public double getTurnSpeed()
+	{
+		return ttc.getTurnSpeed();
+	}
+	
+	public double getBearing()
+	{
+		return tc.getBearing();
+	}
 	//////////
 	// SETTERS
 	//////////
@@ -118,5 +135,10 @@ public class TargetTrackInfoPack implements IInfoPack
 	public void setTargetRange(final double targetRange)
 	{
 		ttc.setTargetRange(targetRange);
+	}
+	
+	public void setLastTurned(final long lastTurned)
+	{
+		ttc.setLastTurned(lastTurned);
 	}
 }

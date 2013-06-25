@@ -26,6 +26,15 @@ public class TargetTrackComponent implements IComponent
 	
 	/**The range to the target.*/
 	private double targetRange;
+	
+	/**The speed at which the object turns.*/
+	private double turnSpeed;
+	
+	/**The time the object was last turned.*/
+	private long lastTurned;
+	
+	/**The time to wait in between turns.*/
+	private long turnInterval;
 	//////////
 	// INIT
 	//////////
@@ -42,7 +51,7 @@ public class TargetTrackComponent implements IComponent
 	@Override
 	public void init()
 	{
-
+		this.turnSpeed = 360;
 	}
 	
 	
@@ -73,7 +82,32 @@ public class TargetTrackComponent implements IComponent
 		return this.targetRange;
 	}
 	
+	/**
+	 * Gets the maximum amount to turn by, in degrees.
+	 * @return	the maximum amount to turn by, in degrees
+	 */
+	public double getTurnSpeed()
+	{
+		return this.turnSpeed;
+	}
 	
+	/**
+	 * Gets the time the Entity was last turned.
+	 * @return	the time last turned, in ms
+	 */
+	public long getLastTurned()
+	{
+		return this.lastTurned;
+	}
+	
+	/**
+	 * Gets the time to wait in between turns.
+	 * @return the time to wait, in ms
+	 */
+	public long getTurnInterval()
+	{
+		return this.turnInterval;
+	}
 	//////////
 	// SETTERS
 	//////////
@@ -99,5 +133,32 @@ public class TargetTrackComponent implements IComponent
 	public void setTargetRange(final double targetRange)
 	{
 		this.targetRange = targetRange;
+	}
+	
+	/**
+	 * Sets the maximum amount to turn by, in degrees.
+	 * @param turnSpeed the maximum amount to turn by, in degrees
+	 */
+	public void setTurnSpeed(final double turnSpeed)
+	{
+		this.turnSpeed = turnSpeed;
+	}
+	
+	/**
+	 * Sets the time the Entity was last turned.
+	 * @param lastTurned the time last turned, in ms
+	 */
+	public void setLastTurned(final long lastTurned)
+	{
+		this.lastTurned = lastTurned;
+	}
+	
+	/**
+	 * Sets the time to wait in between turns.
+	 * @param turnInterval the time to wait, in ms
+	 */
+	public void setTurnInterval(final long turnInterval)
+	{
+		this.turnInterval = turnInterval;
 	}
 }

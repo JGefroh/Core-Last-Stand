@@ -9,6 +9,7 @@ import com.jgefroh.core.Core;
 import com.jgefroh.core.ISystem;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.infopacks.AIInfoPack;
+import com.jgefroh.tests.Benchmark;
 
 
 /**
@@ -39,6 +40,8 @@ public class AISystem implements ISystem
 	/**Logger for debug purposes.*/
 	private final Logger LOGGER 
 		= LoggerFactory.getLogger(this.getClass(), Level.ALL);
+	
+	private Benchmark bench = new Benchmark(this.getClass().getName(), false);
 
 	
 	//////////
@@ -52,7 +55,6 @@ public class AISystem implements ISystem
 	{
 		this.core = core;
 		setDebugLevel(this.debugLevel);
-
 		init();
 	}
 	
@@ -79,9 +81,11 @@ public class AISystem implements ISystem
 	@Override
 	public void work(final long now)
 	{
-		if(isRunning)
+		if(this.isRunning)
 		{
-			attack();
+			long startTime = System.nanoTime();
+			int numEntities = attack();
+			bench.benchmark(System.nanoTime()-startTime, numEntities);
 		}
 	}
 	
@@ -139,10 +143,11 @@ public class AISystem implements ISystem
 	/**
 	 * Goes through all AI entities and attempts an attack.
 	 */
-	private void attack()
+	private int attack()
 	{
 		Iterator<AIInfoPack> packs = core.getInfoPacksOfType(AIInfoPack.class);
 		
+		int numEntities = 0;
 		while(packs.hasNext())
 		{
 			AIInfoPack each = packs.next();
@@ -151,7 +156,9 @@ public class AISystem implements ISystem
 			{				
 				rollForAttack(each);
 			}
+			numEntities++;
 		}
+		return numEntities;
 	}
 	
 	/**
@@ -181,7 +188,7 @@ public class AISystem implements ISystem
 				if(pack.isInRangeOfTarget()!=isInRange)
 				{
 					pack.setInRangeOfTarget(isInRange);
-					LOGGER.log(Level.FINE, 
+					LOGGER.log(Level.FINEST, 
 							pack.getOwner().getName() + "(" + message[0]
 									+ ") in range?: " + isInRange);
 				}
@@ -205,7 +212,7 @@ public class AISystem implements ISystem
 			{				
 				boolean isActive = Boolean.parseBoolean(message[1]);
 				pack.setActive(isActive);
-				LOGGER.log(Level.FINE, 
+				LOGGER.log(Level.FINEST, 
 						pack.getOwner().getName() + "(" + message[0]
 								+ ") is active?: " + isActive);
 			}

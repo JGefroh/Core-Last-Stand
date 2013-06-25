@@ -123,18 +123,22 @@ public class EnemySpawnSystem implements ISystem
 	{
 		EntityCreationSystem ecs = core.getSystem(EntityCreationSystem.class);
 		Random r = new Random();
-		for(int x=32;x<600;x+=64)
+		int numEnemies = 0;
+		for(int x=32;x<600;x+=32)
 		{
-			for(int y=64;y<700;y+=64)
+			for(int y=64;y<500;y+=64)
 			{
 				double chance = r.nextInt(100);
 
 				if(chance<10)
 				{
-					ecs.createEnemy(x, y, r.nextInt(10));
+					ecs.createEnemy(x, y, r.nextInt(11));
+					System.out.println("Spawned enemy " + numEnemies+ " at:" + x +"," + y);
+					numEnemies++;
 				}
 			}
 		}
+		LOGGER.log(Level.FINER, "Spawned " + numEnemies +" enemies.");
 	}
 	/**
 	 * Sets the debug level of this {@code System}.

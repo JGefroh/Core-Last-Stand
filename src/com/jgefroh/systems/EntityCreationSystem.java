@@ -238,12 +238,12 @@ public class EntityCreationSystem implements ISystem
 			player.add(mc);
 		
 		HealthComponent hc = new HealthComponent(player);
-			hc.setCurHealth(100);
+			hc.setCurHealth(1000000);
 			player.add(hc);
 			
 		HealthBarComponent hbc = new HealthBarComponent(player);
-			hbc.setHealthBar(createHealthBar(player));
-			player.add(hbc);
+			//hbc.setHealthBar(createHealthBar(player));
+		//	player.add(hbc);
 			
 		TargetComponent tarc = new TargetComponent(player);
 			player.add(tarc);
@@ -386,6 +386,8 @@ public class EntityCreationSystem implements ISystem
 		
 		TargetTrackComponent ttc = new TargetTrackComponent(enemy);
 			ttc.setTargetRange(1500);
+			ttc.setTurnSpeed(2.5);
+			ttc.setTurnInterval(50);
 			enemy.add(ttc);
 			
 		AIComponent ai = new AIComponent(enemy);
@@ -729,7 +731,7 @@ public class EntityCreationSystem implements ISystem
 			
 		AIComponent ai = new AIComponent(enemy);
 			enemy.add(ai);
-			OutOfBoundsComponent oobc = new OutOfBoundsComponent(enemy);
+		OutOfBoundsComponent oobc = new OutOfBoundsComponent(enemy);
 			enemy.add(oobc);	
 		core.add(enemy);
 	}
@@ -994,6 +996,12 @@ public class EntityCreationSystem implements ISystem
 				createEnemy1_0(x, y);
 				break;
 			case 8:
+				createEnemy1_1(x, y);
+				break;
+			case 9:
+				createEnemy1_0(x, y);
+				break;
+			case 10:
 				createEnemy1_1(x, y);
 				break;
 		}

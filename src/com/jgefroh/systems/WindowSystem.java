@@ -100,7 +100,6 @@ public class WindowSystem implements ISystem
 		this.isRunning = true;
 		core.setInterested(this, "REQUEST_WINDOW_WIDTH");
 		core.setInterested(this, "REQUEST_WINDOW_HEIGHT");
-
 	}
 	
 	@Override
