@@ -144,15 +144,23 @@ public class ForceSystem implements ISystem
 		while(packs.hasNext())
 		{
 			ForceInfoPack each = packs.next();
-			if(each.isDirty()==false)
+			
+			Vector vecGenerated = each.getGeneratedVector();		
+			
+			if(each.isRelative()==true)
 			{
-				Vector total = each.getSumVector();
-				Vector generated = each.getGeneratedForce();
-				total.add(generated);
+				vecGenerated.setAngle(each.getBearing());
+			}
+			
+			Vector vecTotal = each.getSumVector();
+			vecTotal.add(vecGenerated);
+			if(each.isContinuous()==false)
+			{				
 				each.setGeneratedForce(new Vector());
 			}
 		}
 	}
+	
 	
 	/**
 	 * Generates a vector force for a specific entity.
@@ -177,23 +185,19 @@ public class ForceSystem implements ISystem
 				LOGGER.log(Level.WARNING, "Unexpected number of parameters.");
 			}
 			
-			MovementInfoPack mip 
-				= core.getInfoPackFrom(entityID, MovementInfoPack.class);
 			ForceInfoPack fip 
 				= core.getInfoPackFrom(entityID, ForceInfoPack.class);
 			
-			if(mip!=null&&fip!=null&&
-					mip.isDirty()==false&&fip.isDirty()==false)
+			if(fip!=null&&fip.isDirty()==false)
 			{
+				Vector generated = fip.getGeneratedVector();	//Get current generated vector...
 				Vector vector = new Vector();
-				vector.setAngle(angle);
-				vector.setMaxMagnitude(1000);
-				vector.setMagnitude(vecMag);
-				vector.setID(0);
-				vector.setContinuous(false);
-				fip.getGeneratedForce().add(vector);
+					vector.setAngle(angle);
+					vector.setMagnitude(fip.getMagnitude());
+					vector.setID(0);
+				generated.add(vector);
 				LOGGER.log(Level.FINE, 
-						mip.getOwner().getName() + "(" + entityID
+						fip.getOwner().getName() + "(" + entityID
 								+ ") generated force with " + 
 								vecMag + " magnitude at " + angle + " degrees.");
 			}

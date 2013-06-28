@@ -120,6 +120,10 @@ public class MovementInfoPack implements IInfoPack
 		return vc.getTotalMovementVector();
 	}
 	
+	public boolean isContinuous()
+	{
+		return vc.isContinuous();
+	}
 	//////////
 	// SETTERS
 	//////////
@@ -164,5 +168,10 @@ public class MovementInfoPack implements IInfoPack
 	public void setTotalMovementVector(final Vector totalMovementVector)
 	{
 		vc.setTotalMovementVector(totalMovementVector);
+	}
+	
+	public void setContinuous(final boolean isContinuous)
+	{
+		vc.setContinuous(isContinuous);
 	}
 }

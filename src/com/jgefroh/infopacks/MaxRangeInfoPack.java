@@ -82,19 +82,24 @@ public class MaxRangeInfoPack implements IInfoPack
 		return tc.getYPos();
 	}
 	
-	public double getInitialXPos()
+	public double getLastXPos()
 	{
-		return mc.getInitialXPos();
+		return mc.getLastXPos();
 	}
 
-	public double getInitialYPos()
+	public double getLastYPos()
 	{
-		return mc.getInitialYPos();
+		return mc.getLastYPos();
 	}
 	
 	public int getMaxRange()
 	{
 		return mc.getMaxRange();
+	}
+	
+	public double getDistanceTraveled()
+	{
+		return mc.getDistanceTraveled();
 	}
 	//////////
 	// SETTERS
@@ -103,6 +108,20 @@ public class MaxRangeInfoPack implements IInfoPack
 	public void setDirty(final boolean isDirty)
 	{
 		this.isDirty = isDirty;
+	}
+	
+	public void setLastXPos(final double lastXPos)
+	{
+		mc.setLastXPos(lastXPos);
+	}
+	
+	public void setLastYPos(final double lastYPos)
+	{
+		mc.setLastYPos(lastYPos);
+	}
+	public void setDistanceTraveled(final double distanceTraveled)
+	{
+		mc.setDistanceTraveled(distanceTraveled);
 	}
 	
 }

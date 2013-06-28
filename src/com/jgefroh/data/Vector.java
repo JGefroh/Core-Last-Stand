@@ -11,9 +11,6 @@ public class Vector
 	//////////
 	/**The unique ID of this vector.*/
 	private int id;
-	
-	/**Flag that indicates whether this vector should be removed after use.*/
-	private boolean isContinuous;
 
 	/**The X component of this vector.*/
 	private double vx;
@@ -78,14 +75,6 @@ public class Vector
 		return this.vy;
 	}
 	
-	/**
-	 * Returns the flag that indicates whether this vector is multi-use.
-	 * @return	true if intended to be used multiple times; false otherwise
-	 */
-	public boolean isContinuous()
-	{
-		return this.isContinuous;
-	}
 	//////////
 	// SETTERS
 	//////////
@@ -149,15 +138,6 @@ public class Vector
 	{
 		this.maxMagnitude = maxMagnitude;
 	}
-	/**
-	 * Sets the flag that indicates whether this vector is multi-use.
-	 * @param isContinuous	true if multi use; false otherwise
-	 */
-	public void setContinuous(final boolean isContinuous)
-	{
-		this.isContinuous = isContinuous;
-	}
-	
 	
 	//////////
 	// METHODS

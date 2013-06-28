@@ -156,11 +156,13 @@ public class TransformSystem implements ISystem
 		each.setXPos((each.getXPos()+totalV.getVX()));
 		each.setYPos((each.getYPos()+totalV.getVY()));					
 		//Translate object by total vector amount.
-		if(totalV.isContinuous()==false)
-		{						
+		
+		if(each.isContinuous()==false)
+		{
 			each.setTotalMovementVector(new Vector());
 		}
 	}
+	
 	/**
 	 * Sets the movement interval of the given entity
 	 * @param entity	the Entity to set the interval for

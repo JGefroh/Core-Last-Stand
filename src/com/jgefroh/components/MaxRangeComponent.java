@@ -21,11 +21,14 @@ public class MaxRangeComponent implements IComponent
 	/**The maximum range of the entity that owns this component.*/
 	private int maxRange;
 	
-	/**The starting X-coordinate position of the entity.*/
-	private double initialXPos;
+	/**The last X-coordinate position of the entity.*/
+	private double lastXPos;
 	
-	/**The starting Y-coordinate position of the entity.*/
-	private double initialYPos;
+	/**The last Y-coordinate position of the entity.*/
+	private double lastYPos;
+	
+	/**The distance this entity has traveled so far.*/
+	private double distanceTraveled;
 	
 	
 	//////////
@@ -67,24 +70,31 @@ public class MaxRangeComponent implements IComponent
 	}
 	
 	/**
-	 * Gets the initial X position of the owning {@code Entity}.
-	 * @return	the initial X position
+	 * Gets the last X position of the owning {@code Entity}.
+	 * @return	the last X position
 	 */
-	public double getInitialXPos()
+	public double getLastXPos()
 	{
-		return this.initialXPos;
+		return this.lastXPos;
 	}
 	
 	/**
-	 * Gets the initial Y position of the owning {@code Entity}.
-	 * @return	the initial Y position
+	 * Gets the last Y position of the owning {@code Entity}.
+	 * @return	the last Y position
 	 */
-	public double getInitialYPos()
+	public double getLastYPos()
 	{
-		return this.initialYPos;
+		return this.lastYPos;
 	}
 	
-	
+	/**
+	 * Gets the distance this entity has traveled so far.
+	 * @return	the amount of units this entity has traveled so far
+	 */
+	public double getDistanceTraveled()
+	{
+		return this.distanceTraveled;
+	}
 	//////////
 	// SETTERS
 	//////////
@@ -104,21 +114,30 @@ public class MaxRangeComponent implements IComponent
 	}
 	
 	/**
-	 * Sets the initial X position of the owning {@code Entity}.
-	 * @param initialXPos	the initial X position
+	 * Sets the last X position of the owning {@code Entity}.
+	 * @param lastXPos	the last X position
 	 */
-	public void setInitialXPos(final double initialXPos)
+	public void setLastXPos(final double lastXPos)
 	{
-		this.initialXPos = initialXPos;
+		this.lastXPos = lastXPos;
 	}
 	
 	
 	/**
-	 * Sets the initial Y position of the owning {@code Entity}.
-	 * @param initialYPos	the initial Y position
+	 * Sets the last Y position of the owning {@code Entity}.
+	 * @param lastYPos	the last Y position
 	 */
-	public void setInitialYPos(final double initialYPos)
+	public void setLastYPos(final double lastYPos)
 	{
-		this.initialYPos = initialYPos;
+		this.lastYPos = lastYPos;
+	}
+	
+	/**
+	 * Sets the distance traveled by this entity so far.
+	 * @param distanceTraveled	the amount traveled
+	 */
+	public void setDistanceTraveled(final double distanceTraveled)
+	{
+		this.distanceTraveled = distanceTraveled;
 	}
 }

@@ -130,14 +130,23 @@ public class MaxRangeSystem implements ISystem
 			MaxRangeInfoPack each = packs.next();
 			if(each.isDirty()==false)
 			{
-				double x = each.getInitialXPos();
-				double y = each.getInitialYPos();
+				
+				//Step 1: get the amount it has traveled since last  check
+				double x = each.getLastXPos();
+				double y = each.getLastYPos();
 				
 				double diffX = x-each.getXPos();
 				double diffY = y-each.getYPos();
 				
 				double distance = Math.sqrt(diffX*diffX+diffY*diffY);
-				if(distance>each.getMaxRange())
+				
+				//Step 2: Add the amount traveled to the total
+				each.setLastXPos(each.getXPos());
+				each.setLastYPos(each.getYPos());
+				each.setDistanceTraveled(each.getDistanceTraveled()+distance);
+				
+				//Step 3: Check the amount it has traveled against the max range
+				if(each.getDistanceTraveled()>each.getMaxRange())
 				{
 					LOGGER.log(Level.FINE, 
 							each.getOwner().getName() + "(" 

@@ -181,7 +181,7 @@ public class EntityCreationSystem implements ISystem
 		
 		VelocityComponent vc = new VelocityComponent(player);
 			vc.setInterval(4);
-			vc.getTotalMovementVector().setMaxMagnitude(10);
+			vc.setContinuous(false);
 			player.add(vc);
 			
 		InputComponent ic = new InputComponent(player);
@@ -210,10 +210,9 @@ public class EntityCreationSystem implements ISystem
 			player.add(cc);
 		
 		ForceGeneratorComponent fgc = new ForceGeneratorComponent(player);
-			fgc.setIncrement(1);
-			fgc.setMaxMagnitude(10);
-			fgc.setDecrement(0.5);
-			fgc.setInterval(200);
+			Vector v = new Vector();
+			fgc.setMagnitude(5);	//Movement speed
+			fgc.setVector(v);
 			player.add(fgc);
 		
 		WeaponComponent wc = new WeaponComponent(player);
@@ -238,12 +237,12 @@ public class EntityCreationSystem implements ISystem
 			player.add(mc);
 		
 		HealthComponent hc = new HealthComponent(player);
-			hc.setCurHealth(1000000);
+			hc.setCurHealth(100);
 			player.add(hc);
 			
 		HealthBarComponent hbc = new HealthBarComponent(player);
-			//hbc.setHealthBar(createHealthBar(player));
-		//	player.add(hbc);
+			hbc.setHealthBar(createHealthBar(player));
+			player.add(hbc);
 			
 		TargetComponent tarc = new TargetComponent(player);
 			player.add(tarc);
@@ -312,9 +311,9 @@ public class EntityCreationSystem implements ISystem
 			v.setAngle(180);
 			v.setMaxMagnitude(900);
 			v.setMagnitude(1);
-			v.setContinuous(true);
 			v.calcComponents();
 			vc.setTotalMovementVector(v);
+			vc.setContinuous(true);
 			enemy.add(vc);
 		
 
@@ -379,7 +378,7 @@ public class EntityCreationSystem implements ISystem
 			v.setAngle(180);
 			v.setMaxMagnitude(900);
 			v.setMagnitude(1);
-			v.setContinuous(true);
+			vc.setContinuous(true);
 			v.calcComponents();
 			vc.setTotalMovementVector(v);
 			enemy.add(vc);
@@ -453,7 +452,7 @@ public class EntityCreationSystem implements ISystem
 			v.setAngle(180);
 			v.setMaxMagnitude(900);
 			v.setMagnitude(1);
-			v.setContinuous(true);
+			vc.setContinuous(true);
 			v.calcComponents();
 			vc.setTotalMovementVector(v);
 			enemy.add(vc);
@@ -522,7 +521,7 @@ public class EntityCreationSystem implements ISystem
 			v.setAngle(180);
 			v.setMaxMagnitude(900);
 			v.setMagnitude(1);
-			v.setContinuous(true);
+			vc.setContinuous(true);
 			v.calcComponents();
 			vc.setTotalMovementVector(v);
 			enemy.add(vc);
@@ -594,7 +593,7 @@ public class EntityCreationSystem implements ISystem
 			v.setAngle(180);
 			v.setMaxMagnitude(900);
 			v.setMagnitude(1);
-			v.setContinuous(true);
+			vc.setContinuous(true);
 			v.calcComponents();
 			vc.setTotalMovementVector(v);
 			enemy.add(vc);
@@ -652,9 +651,9 @@ public class EntityCreationSystem implements ISystem
 			weapon.setRecoilCur(360);
 			weapon.setFireMode(FireMode.BURST.ordinal());
 			weapon.setBurstDelay(3000);
-			weapon.setBurstSize(20);
+			weapon.setBurstSize(4);
 			weapon.setNumShots(1);
-			weapon.setShotType(2);
+			weapon.setShotType(3);
 	
 			wc.addWeapon(weapon);
 			wc.setCurrentWeapon("enemy_Weapon");
@@ -668,7 +667,7 @@ public class EntityCreationSystem implements ISystem
 			v.setAngle(180);
 			v.setMaxMagnitude(900);
 			v.setMagnitude(1);
-			v.setContinuous(true);
+			vc.setContinuous(true);
 			v.calcComponents();
 			vc.setTotalMovementVector(v);
 			enemy.add(vc);
@@ -723,7 +722,7 @@ public class EntityCreationSystem implements ISystem
 			v.setAngle(180);
 			v.setMaxMagnitude(900);
 			v.setMagnitude(1);
-			v.setContinuous(true);
+			vc.setContinuous(true);
 			v.calcComponents();
 			vc.setTotalMovementVector(v);
 			enemy.add(vc);
@@ -820,7 +819,7 @@ public class EntityCreationSystem implements ISystem
 			tc.setYPos(otc.getYPos()+rotatedY);
 			tc.setWidth(8);
 			tc.setHeight(10);
-			tc.setBearing(0);
+			tc.setBearing(otc.getBearing());
 			bullet.add(tc);
 		
 
@@ -836,11 +835,9 @@ public class EntityCreationSystem implements ISystem
 		double recoil1 = Math.random()*(recoil/2);
 		double recoil2 = Math.random()*(recoil/2);
 		Vector v = new Vector();
-		
 			v.setAngle(otc.getBearing()+recoil1-recoil2);
-			v.setMaxMagnitude(900);
 			v.setMagnitude(20);
-			v.setContinuous(true);
+			vc.setContinuous(true);
 			v.calcComponents();
 			vc.setTotalMovementVector(v);
 			bullet.add(vc);
@@ -850,8 +847,8 @@ public class EntityCreationSystem implements ISystem
 		
 		MaxRangeComponent mc = new MaxRangeComponent(bullet);
 			mc.setMaxRange(maxRange);
-			mc.setInitialXPos(tc.getXPos()+rotatedX);
-			mc.setInitialYPos(tc.getYPos()+rotatedY);
+			mc.setLastXPos(tc.getXPos()+rotatedX);
+			mc.setLastYPos(tc.getYPos()+rotatedY);
 			bullet.add(mc);
 		
 		DamageComponent dc = new DamageComponent(bullet);
@@ -866,7 +863,7 @@ public class EntityCreationSystem implements ISystem
 			case 0:
 				tc.setWidth(8);
 				tc.setHeight(10);
-				rc.setSpriteID(3);
+				rc.setSpriteID(2);
 				break;
 			case 1:
 				tc.setWidth(16);
@@ -878,6 +875,37 @@ public class EntityCreationSystem implements ISystem
 				tc.setHeight(8);
 				rc.setSpriteID(1);
 				break;
+			case 3: //Missile
+				
+				TargetTrackComponent ttc = new TargetTrackComponent(bullet);
+					ttc.setTargetRange(1500);
+					ttc.setTurnInterval(100);
+					ttc.setTurnSpeed(6);
+				bullet.add(ttc);
+				
+				//It works...but WHAT AM I DOING HERE?
+				ForceGeneratorComponent fgc = new ForceGeneratorComponent(bullet);
+					fgc.setContinuous(true);	//WHAT?
+					fgc.setRelative(true);		//HUH?
+					Vector vector = new Vector();
+						vector.setMagnitude(5);	//Does this affect speed?
+					fgc.setVector(vector);	
+					v.setMaxMagnitude(5);	//OR DOES THIS?
+					
+					
+				MaxRangeComponent mrc = new MaxRangeComponent(bullet);
+					mrc.setLastXPos(tc.getXPos());
+					mrc.setLastYPos(tc.getYPos());
+					mrc.setMaxRange(1500);
+				bullet.add(mrc);
+				bullet.add(fgc);
+				
+				tc.setBearing(v.getAngle());	//This affects turning, definitely.
+				
+				rc.setSpriteID(3);
+				break;
+				
+				//Todo; encapsulate
 		}
 		
 		if(owner.getName().equalsIgnoreCase("PLAYER"))
@@ -914,8 +942,8 @@ public class EntityCreationSystem implements ISystem
 			
 		MaxRangeComponent mc = new MaxRangeComponent(bullet);
 			mc.setMaxRange(-1);
-			mc.setInitialXPos(x);
-			mc.setInitialYPos(y);
+			mc.setLastXPos(x);
+			mc.setLastYPos(y);
 			bullet.add(mc);
 		core.add(bullet);
 
@@ -971,6 +999,7 @@ public class EntityCreationSystem implements ISystem
 		int x = 1366 + xOffset;
 		switch(type)
 		{
+		
 			case 0:
 				createEnemy0_0(x, y);
 				break;
@@ -1004,6 +1033,7 @@ public class EntityCreationSystem implements ISystem
 			case 10:
 				createEnemy1_1(x, y);
 				break;
+			
 		}
 	}
 

@@ -218,8 +218,8 @@ public class InputSystem implements ISystem, IInputSystem
 			updateHeightRatio(message);
 		}
 		else if(id.equals("MOVE_UP"))
-		{
-			core.send("GENERATE_FORCE", message[0], 5 +"", 270+"");
+		{//This is stupid.
+			core.send("GENERATE_FORCE", message[0], 5 +"", 270+"");	
 		}
 		else if(id.equals("MOVE_DOWN"))
 		{

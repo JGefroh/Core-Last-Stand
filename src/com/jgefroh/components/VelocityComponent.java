@@ -17,7 +17,6 @@ import com.jgefroh.data.Vector;
  */
 public class VelocityComponent implements IComponent
 {
-	//TODO: Clean up, remove unnecessary stuff.
 	//////////
 	// DATA
 	//////////
@@ -35,6 +34,9 @@ public class VelocityComponent implements IComponent
 	
 	/**The total forces that were left with the object.*/
 	private Vector totalMovementVector;
+	
+	/**Flag that indicates whether the movement should be repeated after use.*/
+	private boolean isContinuous;
 	
 	//////////
 	// INIT
@@ -105,6 +107,15 @@ public class VelocityComponent implements IComponent
 		return vectors;
 	}
 	
+	/**
+	 * Gets the flag that indicates the movement should be repeated.
+	 * @return	true if the movement should repeat; false otherwise
+	 */
+	public boolean isContinuous()
+	{
+		return this.isContinuous;
+	}
+	
 	//////////
 	// SETTERS
 	//////////
@@ -139,6 +150,16 @@ public class VelocityComponent implements IComponent
 	public void setTotalMovementVector(final Vector vector)
 	{
 		this.totalMovementVector = vector;
+	}
+	
+	
+	/**
+	 * Sets the flag that indicates the movement should be repeated.
+	 * @param isContinuous	true if it should be repeated; false otherwise
+	 */
+	public void setContinuous(final boolean isContinuous)
+	{
+		this.isContinuous = isContinuous;
 	}
 	//////////
 	// METHODS
@@ -179,4 +200,5 @@ public class VelocityComponent implements IComponent
 	{
 		return this.totalMovementVector;
 	}
+
 }
