@@ -53,7 +53,7 @@ public class SlaveInfoPack implements IInfoPack
 	}
 	
 	@Override
-	public boolean isDirty()
+	public boolean checkDirty()
 	{
 		if(owner.hasChanged())
 		{
@@ -66,6 +66,12 @@ public class SlaveInfoPack implements IInfoPack
 		}
 		setDirty(false);
 		return false;
+	}
+	
+	@Override
+	public boolean isDirty()
+	{
+		return this.isDirty;
 	}
 
 	

@@ -10,9 +10,11 @@ import com.jgefroh.infopacks.AnimationInfoPackFactory;
 import com.jgefroh.infopacks.CollisionInfoPackFactory;
 import com.jgefroh.infopacks.DamageInfoPackFactory;
 import com.jgefroh.infopacks.ForceInfoPackFactory;
+import com.jgefroh.infopacks.GUIInfoPackFactory;
 import com.jgefroh.infopacks.HealthBarInfoPackFactory;
 import com.jgefroh.infopacks.HealthInfoPackFactory;
 import com.jgefroh.infopacks.InputInfoPackFactory;
+import com.jgefroh.infopacks.KeepInBoundsInfoPackFactory;
 import com.jgefroh.infopacks.MaxRangeInfoPackFactory;
 import com.jgefroh.infopacks.MouseTrackInfoPackFactory;
 import com.jgefroh.infopacks.MovementInfoPackFactory;
@@ -30,7 +32,9 @@ import com.jgefroh.systems.EnemySpawnSystem;
 import com.jgefroh.systems.EntityCreationSystem;
 import com.jgefroh.systems.ForceSystem;
 import com.jgefroh.systems.GUIHealthBarSystem;
+import com.jgefroh.systems.GUISystem;
 import com.jgefroh.systems.HealthMonitorSystem;
+import com.jgefroh.systems.KeepInBoundsSystem;
 import com.jgefroh.systems.MaxRangeSystem;
 import com.jgefroh.systems.OutOfBoundsSystem;
 import com.jgefroh.systems.RenderSystem;
@@ -113,6 +117,8 @@ public class Main
 		eSpawn.setLast(core.now()-31000);
 		core.addSystem(eSpawn); 
 		core.addSystem(new ShieldSystem(core));
+		core.addSystem(new KeepInBoundsSystem(core));
+		core.addSystem(new GUISystem(core));
 		rl = new ResourceLoader(core);
 	}
 	
@@ -135,6 +141,8 @@ public class Main
 		core.addFactory(new TargetTrackInfoPackFactory());
 		core.addFactory(new OutOfBoundsInfoPackFactory());
 		core.addFactory(new ShieldInfoPackFactory());
+		core.addFactory(new KeepInBoundsInfoPackFactory());
+		core.addFactory(new GUIInfoPackFactory());
 	}
 	
 	/**
@@ -158,6 +166,7 @@ public class Main
 		EntityCreationSystem ecs = 
 				core.getSystem(EntityCreationSystem.class);
 		ecs.createPlayer(32, 384);
+
 		//ecs.createEnemy1_0(128, 128);
 	/*	
 	 * 

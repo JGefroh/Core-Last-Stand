@@ -50,7 +50,7 @@ public class AIInfoPack implements IInfoPack
 	// GETTERS
 	//////////
 	@Override
-	public boolean isDirty()
+	public boolean checkDirty()
 	{
 		if(owner.hasChanged())
 		{
@@ -76,8 +76,13 @@ public class AIInfoPack implements IInfoPack
 	{
 		return ac.getAttackChance();
 	}
-
-
+	
+	@Override
+	public boolean isDirty()
+	{
+		return this.isDirty;
+	}
+	
 	public String getAIType()
 	{
 		return ac.getAIType();
@@ -92,6 +97,8 @@ public class AIInfoPack implements IInfoPack
 	{
 		return ac.isActive();
 	}
+	
+	
 	//////////
 	// SETTERS
 	//////////
@@ -120,4 +127,6 @@ public class AIInfoPack implements IInfoPack
 	{
 		ac.setActive(isActive);
 	}
+
+
 }

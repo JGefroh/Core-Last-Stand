@@ -29,7 +29,7 @@ public class HealthInfoPack implements IInfoPack
 	public HealthInfoPack(final IEntity owner)
 	{
 		this.owner = owner;
-		isDirty();
+		checkDirty();
 	}
 	
 	
@@ -41,9 +41,15 @@ public class HealthInfoPack implements IInfoPack
 	{
 		return this.owner;
 	}
-	
+
 	@Override
 	public boolean isDirty()
+	{
+		return this.isDirty;
+	}
+	
+	@Override
+	public boolean checkDirty()
 	{
 		if(owner.hasChanged())
 		{

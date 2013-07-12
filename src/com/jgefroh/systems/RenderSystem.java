@@ -57,6 +57,12 @@ public class RenderSystem implements ISystem
 	
 	/**Flag that indicates whether wireframe mode is enabled.*/
 	private boolean wireframeEnabled = false;
+	
+	/**The rendered width.*/
+	private final int NATIVE_WIDTH = 1366;
+	
+	/**The rendered height.*/
+	private final int NATIVE_HEIGHT = 768;
 	//////////
 	// INIT
 	//////////
@@ -86,8 +92,8 @@ public class RenderSystem implements ISystem
  		GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glLoadIdentity();
-		GL11.glViewport(0, 0, 1366, 768);
-		GL11.glOrtho(0, 1366, 768, 0, -1, 1);
+		GL11.glViewport(0, 0, NATIVE_WIDTH, NATIVE_HEIGHT);
+		GL11.glOrtho(0, NATIVE_WIDTH, NATIVE_HEIGHT, 0, -1, 1);
 	}
 	
 	
@@ -105,7 +111,12 @@ public class RenderSystem implements ISystem
 		core.setInterested(this, "WINDOW_RESIZED");
 		core.setInterested(this, "WINDOW_WIDTH");
 		core.setInterested(this, "WINDOW_HEIGHT");
+		core.setInterested(this, "REQUEST_NATIVE_WIDTH");
+		core.setInterested(this, "REQUEST_NATIVE_HEIGHT");
 		core.setInterested(this, "TOGGLE_WIREFRAME");
+		
+		core.send("NATIVE_WIDTH", NATIVE_WIDTH + "");
+		core.send("NATIVE_HEIGHT", NATIVE_HEIGHT+ ""); 
 	}
 	
 	@Override
@@ -178,6 +189,14 @@ public class RenderSystem implements ISystem
 		else if(id.equals("TOGGLE_WIREFRAME"))
 		{
 			toggleWireframeMode();
+		}
+		else if(id.equals("REQUEST_NATIVE_WIDTH"))
+		{
+			core.send("NATIVE_WIDTH", NATIVE_WIDTH + "");
+		}
+		else if(id.equals("REQUEST_NATIVE_HEIGHT"))
+		{
+			core.send("NATIVE_HEIGHT", NATIVE_HEIGHT + "");
 		}
 	}
 	
@@ -293,7 +312,8 @@ public class RenderSystem implements ISystem
 						getUMin(pack.getTextureID(), pack.getSpriteID()),
 						getUMax(pack.getTextureID(), pack.getSpriteID()),
 						getVMin(pack.getTextureID(), pack.getSpriteID()),
-						getVMax(pack.getTextureID(), pack.getSpriteID()));
+						getVMax(pack.getTextureID(), pack.getSpriteID()),
+						pack.getR(), pack.getG(), pack.getB());
 			}
 		}
 	}
@@ -324,13 +344,13 @@ public class RenderSystem implements ISystem
 							final double x, final double y, final double z, 
 							final double width, final double height,
 							final int rotation,
-							final float uMin, final float uMax, final float vMin, final float vMax)
+							final float uMin, final float uMax, final float vMin, final float vMax,
+							final float r, final float g, final float b)
 	{
-		//GL11.glColor4f(1f, 1f, 1f, 1f);
+		GL11.glColor3f(r, g, b);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
 		//(Bottom up translations)
 		GL11.glPushMatrix();
-
 		GL11.glTranslated(x, y, 0);	//Move to specified draw location
 		GL11.glTranslated(width/2, height/2, -1);	//Center
 		GL11.glRotatef(rotation, 0, 0, 1);			//Rotate
@@ -424,7 +444,7 @@ public class RenderSystem implements ISystem
 		GL11.glViewport(0, 0, width, height);
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glLoadIdentity();
-		GL11.glOrtho(0, 1366, 768, 0, -1, 100);
+		GL11.glOrtho(0, NATIVE_WIDTH, NATIVE_HEIGHT, 0, -1, 100);
 	}
 	/**
 	 * Sets the debug level of this {@code System}.

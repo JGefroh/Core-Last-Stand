@@ -50,7 +50,7 @@ public class AnimationInfoPack implements IInfoPack
 	// GETTERS
 	//////////
 	@Override
-	public boolean isDirty()
+	public boolean checkDirty()
 	{
 		if(owner.hasChanged())
 		{
@@ -70,6 +70,12 @@ public class AnimationInfoPack implements IInfoPack
 	public IEntity getOwner()
 	{
 		return this.owner;
+	}
+	
+	@Override
+	public boolean isDirty()
+	{
+		return this.isDirty;
 	}
 	
 	/**

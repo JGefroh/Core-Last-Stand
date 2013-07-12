@@ -1,12 +1,12 @@
 package com.jgefroh.infopacks;
 
-import com.jgefroh.components.OutOfBoundsComponent;
+import com.jgefroh.components.KeepInBoundsComponent;
 import com.jgefroh.components.TransformComponent;
 import com.jgefroh.core.IEntity;
 import com.jgefroh.core.IInfoPack;
 
 
-public class OutOfBoundsInfoPack implements IInfoPack
+public class KeepInBoundsInfoPack implements IInfoPack
 {
 	//////////
 	// DATA
@@ -18,7 +18,7 @@ public class OutOfBoundsInfoPack implements IInfoPack
 	private TransformComponent tc;
 	
 	/**A component this InfoPack depends on.*/
-	private OutOfBoundsComponent oc;
+	private KeepInBoundsComponent kibc;
 	
 	/**Flag that indicates the InfoPack is invalid and unreliable.*/
 	private boolean isDirty;
@@ -29,7 +29,7 @@ public class OutOfBoundsInfoPack implements IInfoPack
 	 * Create a new instance of this InfoPack.
 	 * @param owner	the entity associated with this InfoPack
 	 */
-	public OutOfBoundsInfoPack(final IEntity owner)
+	public KeepInBoundsInfoPack(final IEntity owner)
 	{
 		this.owner = owner;
 	}
@@ -44,8 +44,8 @@ public class OutOfBoundsInfoPack implements IInfoPack
 		if(owner.hasChanged())
 		{
 			tc = owner.getComponent(TransformComponent.class);
-			oc = owner.getComponent(OutOfBoundsComponent.class);			
-			if(tc==null||oc==null)
+			kibc = owner.getComponent(KeepInBoundsComponent.class);			
+			if(tc==null||kibc==null)
 			{
 				setDirty(true);
 				return true;
@@ -107,9 +107,14 @@ public class OutOfBoundsInfoPack implements IInfoPack
 		return tc.getHeight();
 	}
 
-	public boolean isChecking()
+	public double getLastX()
 	{
-		return oc.isChecking();
+		return kibc.getLastX();
+	}
+	
+	public double getLastY()
+	{
+		return kibc.getLastY();
 	}
 	//////////
 	// SETTERS
@@ -120,9 +125,24 @@ public class OutOfBoundsInfoPack implements IInfoPack
 		this.isDirty = isDirty;
 	}
 	
-	public void setChecking(final boolean isChecking)
+	public void setLastX(final double lastX)
 	{
-		oc.setChecking(isChecking);
+		kibc.setLastX(lastX);
+	}
+	
+	public void setLastY(final double lastY)
+	{
+		kibc.setLastY(lastY);
+	}
+	
+	public void setXPos(final double xPos)
+	{
+		tc.setXPos(xPos);
+	}
+	
+	public void setYPos(final double yPos)
+	{
+		tc.setYPos(yPos);
 	}
 
 }

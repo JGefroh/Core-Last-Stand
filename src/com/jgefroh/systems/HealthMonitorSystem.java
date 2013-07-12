@@ -61,6 +61,7 @@ public class HealthMonitorSystem implements ISystem
 	@Override
 	public void init()
 	{
+		core.setInterested(this, "REQUEST_HEALTH");
 	}
 	
 	@Override
@@ -115,6 +116,10 @@ public class HealthMonitorSystem implements ISystem
 	public void recv(final String id, final String... message)
 	{
 		LOGGER.log(Level.FINEST, "Received message: " + id);
+		if(id.equals("REQUEST_HEALTH"))
+		{
+			requestHealth(message);
+		}
 
 	}
 	
@@ -150,6 +155,25 @@ public class HealthMonitorSystem implements ISystem
 		}
 	}
 	
+	
+	/**
+	 * Sends a health update of the given entity id
+	 * @param message	the health of the entity
+	 */
+	private void requestHealth(final String[] message)
+	{
+		if(message.length>=1)
+		{
+			HealthInfoPack pack 
+				= core.getInfoPackFrom(message[0], HealthInfoPack.class);
+			
+			if(pack!=null)
+			{
+				core.send("HEALTH_UPDATE", pack.getOwner().getID(), 
+							pack.getCurHealth() + "");
+			}
+		}
+	}
 	/**
 	 * Sets the debug level of this {@code System}.
 	 * @param level	the Level to set

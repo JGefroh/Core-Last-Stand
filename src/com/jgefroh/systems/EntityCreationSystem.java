@@ -7,9 +7,11 @@ import com.jgefroh.components.AIComponent;
 import com.jgefroh.components.CollisionComponent;
 import com.jgefroh.components.DamageComponent;
 import com.jgefroh.components.ForceGeneratorComponent;
+import com.jgefroh.components.GUIComponent;
 import com.jgefroh.components.HealthBarComponent;
 import com.jgefroh.components.HealthComponent;
 import com.jgefroh.components.InputComponent;
+import com.jgefroh.components.KeepInBoundsComponent;
 import com.jgefroh.components.MaxRangeComponent;
 import com.jgefroh.components.MouseTrackComponent;
 import com.jgefroh.components.OutOfBoundsComponent;
@@ -240,24 +242,25 @@ public class EntityCreationSystem implements ISystem
 			hc.setCurHealth(100);
 			player.add(hc);
 			
-		HealthBarComponent hbc = new HealthBarComponent(player);
-			hbc.setHealthBar(createHealthBar(player));
-			player.add(hbc);
-			
 		TargetComponent tarc = new TargetComponent(player);
 			player.add(tarc);
 		
 		ShieldComponent sc = new ShieldComponent(player);
-			sc.setShieldCur(10);
-			sc.setShieldInc(1);
-			sc.setShieldDec(1);
-			sc.setShieldRechargeInterval(1000);
+			sc.setShieldCur(100);
+			sc.setShieldInc(2);
+			sc.setShieldDec(2);
+			sc.setShieldRechargeInterval(200);
 			sc.setShieldRechargeDelay(1000);
-			sc.setShieldMax(10);
-			sc.setShieldMin(3);
-			sc.setShieldDrainInterval(1000);
+			sc.setShieldMax(100);
+			sc.setShieldMin(30);
+			sc.setShieldDrainInterval(200);
 			player.add(sc);
+			
+		KeepInBoundsComponent kibc = new KeepInBoundsComponent();
+			player.add(kibc);
 		core.add(player);
+		
+		core.send("PLAYER_CREATED", player.getID());
 	}
 	
 	public void createEnemy0_0(final int x, final int y)
@@ -986,6 +989,7 @@ public class EntityCreationSystem implements ISystem
 		RenderComponent rc = new RenderComponent(shield);
 			rc.setSpriteID(0);
 			rc.setTexturePath("res/fx.png");
+			rc.setRGB(0, 0.50f, 1);
 			shield.add(rc);
 		
 		CollisionComponent cc = new CollisionComponent(shield);
@@ -1037,8 +1041,53 @@ public class EntityCreationSystem implements ISystem
 		}
 	}
 
-
 	
+	public String createGUIHealthBar()
+	{
+		IEntity entity = new Entity();
+		entity.setName("GUI_HEALTH");
+		
+		TransformComponent tc = new TransformComponent(entity);
+		RenderComponent rc = new RenderComponent(entity);
+		GUIComponent gc = new GUIComponent();
+		
+		tc.setWidth(10);
+		tc.setHeight(300);
+		tc.setXPos(10);
+		tc.setYPos(768/2);
+		
+		rc.setRGB(1, 0, 0);
+		entity.add(tc);
+		entity.add(rc);
+		entity.add(gc);
+		
+		core.add(entity);
+		return entity.getID();
+	}
+	
+	public String createGUIShieldBar()
+	{
+		IEntity entity = new Entity();
+		entity.setName("GUI_SHIELD");
+		
+		TransformComponent tc = new TransformComponent(entity);
+		RenderComponent rc = new RenderComponent(entity);
+		GUIComponent gc = new GUIComponent();
+		
+		tc.setWidth(10);
+		tc.setHeight(300);
+		tc.setXPos(25);
+		tc.setYPos(768/2);
+
+		rc.setRGB(0, 0.50f, 1);
+		
+		entity.add(tc);
+		entity.add(rc);
+		entity.add(gc);
+		
+		core.add(entity);
+		return entity.getID();
+	}
 	/**
 	 * Sets the debug level of this {@code System}.
 	 * @param level	the Level to set

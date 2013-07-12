@@ -21,12 +21,6 @@ public class RenderComponent implements IComponent
 	/**Flag to tell if the entity is visible or invisible.*/
 	private boolean isVisible;
 	
-	/**The pixel WIDTH of the entity.*/
-	private int width;
-	
-	/**The pixel HEIGHT of the entity.*/
-	private int height;
-	
 	/**The absolute path to the image of the entity.*/
 	private String texturePath;
 	
@@ -36,6 +30,14 @@ public class RenderComponent implements IComponent
 	/**The index of the sprite used to render*/
 	private int spriteID;
 	
+	/**The red value of this entity.*/
+	private float r = 1;
+	
+	/**The green value of this entity.*/
+	private float g = 1;
+	
+	/**The blue value of this entity.*/
+	private float b = 1;
 	
 	//////////
 	// INIT
@@ -96,24 +98,6 @@ public class RenderComponent implements IComponent
 	{
 		return this.spriteID;
 	}
-
-	/**
-	 * Gets the pixel width of this entity.
-	 * @return	the int width of this entity
-	 */
-	public int getWidth()
-	{
-		return this.width;
-	}
-	
-	/**
-	 * Gets the pixel height of this entity.
-	 * @return	the int height of this entity
-	 */
-	public int getHeight()
-	{
-		return this.height;
-	}
 	
 	/**
 	 * Returns the visibility flag of this entity.
@@ -124,7 +108,32 @@ public class RenderComponent implements IComponent
 		return this.isVisible;
 	}
 	
+	/**
+	 * Returns the red color value.
+	 * @return	the color value, from 0 to 1.
+	 */
+	public float getR()
+	{
+		return this.r;
+	}
 	
+	/**
+	 * Returns the green color value.
+	 * @return	the color value, from 0 to 1.
+	 */
+	public float getG()
+	{
+		return this.g;
+	}
+	
+	/**
+	 * Returns the blue color value.
+	 * @return	the color value, from 0 to 1.
+	 */
+	public float getB()
+	{
+		return this.b;
+	}
 	//////////
 	// SETTERS
 	//////////
@@ -169,6 +178,21 @@ public class RenderComponent implements IComponent
 	{
 		this.texturePath = texturePath;
 	}
-
+	
+	public void setRGB(final float r, final float g, final float b)
+	{
+		if(r>=0)
+		{
+			this.r = r;
+		}
+		if(g>=0)
+		{
+			this.g = g;
+		}
+		if(b>=0)
+		{
+			this.b = b;
+		}
+	}
 
 }

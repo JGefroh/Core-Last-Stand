@@ -53,10 +53,15 @@ public class CollisionInfoPack implements IInfoPack
 	{
 		return this.owner;
 	}
-
 	
 	@Override
 	public boolean isDirty()
+	{
+		return this.isDirty;
+	}
+	
+	@Override
+	public boolean checkDirty()
 	{
 		if(owner.hasChanged())
 		{

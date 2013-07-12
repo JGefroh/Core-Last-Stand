@@ -60,11 +60,11 @@ public class InputSystem implements ISystem, IInputSystem
 	/**The current width of the window.*/
 	private int windowWidth;
 	
-	/**The original width of the window.*/
-	private int windowHeightOrig;
+	/**The original width of the playing area.*/
+	private int nativeHeight;
 	
-	/**The original height of the window.*/
-	private int windowWidthOrig;
+	/**The original height of the playing area.*/
+	private int nativeWidth;
 	
 	/***/
 	private float widthRatio;
@@ -141,14 +141,17 @@ public class InputSystem implements ISystem, IInputSystem
 		core.setInterested(this,"-FIRE1");
 		core.setInterested(this,"-SHIELD");
 		core.setInterested(this,"+SHIELD");
-		
+		core.setInterested(this, "NATIVE_WIDTH");
+		core.setInterested(this, "NATIVE_HEIGHT");
 		this.windowWidth = 1366;
 		this.windowHeight = 768;
-		this.windowWidthOrig = 1366;
-		this.windowHeightOrig = 768;
+		this.nativeWidth = 1366;
+		this.nativeHeight = 768;
 		this.widthRatio = 1;
 		this.heightRatio = 1;
 		
+		core.send("REQUEST_NATIVE_WIDTH", "");
+		core.send("REQUEST_NATIVE_HEIGHT", "");
 		core.send("REQUEST_WINDOW_WIDTH", "");
 		core.send("REQUEST_WINDOW_HEIGHT", "");
 	}
@@ -243,11 +246,11 @@ public class InputSystem implements ISystem, IInputSystem
 		}
 		else if(id.equals("+SHIELD"))
 		{
-			core.send("REQUEST_SHIELD", message[0], true + "");
+			core.send("REQUEST_SHIELD_ACTIVE", message[0], true + "");
 		}
 		else if(id.equals("-SHIELD"))
 		{
-			core.send("REQUEST_SHIELD", message[0], false + "");
+			core.send("REQUEST_SHIELD_ACTIVE", message[0], false + "");
 		}
 	}
 	//////////
@@ -359,7 +362,7 @@ public class InputSystem implements ISystem, IInputSystem
 			try
 			{
 				this.windowWidth = Integer.parseInt(message[0]);
-				this.widthRatio = (float)this.windowWidthOrig/this.windowWidth;
+				this.widthRatio = (float)this.nativeWidth/this.windowWidth;
 			}
 			catch(NumberFormatException e)
 			{
@@ -380,7 +383,7 @@ public class InputSystem implements ISystem, IInputSystem
 			try
 			{
 				this.windowHeight = Integer.parseInt(message[0]);
-				this.heightRatio = (float)this.windowHeightOrig/this.windowHeight;
+				this.heightRatio = (float)this.nativeHeight/this.windowHeight;
 			}
 			catch(NumberFormatException e)
 			{
@@ -391,6 +394,46 @@ public class InputSystem implements ISystem, IInputSystem
 		else
 		{
 			LOGGER.log(Level.SEVERE, "Error updating dimension.");
+		}
+	}
+	
+	/**
+	 * Sets the native width of the playing area.
+	 * @param message	[0] contains the width of the playing area.
+	 */
+	private void setNativeWidth(final String[] message)
+	{
+		if(message.length>0)
+		{
+			try
+			{
+				this.nativeWidth = Integer.parseInt(message[0]);
+			}
+			catch(NumberFormatException e)
+			{
+				LOGGER.log(Level.WARNING, "Unable to set native width to: " 
+							+ message[0]);
+			}
+		}
+	}
+	
+	/**
+	 * Sets the native width of the playing area.
+	 * @param message	[0] contains the height of the playing area.
+	 */
+	private void setNativeHeight(final String[] message)
+	{
+		if(message.length>0)
+		{
+			try
+			{
+				this.nativeHeight = Integer.parseInt(message[0]);
+			}
+			catch(NumberFormatException e)
+			{
+				LOGGER.log(Level.WARNING, "Unable to set native width to: " 
+							+ message[0]);
+			}
 		}
 	}
 }

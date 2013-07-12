@@ -52,6 +52,12 @@ public class InputInfoPack implements IInfoPack
 	@Override
 	public boolean isDirty()
 	{
+		return this.isDirty;
+	}
+	
+	@Override
+	public boolean checkDirty()
+	{
 		if(owner.hasChanged())
 		{
 			ic = owner.getComponent(InputComponent.class);	

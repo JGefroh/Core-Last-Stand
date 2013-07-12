@@ -1,12 +1,13 @@
 package com.jgefroh.infopacks;
 
-import com.jgefroh.components.OutOfBoundsComponent;
+import com.jgefroh.components.GUIComponent;
+import com.jgefroh.components.RenderComponent;
 import com.jgefroh.components.TransformComponent;
 import com.jgefroh.core.IEntity;
 import com.jgefroh.core.IInfoPack;
 
 
-public class OutOfBoundsInfoPack implements IInfoPack
+public class GUIInfoPack implements IInfoPack
 {
 	//////////
 	// DATA
@@ -18,7 +19,9 @@ public class OutOfBoundsInfoPack implements IInfoPack
 	private TransformComponent tc;
 	
 	/**A component this InfoPack depends on.*/
-	private OutOfBoundsComponent oc;
+	private RenderComponent rc;
+	
+	private GUIComponent gc;
 	
 	/**Flag that indicates the InfoPack is invalid and unreliable.*/
 	private boolean isDirty;
@@ -29,7 +32,7 @@ public class OutOfBoundsInfoPack implements IInfoPack
 	 * Create a new instance of this InfoPack.
 	 * @param owner	the entity associated with this InfoPack
 	 */
-	public OutOfBoundsInfoPack(final IEntity owner)
+	public GUIInfoPack(final IEntity owner)
 	{
 		this.owner = owner;
 	}
@@ -44,8 +47,9 @@ public class OutOfBoundsInfoPack implements IInfoPack
 		if(owner.hasChanged())
 		{
 			tc = owner.getComponent(TransformComponent.class);
-			oc = owner.getComponent(OutOfBoundsComponent.class);			
-			if(tc==null||oc==null)
+			rc = owner.getComponent(RenderComponent.class);
+			gc = owner.getComponent(GUIComponent.class);
+			if(tc==null||rc==null||gc==null)
 			{
 				setDirty(true);
 				return true;
@@ -107,10 +111,6 @@ public class OutOfBoundsInfoPack implements IInfoPack
 		return tc.getHeight();
 	}
 
-	public boolean isChecking()
-	{
-		return oc.isChecking();
-	}
 	//////////
 	// SETTERS
 	//////////
@@ -120,9 +120,24 @@ public class OutOfBoundsInfoPack implements IInfoPack
 		this.isDirty = isDirty;
 	}
 	
-	public void setChecking(final boolean isChecking)
+	public void setXPos(final double xPos)
 	{
-		oc.setChecking(isChecking);
+		tc.setXPos(xPos);
+	}
+	
+	public void setYPos(final double yPos)
+	{
+		tc.setYPos(yPos);
+	}
+	
+	public void setWidth(final double width)
+	{
+		tc.setWidth(width);
+	}
+	
+	public void setHeight(final double height)
+	{
+		tc.setHeight(height);
 	}
 
 }

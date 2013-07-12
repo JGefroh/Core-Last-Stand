@@ -52,6 +52,12 @@ public class MaxRangeInfoPack implements IInfoPack
 	@Override
 	public boolean isDirty()
 	{
+		return this.isDirty;
+	}
+	
+	@Override
+	public boolean checkDirty()
+	{
 		if(owner.hasChanged())
 		{
 			tc = owner.getComponent(TransformComponent.class);

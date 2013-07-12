@@ -48,7 +48,7 @@ public class RenderInfoPack implements IInfoPack
 	// GETTERS
 	//////////
 	@Override
-	public boolean isDirty()
+	public boolean checkDirty()
 	{
 		if(owner.hasChanged())
 		{
@@ -62,6 +62,12 @@ public class RenderInfoPack implements IInfoPack
 		}
 		setDirty(false);
 		return false;
+	}
+	
+	@Override
+	public boolean isDirty()
+	{
+		return this.isDirty;
 	}
 	
 	@Override
@@ -150,6 +156,18 @@ public class RenderInfoPack implements IInfoPack
 		return (int)tc.getBearing();
 	}
 	
+	public float getR()
+	{
+		return rc.getR();
+	}
+	public float getG()
+	{
+		return rc.getG();
+	}
+	public float getB()
+	{
+		return rc.getB();
+	}
 	//////////
 	// SETTERS
 	//////////

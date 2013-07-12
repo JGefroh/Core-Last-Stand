@@ -44,7 +44,7 @@ public class WeaponInfoPack implements IInfoPack
 	// GETTERS
 	//////////
 	@Override
-	public boolean isDirty()
+	public boolean checkDirty()
 	{
 		if(owner.hasChanged())
 		{
@@ -57,6 +57,12 @@ public class WeaponInfoPack implements IInfoPack
 		}
 		setDirty(false);
 		return false;
+	}
+	
+	@Override
+	public boolean isDirty()
+	{
+		return this.isDirty;
 	}
 	
 	@Override

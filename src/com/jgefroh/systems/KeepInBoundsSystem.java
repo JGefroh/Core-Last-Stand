@@ -9,14 +9,17 @@ import com.jgefroh.core.Core;
 import com.jgefroh.core.ISystem;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.infopacks.AIInfoPack;
-import com.jgefroh.infopacks.OutOfBoundsInfoPack;
+import com.jgefroh.infopacks.KeepInBoundsInfoPack;
 import com.jgefroh.tests.Benchmark;
 
 
 /**
+ * Keeps objects within the confines of the screen.
+ * 
+ * 
  * @author Joseph Gefroh
  */
-public class OutOfBoundsSystem implements ISystem
+public class KeepInBoundsSystem implements ISystem
 {
 	//////////
 	// DATA
@@ -41,13 +44,11 @@ public class OutOfBoundsSystem implements ISystem
 	private final Logger LOGGER 
 		= LoggerFactory.getLogger(this.getClass(), Level.ALL);
 	
-
 	/**The native width of the playing area.*/
 	private int nativeWidth = 1366;
 	
 	/**The native height of the playing area.*/
 	private int nativeHeight = 768;
-	
 	
 	//////////
 	// INIT
@@ -56,7 +57,7 @@ public class OutOfBoundsSystem implements ISystem
 	 * Create a new instance of this {@code System}.
 	 * @param core	 a reference to the Core controlling this system
 	 */
-	public OutOfBoundsSystem(final Core core)
+	public KeepInBoundsSystem(final Core core)
 	{
 		this.core = core;
 		setDebugLevel(this.debugLevel);
@@ -88,7 +89,7 @@ public class OutOfBoundsSystem implements ISystem
 	@Override
 	public void work(final long now)
 	{
-		checkOutOfBounds();
+		checkPositions();
 	}
 
 	@Override
@@ -140,56 +141,38 @@ public class OutOfBoundsSystem implements ISystem
 	// SYSTEM METHODS
 	/////////
 	
-	private void checkOutOfBounds()
+	private void checkPositions()
 	{
-		Iterator<OutOfBoundsInfoPack> packs
-			= core.getInfoPacksOfType(OutOfBoundsInfoPack.class);
+		Iterator<KeepInBoundsInfoPack> packs
+			= core.getInfoPacksOfType(KeepInBoundsInfoPack.class);
 		
 		while(packs.hasNext())
 		{
-			OutOfBoundsInfoPack pack = packs.next();
+			KeepInBoundsInfoPack pack = packs.next();
 			
-			if(pack.isChecking()&&
-					(pack.getXPos()+pack.getWidth()/2<0
-					|| pack.getXPos()-pack.getWidth()/2>nativeWidth
-					|| pack.getYPos()+pack.getHeight()/2<0
-					|| pack.getYPos()-pack.getHeight ()/2>nativeHeight))
+			//Check if too far to the left
+			if(pack.getXPos()-pack.getWidth()/2<0)
 			{
-				core.send("DESTROYING_ENTITY", pack.getOwner().getID());
-				LOGGER.log(Level.FINEST, 
-					"Entity " + pack.getOwner().getID() + " out of bounds.");
-				core.removeEntity(pack.getOwner());
+				pack.setXPos(0+pack.getWidth()/2);
 			}
-			else if(pack.isChecking()==false)
+			///Check if too far to the right
+			else if(pack.getXPos()+pack.getWidth()/2>nativeWidth)
 			{
-				boolean isChecking = checkWithinBounds(pack);
-				if(isChecking==true)
-				{					
-					pack.setChecking(isChecking);
-					core.send("IS_WITHIN_BOUNDS", 
-							pack.getOwner().getID(), 
-							true + "");
-					LOGGER.log(Level.FINEST, 
-							pack.getOwner().getName() + "(" 
-									+ pack.getOwner().getID()
-									+ ") crossed threshold.");
-				}
+				pack.setXPos(nativeWidth-pack.getWidth()/2);
+			}
+			
+			//Check if too far up
+			if(pack.getYPos()-pack.getHeight()/2<0)
+			{
+				pack.setYPos(0+pack.getHeight()/2);
+			}
+			//Check if too far down
+			else if(pack.getYPos()+pack.getHeight()/2>nativeHeight)
+			{
+				pack.setYPos(nativeHeight-pack.getHeight()/2);
 			}
 		}
 	}
-	
-	private boolean checkWithinBounds(final OutOfBoundsInfoPack pack)
-	{
-		if(pack.getXPos()-pack.getWidth()/2>=0
-		&& pack.getXPos()+pack.getWidth()/2<=nativeWidth
-		&& pack.getYPos()-pack.getHeight()/2>=0
-		&& pack.getYPos()+pack.getHeight()/2<=nativeHeight)
-		{
-			return true;
-		}
-		return false;
-	}
-	
 	
 	/**
 	 * Sets the native width of the playing area.

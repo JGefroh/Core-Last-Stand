@@ -33,7 +33,7 @@ public class DamageInfoPack implements IInfoPack
 	public DamageInfoPack(final IEntity owner)
 	{
 		this.owner = owner;
-		isDirty();
+		checkDirty();
 	}
 	
 	
@@ -45,9 +45,15 @@ public class DamageInfoPack implements IInfoPack
 	{
 		return this.owner;
 	}
-	
+
 	@Override
 	public boolean isDirty()
+	{
+		return this.isDirty;
+	}
+	
+	@Override
+	public boolean checkDirty()
 	{
 		if(owner.hasChanged())
 		{

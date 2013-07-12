@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import com.jgefroh.core.Core;
 import com.jgefroh.core.ISystem;
 import com.jgefroh.core.LoggerFactory;
+import com.jgefroh.infopacks.HealthInfoPack;
 import com.jgefroh.infopacks.ShieldInfoPack;
 
 /**
@@ -62,6 +63,7 @@ public class ShieldSystem implements ISystem
 	public void init()
 	{
 		core.setInterested(this, "REQUEST_SHIELD");
+		core.setInterested(this, "REQUEST_SHIELD_ACTIVE");
 	}
 	
 	@Override
@@ -117,9 +119,13 @@ public class ShieldSystem implements ISystem
 	{
 		LOGGER.log(Level.FINEST, "Received message: " + id);
 		
-		if(id.equals("REQUEST_SHIELD"))
+		if(id.equals("REQUEST_SHIELD_ACTIVE"))
 		{
 			setActive(message);
+		}
+		else if(id.equals("REQUEST_SHIELD"))
+		{
+			requestShield(message);
 		}
 	}
 	
@@ -276,6 +282,7 @@ public class ShieldSystem implements ISystem
 		}
 		return false;
 	}
+	
 	/**
 	 * Sets an entity's shield request flag.
 	 * @param message	[0] contains the ID of the entity
@@ -293,7 +300,25 @@ public class ShieldSystem implements ISystem
 		}
 	}
 
-	
+
+	/**
+	 * Sends a shield update of the given entity id
+	 * @param message	the shield of the entity
+	 */
+	private void requestShield(final String[] message)
+	{
+		if(message.length>=1)
+		{
+			ShieldInfoPack pack 
+				= core.getInfoPackFrom(message[0], ShieldInfoPack.class);
+			
+			if(pack!=null)
+			{
+				core.send("SHIELD_UPDATE", pack.getOwner().getID(), 
+							pack.getShieldCur() + "");
+			}
+		}
+	}
 	/**
 	 * Sets the debug level of this {@code System}.
 	 * @param level	the Level to set
