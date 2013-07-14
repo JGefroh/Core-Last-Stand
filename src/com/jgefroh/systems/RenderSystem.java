@@ -304,7 +304,7 @@ public class RenderSystem implements ISystem
 						idMan.put(pack.getPath(), -1);	//Avoid repeat log msgs.
 					}
 				}
-
+				/*	//Too many params
 				drawQuadAt(pack.getTextureID(), 
 						pack.getXPos()-pack.getWidth()/2, pack.getYPos()-pack.getHeight()/2, pack.getZPos(),
 						pack.getWidth(), pack.getHeight(),
@@ -314,6 +314,9 @@ public class RenderSystem implements ISystem
 						getVMin(pack.getTextureID(), pack.getSpriteID()),
 						getVMax(pack.getTextureID(), pack.getSpriteID()),
 						pack.getR(), pack.getG(), pack.getB());
+				*/
+				
+				drawQuadAt(pack);
 			}
 		}
 	}
@@ -328,6 +331,55 @@ public class RenderSystem implements ISystem
 		GL11.glLoadIdentity();
 	}
 	
+	private void drawQuadAt(final RenderInfoPack pack)
+	{
+		int textureID = pack.getTextureID();
+		int spriteID = pack.getSpriteID();
+		float uMin = getUMin(textureID, spriteID);
+		float uMax = getUMax(textureID, spriteID);
+		float vMin = getVMin(textureID, spriteID);
+		float vMax = getVMax(textureID, spriteID);
+		
+		int bearing = pack.getBearing();
+		double width = pack.getWidth();
+		double height = pack.getHeight();
+		double x = pack.getXPos();
+		double y = pack.getYPos();
+		double z = pack.getZPos();
+		double xRenderOffset = pack.getXRenderOffset();
+		double yRenderOffset = pack.getYRenderOffset();
+		
+		GL11.glColor3f(pack.getR(), pack.getG(), pack.getB());	//Color quad
+		
+ 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);	//Texture quad
+		//(Bottom up translations)
+		GL11.glPushMatrix();		
+		
+		GL11.glTranslated((x-width/2)+xRenderOffset, (y-height/2)+yRenderOffset, 0);	//Center quad to specified draw location
+		//GL11.glTranslated(x, y, 0);
+		GL11.glTranslated(width/2, height/2, -1);	//Move quad back to original position
+		GL11.glRotatef(bearing, 0, 0, 1);			//Rotate quad around center
+		GL11.glTranslated(-width/2, -height/2, 1);	//Center quad on point
+		
+		GL11.glBegin(GL11.GL_QUADS);
+		{
+
+			GL11.glTexCoord3d(uMin, vMax, z);	//Bottom Left
+			GL11.glVertex3d(0, 0, z);		//Top Left
+
+			GL11.glTexCoord3d(uMin, vMin, z);	//Top Left
+			GL11.glVertex3d(width, 0, z);	//Top Right
+
+			GL11.glTexCoord3d(uMax, vMin, z);	//Top Right
+			GL11.glVertex3d(width, height, z);	//Bottom Right
+
+			GL11.glTexCoord3d(uMax, vMax, z);	//Bottom Right
+			GL11.glVertex3d(0, height, z);	//Bottom Left
+		}
+
+		GL11.glEnd();
+		GL11.glPopMatrix();
+	}
 	/**
 	 * Draw a textured quad.
 	 * @param x			the x-position on screen to draw.
@@ -348,7 +400,7 @@ public class RenderSystem implements ISystem
 							final float r, final float g, final float b)
 	{
 		GL11.glColor3f(r, g, b);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
+ 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
 		//(Bottom up translations)
 		GL11.glPushMatrix();
 		GL11.glTranslated(x, y, 0);	//Move to specified draw location

@@ -1040,12 +1040,13 @@ public class EntityCreationSystem implements ISystem
 			
 		}
 	}
-
 	
-	public String createGUIHealthBar()
+	public String createGUIBar(final double xPos, final double yPos,
+								final double width, final double height,
+								final float r, final float g, final float b)
 	{
 		IEntity entity = new Entity();
-		entity.setName("GUI_HEALTH");
+		entity.setName("GUI_BAR");
 		
 		TransformComponent tc = new TransformComponent(entity);
 		RenderComponent rc = new RenderComponent(entity);
@@ -1053,41 +1054,21 @@ public class EntityCreationSystem implements ISystem
 		
 		tc.setWidth(10);
 		tc.setHeight(300);
-		tc.setXPos(10);
-		tc.setYPos(768/2);
-		
-		rc.setRGB(1, 0, 0);
-		entity.add(tc);
-		entity.add(rc);
-		entity.add(gc);
-		
-		core.add(entity);
-		return entity.getID();
-	}
-	
-	public String createGUIShieldBar()
-	{
-		IEntity entity = new Entity();
-		entity.setName("GUI_SHIELD");
-		
-		TransformComponent tc = new TransformComponent(entity);
-		RenderComponent rc = new RenderComponent(entity);
-		GUIComponent gc = new GUIComponent();
-		
-		tc.setWidth(10);
-		tc.setHeight(300);
-		tc.setXPos(25);
-		tc.setYPos(768/2);
+		tc.setXPos(xPos);
+		tc.setYPos(yPos);
+		tc.setBearing(180);
 
-		rc.setRGB(0, 0.50f, 1);
+		rc.setRGB(r, g, b);
 		
 		entity.add(tc);
 		entity.add(rc);
 		entity.add(gc);
 		
 		core.add(entity);
+		
 		return entity.getID();
 	}
+
 	/**
 	 * Sets the debug level of this {@code System}.
 	 * @param level	the Level to set

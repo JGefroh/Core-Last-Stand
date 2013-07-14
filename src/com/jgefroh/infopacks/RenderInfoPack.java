@@ -168,6 +168,16 @@ public class RenderInfoPack implements IInfoPack
 	{
 		return rc.getB();
 	}
+	
+	public double getXRenderOffset()
+	{
+		return rc.getXRenderOffset();
+	}
+	
+	public double getYRenderOffset()
+	{
+		return rc.getYRenderOffset();
+	}
 	//////////
 	// SETTERS
 	//////////

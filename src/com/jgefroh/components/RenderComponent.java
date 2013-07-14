@@ -39,6 +39,11 @@ public class RenderComponent implements IComponent
 	/**The blue value of this entity.*/
 	private float b = 1;
 	
+	/**The render offset for the X coordinate.*/
+	private double xRenderOffset;
+	
+	/**The render offset for the Y coordinate.*/
+	private double yRenderOffset;
 	//////////
 	// INIT
 	//////////
@@ -56,7 +61,6 @@ public class RenderComponent implements IComponent
 	public void init()
 	{
 		setVisible(true);
-		setTexturePath(null);
 		setTextureID(-1);
 		setSpriteID(-1);
 	}
@@ -134,6 +138,22 @@ public class RenderComponent implements IComponent
 	{
 		return this.b;
 	}
+	
+	/**Returns the X render offset for this entity.
+	 * @return the render offset
+	 */
+	public double getXRenderOffset()
+	{
+		return this.xRenderOffset;
+	}	
+	
+	/**Returns the Y render offset for this entity.
+	 * @return the render offset
+	 */
+	public double getYRenderOffset()
+	{
+		return this.yRenderOffset;
+	}
 	//////////
 	// SETTERS
 	//////////
@@ -179,6 +199,28 @@ public class RenderComponent implements IComponent
 		this.texturePath = texturePath;
 	}
 	
+	/**Sets the X render offset for this entity.
+	 * @param xRenderOffset the render offset
+	 */
+	public void setXRenderOffset(final double xRenderOffset)
+	{
+		this.xRenderOffset = xRenderOffset;
+	}		
+	
+	/**Sets the Y render offset for this entity.
+	 * @param xRenderOffset the render offset
+	 */
+	public void setYRenderOffset(final double yRenderOffset)
+	{
+		this.yRenderOffset = yRenderOffset;
+	}	
+	
+	/**
+	 * Sets the RGB color for this object.
+	 * @param r	the red
+	 * @param g	the green
+	 * @param b	the blue
+	 */
 	public void setRGB(final float r, final float g, final float b)
 	{
 		if(r>=0)

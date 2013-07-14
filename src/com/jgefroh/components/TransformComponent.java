@@ -18,13 +18,13 @@ public class TransformComponent implements IComponent
 	/**The owner of the component.*/
 	private IEntity owner;
 	
-	/**The global X position of the object.*/
+	/**The global X position of the object at its top left corner.*/
 	private double xPos;
 	
-	/**The global Y position of the object.*/
+	/**The global Y position of the object at its top left corner.*/
 	private double yPos;
 	
-	/**The global Z position of the object.*/
+	/**The global Z position of the object at its top left corner*/
 	private double zPos;
 	
 	/**The last global X position of the object.*/
