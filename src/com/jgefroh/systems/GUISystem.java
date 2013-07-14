@@ -63,9 +63,9 @@ public class GUISystem implements ISystem
 	{
 		elements = new HashMap<String, String>();
 		elements.put("PLAYER_SHIELD_BAR_XPOS", "25");
-		elements.put("PLAYER_SHIELD_BAR_YPOS", "384");
-		elements.put("PLAYER_HEALTH_BAR_XPOS", "10");
-		elements.put("PLAYER_HEALTH_BAR_YPOS", "384");
+		elements.put("PLAYER_SHIELD_BAR_YPOS", "16");
+		elements.put("PLAYER_HEALTH_BAR_XPOS", "25");
+		elements.put("PLAYER_HEALTH_BAR_YPOS", "40");
 		
 		core.setInterested(this, "PLAYER_CREATED");
 		core.setInterested(this, "HEALTH_UPDATE");
@@ -154,25 +154,28 @@ public class GUISystem implements ISystem
 		
 		if(id!=null&&playerID!=null)
 		{
-			//Get the amount of health the entity has.
-			core.send("REQUEST_HEALTH", playerID);
-			
-			//Get the bar
-			GUIInfoPack pack = core.getInfoPackFrom(id, GUIInfoPack.class);
-			
+			GUIInfoPack pack = core.getInfoPackFrom(id, GUIInfoPack.class);			
 			if(pack!=null)
 			{
-				//if the bar exists...
+				//If the GUI element exists...
+				//Update the amount of health the entity has
+				core.send("REQUEST_HEALTH", playerID);
+				
 				try
 				{				
-					//Get the amount of health
-					int health = Integer.parseInt(elements.get("PLAYER_HEALTH"));
+					//Get the amount of health (double to avoid shifting on odd)
+					double health = Integer.parseInt(elements.get("PLAYER_HEALTH"));
 					//Get the position the bar should be.
-					int healthYPos = Integer.parseInt(elements.get("PLAYER_HEALTH_BAR_YPOS"));
+					int healthXPos = Integer.parseInt(elements.get("PLAYER_HEALTH_BAR_XPOS"));
 					//Set the size of the health bar to reflect hp
-					pack.setHeight(health);	
+					pack.setWidth(health);	
 					//Reposition bar so it does not move
-					pack.setYPos(healthYPos-health/2);	
+					pack.setXPos(healthXPos + health/2);	
+					
+					if(health<50)
+					{
+						pack.setRGB(255, 0, 0);
+					}
 				}
 				catch(NumberFormatException e)
 				{
@@ -181,7 +184,6 @@ public class GUISystem implements ISystem
 			}
 			else
 			{
-				//The bar does not exist.
 				elements.remove("PLAYER_HEALTH_BAR");
 			}
 		}
@@ -194,7 +196,7 @@ public class GUISystem implements ISystem
 				
 				//Create health bar
 				String healthBarID 
-					= core.getSystem(EntityCreationSystem.class).createGUIBar(xPos, yPos, 10, 300, 1, 0, 0);
+					= core.getSystem(EntityCreationSystem.class).createGUIBar(xPos, yPos, 10, 300, 0, 128, 0);
 				
 				//Save health bar
 				elements.put("PLAYER_HEALTH_BAR", healthBarID);
@@ -209,6 +211,7 @@ public class GUISystem implements ISystem
 	
 	private void updateShieldBar()
 	{
+		//Update shield bar
 		String id = elements.get("PLAYER_SHIELD_BAR");
 		String playerID = elements.get("PLAYER_ID");
 		
@@ -223,14 +226,14 @@ public class GUISystem implements ISystem
 				
 				try
 				{				
-					//Get the amount of shield
-					int shield = Integer.parseInt(elements.get("PLAYER_SHIELD"));
+					//Get the amount of shield (double to avoid shifting on odd)
+					double shield = Integer.parseInt(elements.get("PLAYER_SHIELD"));
 					//Get the correct draw position
-					int shieldPos = Integer.parseInt(elements.get("PLAYER_SHIELD_BAR_YPOS"));
+					int shieldXPos = Integer.parseInt(elements.get("PLAYER_SHIELD_BAR_XPOS"));
 					//Set the size of the shield bar to reflect shield energy
-					pack.setHeight(shield);	
+					pack.setWidth(shield);	
 					//Reposition to prevent moving the bar
-					pack.setYPos(shieldPos-shield/2);
+					pack.setXPos(shieldXPos + shield/2);
 				}
 				catch(NumberFormatException e)
 				{
@@ -251,7 +254,7 @@ public class GUISystem implements ISystem
 				
 				//Create shield bar
 				String shieldBarID 
-					= core.getSystem(EntityCreationSystem.class).createGUIBar(xPos, yPos, 10, 300, 0, 0.50f, 1f);
+					= core.getSystem(EntityCreationSystem.class).createGUIBar(xPos, yPos, 10, 300, 0, 100, 255);
 				
 				//Save shield bar
 				elements.put("PLAYER_SHIELD_BAR", shieldBarID);

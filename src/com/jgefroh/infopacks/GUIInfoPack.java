@@ -139,5 +139,10 @@ public class GUIInfoPack implements IInfoPack
 	{
 		tc.setHeight(height);
 	}
+	
+	public void setRGB(final float r, final float g, final float b)
+	{
+		rc.setRGB(r, g, b);
+	}
 
 }

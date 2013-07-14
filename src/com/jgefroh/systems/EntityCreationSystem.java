@@ -989,7 +989,7 @@ public class EntityCreationSystem implements ISystem
 		RenderComponent rc = new RenderComponent(shield);
 			rc.setSpriteID(0);
 			rc.setTexturePath("res/fx.png");
-			rc.setRGB(0, 0.50f, 1);
+			rc.setRGB(0, 125, 255);
 			shield.add(rc);
 		
 		CollisionComponent cc = new CollisionComponent(shield);
@@ -1052,11 +1052,9 @@ public class EntityCreationSystem implements ISystem
 		RenderComponent rc = new RenderComponent(entity);
 		GUIComponent gc = new GUIComponent();
 		
-		tc.setWidth(10);
-		tc.setHeight(300);
+		tc.setHeight(16);
 		tc.setXPos(xPos);
 		tc.setYPos(yPos);
-		tc.setBearing(180);
 
 		rc.setRGB(r, g, b);
 		

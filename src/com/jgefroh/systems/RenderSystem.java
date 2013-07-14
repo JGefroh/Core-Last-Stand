@@ -349,7 +349,7 @@ public class RenderSystem implements ISystem
 		double xRenderOffset = pack.getXRenderOffset();
 		double yRenderOffset = pack.getYRenderOffset();
 		
-		GL11.glColor3f(pack.getR(), pack.getG(), pack.getB());	//Color quad
+		GL11.glColor3f(pack.getR()/255, pack.getG()/255, pack.getB()/255);	//Color quad
 		
  		GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);	//Texture quad
 		//(Bottom up translations)

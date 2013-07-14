@@ -31,13 +31,13 @@ public class RenderComponent implements IComponent
 	private int spriteID;
 	
 	/**The red value of this entity.*/
-	private float r = 1;
+	private float r = 255;
 	
 	/**The green value of this entity.*/
-	private float g = 1;
+	private float g = 255;
 	
 	/**The blue value of this entity.*/
-	private float b = 1;
+	private float b = 255;
 	
 	/**The render offset for the X coordinate.*/
 	private double xRenderOffset;
