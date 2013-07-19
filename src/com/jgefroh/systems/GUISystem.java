@@ -64,12 +64,58 @@ public class GUISystem implements ISystem
 		elements = new HashMap<String, String>();
 		elements.put("PLAYER_SHIELD_BAR_XPOS", "25");
 		elements.put("PLAYER_SHIELD_BAR_YPOS", "16");
+		elements.put("PLAYER_SHIELD_BAR_WIDTH", "200");
+		elements.put("PLAYER_SHIELD_BAR_HEIGHT", "16");
+		
+		elements.put("PLAYER_SHIELD_BAR_NUMBER_XPOS", "-36");
+		elements.put("PLAYER_SHIELD_BAR_NUMBER_YPOS", "16");
+		elements.put("PLAYER_SHIELD_BAR_NUMBER_WIDTH", "16");
+		elements.put("PLAYER_SHIELD_BAR_NUMBER_HEIGHT", "16");
+		elements.put("PLAYER_SHIELD_BAR_NUMBER_SPACING", "16");
+		elements.put("PLAYER_SHIELD_BAR_NUMBER_RIGHTJUSTIFIED", "true");
+		
 		elements.put("PLAYER_HEALTH_BAR_XPOS", "25");
 		elements.put("PLAYER_HEALTH_BAR_YPOS", "40");
+		elements.put("PLAYER_HEALTH_BAR_WIDTH", "200");
+		elements.put("PLAYER_HEALTH_BAR_HEIGHT", "40");
 		
+		elements.put("PLAYER_HEALTH_BAR_NUMBER_XPOS", "-36");
+		elements.put("PLAYER_HEALTH_BAR_NUMBER_YPOS", "40");
+		elements.put("PLAYER_HEALTH_BAR_NUMBER_WIDTH", "16");
+		elements.put("PLAYER_HEALTH_BAR_NUMBER_HEIGHT", "16");
+		elements.put("PLAYER_HEALTH_BAR_NUMBER_SPACING", "16");
+		elements.put("PLAYER_HEALTH_BAR_NUMBER_RIGHTJUSTIFIED", "true");
+		
+		elements.put("PLAYER_HEALTH_BAR_MAX_NUMBER_XPOS", "144");
+		elements.put("PLAYER_HEALTH_BAR_MAX_NUMBER_YPOS", "40");
+		elements.put("PLAYER_HEALTH_BAR_MAX_NUMBER_WIDTH", "16");
+		elements.put("PLAYER_HEALTH_BAR_MAX_NUMBER_HEIGHT", "16");
+		elements.put("PLAYER_HEALTH_BAR_MAX_NUMBER_SPACING", "16");
+		elements.put("PLAYER_HEALTH_BAR_MAX_NUMBER_RIGHTJUSTIFIED", "false");
+		
+
+		elements.put("PLAYER_SHIELD_BAR_MAX_NUMBER_XPOS", "144");
+		elements.put("PLAYER_SHIELD_BAR_MAX_NUMBER_YPOS", "16");
+		elements.put("PLAYER_SHIELD_BAR_MAX_NUMBER_WIDTH", "16");
+		elements.put("PLAYER_SHIELD_BAR_MAX_NUMBER_HEIGHT", "16");
+		elements.put("PLAYER_SHIELD_BAR_MAX_NUMBER_SPACING", "16");
+		elements.put("PLAYER_SHIELD_BAR_MAX_NUMBER_RIGHTJUSTIFIED", "false");
+	
+		elements.put("SCORE_NUMBER", Integer.MAX_VALUE + "");
+		elements.put("SCORE_NUMBER_YPOS", "32");
+		elements.put("SCORE_NUMBER_XPOS", "500");
+		elements.put("SCORE_NUMBER_WIDTH", "32");
+		elements.put("SCORE_NUMBER_HEIGHT", "32");
+		elements.put("SCORE_NUMBER_SPACING", "162");
+		elements.put("SCORE_NUMBER_LEADING", "true");
+		elements.put("SCORE_NUMBER_RIGHTJUSTIFIED", "true");
+
 		core.setInterested(this, "PLAYER_CREATED");
 		core.setInterested(this, "HEALTH_UPDATE");
 		core.setInterested(this, "SHIELD_UPDATE");
+		
+		
+
 	}
 	
 	@Override
@@ -86,6 +132,12 @@ public class GUISystem implements ISystem
 		{
 			updateHealthBar();
 			updateShieldBar();
+			updateCounter("SCORE");
+			updateCounter("PLAYER_HEALTH_BAR");
+			updateCounter("PLAYER_SHIELD_BAR");
+			updateCounter("PLAYER_HEALTH_BAR_MAX");
+			updateCounter("PLAYER_SHIELD_BAR_MAX");
+			updateCounterSeparators();
 		}
 	}
 
@@ -164,15 +216,18 @@ public class GUISystem implements ISystem
 				try
 				{				
 					//Get the amount of health (double to avoid shifting on odd)
-					double health = Integer.parseInt(elements.get("PLAYER_HEALTH"));
+					double health = Integer.parseInt(elements.get("PLAYER_HEALTH_BAR_NUMBER"));
 					//Get the position the bar should be.
 					int healthXPos = Integer.parseInt(elements.get("PLAYER_HEALTH_BAR_XPOS"));
 					//Set the size of the health bar to reflect hp
-					pack.setWidth(health);	
+					double width = Integer.parseInt(elements.get("PLAYER_HEALTH_BAR_WIDTH"));
+					double maxHealth = Integer.parseInt(elements.get("PLAYER_HEALTH_BAR_MAX_NUMBER"));
+					width = (health/maxHealth)*width;
+					pack.setWidth(width);	
 					//Reposition bar so it does not move
-					pack.setXPos(healthXPos + health/2);	
+					pack.setXPos(healthXPos + width/2);	
 					
-					if(health<50)
+					if(health/maxHealth<0.25)
 					{
 						pack.setRGB(255, 0, 0);
 					}
@@ -227,13 +282,16 @@ public class GUISystem implements ISystem
 				try
 				{				
 					//Get the amount of shield (double to avoid shifting on odd)
-					double shield = Integer.parseInt(elements.get("PLAYER_SHIELD"));
+					double shield = Integer.parseInt(elements.get("PLAYER_SHIELD_BAR_NUMBER"));
 					//Get the correct draw position
 					int shieldXPos = Integer.parseInt(elements.get("PLAYER_SHIELD_BAR_XPOS"));
 					//Set the size of the shield bar to reflect shield energy
-					pack.setWidth(shield);	
+					double width = Integer.parseInt(elements.get("PLAYER_SHIELD_BAR_WIDTH"));
+					double max = Integer.parseInt(elements.get("PLAYER_SHIELD_BAR_MAX_NUMBER"));
+					width = (shield/max)*width;
+					pack.setWidth(width);	
 					//Reposition to prevent moving the bar
-					pack.setXPos(shieldXPos + shield/2);
+					pack.setXPos(shieldXPos + width/2);
 				}
 				catch(NumberFormatException e)
 				{
@@ -266,7 +324,81 @@ public class GUISystem implements ISystem
 		}
 	}
 
+	private void updateCounter(final String source)
+	{
+		String number = elements.get(source+"_NUMBER");
+		
+		EntityCreationSystem ecs = core.getSystem(EntityCreationSystem.class);
+		
+		boolean rightJustified = Boolean.parseBoolean(elements.get(source+"_NUMBER_RIGHTJUSTIFIED"));
+		boolean hasLeadingZeros = Boolean.parseBoolean(elements.get(source+"_NUMBER_LEADING"));
+		if(rightJustified)
+		{
+			//Add leading spaces to match slots.
+			number = String.format("%10s", number);
+			
+			if(hasLeadingZeros)
+			{
+				//Change spaces to zeros.
+				number = number.replace(' ', '0');
+			}
+		}
+		
+		for(int slot = 0;slot<10;slot++)
+		{
+			//For each of the number slots...
+			String id = elements.get(source + "_NUMBER_DIGIT_" + slot);
+			GUIInfoPack pack = core.getInfoPackFrom(id, GUIInfoPack.class);
 
+			if(pack!=null)
+			{
+				//If the slot already exists...
+				if(slot<number.length())
+				{
+					//If the string has a symbol at the position
+					pack.setSpriteID(number.charAt(slot));
+				}
+				else
+				{
+					//Set as blank (don't use -1 as a legit sprite index)
+					pack.setSpriteID(-1);				
+				}
+			}
+			else
+			{
+				//Create the slots.
+				int xPos = Integer.parseInt(elements.get(source + "_NUMBER_XPOS"));
+				int yPos = Integer.parseInt(elements.get(source + "_NUMBER_YPOS"));
+				int width = Integer.parseInt(elements.get(source + "_NUMBER_WIDTH"));
+				int height = Integer.parseInt(elements.get(source + "_NUMBER_HEIGHT"));
+								
+				xPos = xPos+width*slot;	//Position each slot correctly.
+							
+				elements.put(source + "_NUMBER_DIGIT_" + slot, ecs.createLetter(xPos, yPos, width, height, ' '));
+			}
+		}
+	}
+	
+	private void updateCounterSeparators()
+	{
+		String sep = elements.get("HEALTH_BAR_COUNTER_SEPARATOR");
+		GUIInfoPack pack = core.getInfoPackFrom(sep, GUIInfoPack.class);
+		
+		EntityCreationSystem ecs = core.getSystem(EntityCreationSystem.class);
+		if(pack==null)
+		{			
+			elements.put("HEALTH_BAR_COUNTER_SEPARATOR", ecs.createLetter(125,40,16,16,'/'));	// / separator for health
+		}
+		
+		sep = elements.get("SHIELD_BAR_COUNTER_SEPARATOR");
+		pack = core.getInfoPackFrom(sep, GUIInfoPack.class);
+		
+		if(pack==null)
+		{			
+			elements.put("SHIELD_BAR_COUNTER_SEPARATOR", ecs.createLetter(125,16,16,16,'/'));	// / separator for shield
+		}
+		
+	}
 	private void updateHealthAmount(final String[] message)
 	{
 		if(message.length>1)
@@ -274,7 +406,10 @@ public class GUISystem implements ISystem
 			try
 			{
 				Integer.parseInt(message[1]);	//Check to see if number
-				elements.put("PLAYER_HEALTH", message[1]);
+				elements.put("PLAYER_HEALTH_BAR_NUMBER", message[1]);
+				
+				Integer.parseInt(message[2]);
+				elements.put("PLAYER_HEALTH_BAR_MAX_NUMBER", message[2]);
 			}
 			catch(NumberFormatException e)
 			{
@@ -290,7 +425,10 @@ public class GUISystem implements ISystem
 			try
 			{
 				Integer.parseInt(message[1]);	//Check to see if number
-				elements.put("PLAYER_SHIELD", message[1]);
+				elements.put("PLAYER_SHIELD_BAR_NUMBER", message[1]);
+				
+				Integer.parseInt(message[2]);
+				elements.put("PLAYER_SHIELD_BAR_MAX_NUMBER", message[2]);
 			}
 			catch(NumberFormatException e)
 			{

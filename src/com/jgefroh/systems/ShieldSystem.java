@@ -315,7 +315,8 @@ public class ShieldSystem implements ISystem
 			if(pack!=null)
 			{
 				core.send("SHIELD_UPDATE", pack.getOwner().getID(), 
-							pack.getShieldCur() + "");
+							pack.getShieldCur() + "",
+							pack.getShieldMax() + "");
 			}
 		}
 	}

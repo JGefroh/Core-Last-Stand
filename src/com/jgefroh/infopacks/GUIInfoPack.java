@@ -144,5 +144,10 @@ public class GUIInfoPack implements IInfoPack
 	{
 		rc.setRGB(r, g, b);
 	}
+	
+	public void setSpriteID(final int id)
+	{
+		rc.setSpriteID(id);
+	}
 
 }

@@ -75,8 +75,9 @@ public class Main
 
 	private void init()
 	{
-		initSystems();
+		core = new Core();
 		initFactories();
+		initSystems();
 		loadTexture();
 	}
 	
@@ -85,7 +86,6 @@ public class Main
 	 */
 	private void initSystems()
 	{
-		core = new Core();
 		core.setDebugLevel(Level.INFO);
 		core.addSystem(new WindowSystem(core, 1366, 768, "Last Stand"), true);
 		core.addSystem(new RenderSystem(core), true);
@@ -188,5 +188,6 @@ public class Main
 		rl.loadTexture("res/enemy.png");
 		rl.loadTexture("res/bg.png");
 		rl.loadTexture("res/fx.png");
+		rl.loadTexture("res/alphabet.png");
 	}
 }

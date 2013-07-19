@@ -72,6 +72,10 @@ public class HealthInfoPack implements IInfoPack
 		return hc.getCurHealth();
 	}
 	
+	public int getMaxHealth()
+	{
+		return hc.getMaxHealth();
+	}
 	
 	//////////
 	// SETTERS

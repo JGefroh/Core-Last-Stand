@@ -21,6 +21,8 @@ public class HealthComponent implements IComponent
 	/**The current number of health points the entity has.*/
 	private int curHealth;
 	
+	/**The maximum number of health points the entity can have.*/
+	private int maxHealth;
 	
 	//////////
 	// INIT
@@ -61,6 +63,14 @@ public class HealthComponent implements IComponent
 		return this.curHealth;
 	}
 	
+	/**
+	 * Gets the maximum number of health points of the entity.
+	 * @return the maximum number of health
+	 */
+	public int getMaxHealth()
+	{
+		return this.maxHealth;
+	}
 	
 	//////////
 	// SETTERS
@@ -79,4 +89,15 @@ public class HealthComponent implements IComponent
 	{
 		this.curHealth = curHealth;
 	}
+	
+	/**
+	 * Sets the max number of health points of the entity.
+	 * @param maxHealth	the number of health points
+	 */
+	public void setMaxHealth(final int maxHealth)
+	{
+		this.maxHealth = maxHealth;
+	}
+	
+	
 }

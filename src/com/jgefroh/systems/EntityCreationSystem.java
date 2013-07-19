@@ -239,19 +239,20 @@ public class EntityCreationSystem implements ISystem
 			player.add(mc);
 		
 		HealthComponent hc = new HealthComponent(player);
-			hc.setCurHealth(100);
+			hc.setCurHealth(340);
+			hc.setMaxHealth(340);
 			player.add(hc);
 			
 		TargetComponent tarc = new TargetComponent(player);
 			player.add(tarc);
 		
 		ShieldComponent sc = new ShieldComponent(player);
-			sc.setShieldCur(100);
-			sc.setShieldInc(2);
+			sc.setShieldCur(0);
+			sc.setShieldInc(10);
 			sc.setShieldDec(2);
 			sc.setShieldRechargeInterval(200);
 			sc.setShieldRechargeDelay(1000);
-			sc.setShieldMax(100);
+			sc.setShieldMax(30000);
 			sc.setShieldMin(30);
 			sc.setShieldDrainInterval(200);
 			player.add(sc);
@@ -1067,6 +1068,36 @@ public class EntityCreationSystem implements ISystem
 		return entity.getID();
 	}
 
+	public String createLetter(final double xPos, final double yPos, 
+			final double width, final double height, 
+			final char character)
+	{
+		IEntity entity = new Entity();
+		entity.setName("LETTER");
+		
+		TransformComponent tc = new TransformComponent(entity);
+		RenderComponent rc = new RenderComponent(entity);
+		GUIComponent gc = new GUIComponent();
+		
+		tc.setHeight(height);
+		tc.setWidth(width);
+		tc.setXPos(xPos);
+		tc.setYPos(yPos);
+		tc.setBearing(-90);
+		
+		rc.setTexturePath("res/alphabet.png");
+		rc.setSpriteID(character);
+		
+		
+		entity.add(tc);
+		entity.add(rc);
+		entity.add(gc);
+		
+		core.add(entity);
+		
+		System.out.println("WHATWHAT" + character);
+		return entity.getID();
+	}
 	/**
 	 * Sets the debug level of this {@code System}.
 	 * @param level	the Level to set

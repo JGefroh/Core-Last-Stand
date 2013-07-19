@@ -170,7 +170,8 @@ public class HealthMonitorSystem implements ISystem
 			if(pack!=null)
 			{
 				core.send("HEALTH_UPDATE", pack.getOwner().getID(), 
-							pack.getCurHealth() + "");
+							pack.getCurHealth() + "",
+							pack.getMaxHealth() + "");
 			}
 		}
 	}
