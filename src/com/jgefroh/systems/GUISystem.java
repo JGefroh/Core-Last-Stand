@@ -101,7 +101,7 @@ public class GUISystem implements ISystem
 		elements.put("PLAYER_SHIELD_BAR_MAX_NUMBER_SPACING", "16");
 		elements.put("PLAYER_SHIELD_BAR_MAX_NUMBER_RIGHTJUSTIFIED", "false");
 	
-		elements.put("SCORE_NUMBER", Integer.MAX_VALUE + "");
+		elements.put("SCORE_NUMBER", 0 + "");
 		elements.put("SCORE_NUMBER_YPOS", "32");
 		elements.put("SCORE_NUMBER_XPOS", "500");
 		elements.put("SCORE_NUMBER_WIDTH", "32");
@@ -113,6 +113,7 @@ public class GUISystem implements ISystem
 		core.setInterested(this, "PLAYER_CREATED");
 		core.setInterested(this, "HEALTH_UPDATE");
 		core.setInterested(this, "SHIELD_UPDATE");
+		core.setInterested(this, "SCORE_UPDATE");
 		
 		
 
@@ -132,6 +133,9 @@ public class GUISystem implements ISystem
 		{
 			updateHealthBar();
 			updateShieldBar();
+			
+			core.send("REQUEST_SCORE");
+			
 			updateCounter("SCORE");
 			updateCounter("PLAYER_HEALTH_BAR");
 			updateCounter("PLAYER_SHIELD_BAR");
@@ -185,6 +189,10 @@ public class GUISystem implements ISystem
 		else if(id.equals("SHIELD_UPDATE"))
 		{
 			updateShieldAmount(message);
+		}
+		else if(id.equals("SCORE_UPDATE"))
+		{
+			updateScoreAmount(message);
 		}
 		else if(id.equals("PLAYER_CREATED"))
 		{
@@ -437,6 +445,21 @@ public class GUISystem implements ISystem
 		}
 	}
 	
+	private void updateScoreAmount(final String[] message)
+	{
+		if(message.length>=1)
+		{
+			try
+			{
+				Integer.parseInt(message[0]);	//Check to see if number
+				elements.put("SCORE_NUMBER", message[0]);
+			}
+			catch(NumberFormatException e)
+			{
+				LOGGER.log(Level.WARNING, "Bad message format.");
+			}
+		}
+	}
 	/**
 	 * Sets the debug level of this {@code System}.
 	 * @param level	the Level to set

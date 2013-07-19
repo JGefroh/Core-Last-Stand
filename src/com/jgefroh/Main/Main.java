@@ -20,6 +20,7 @@ import com.jgefroh.infopacks.MouseTrackInfoPackFactory;
 import com.jgefroh.infopacks.MovementInfoPackFactory;
 import com.jgefroh.infopacks.OutOfBoundsInfoPackFactory;
 import com.jgefroh.infopacks.RenderInfoPackFactory;
+import com.jgefroh.infopacks.ScoreInfoPackFactory;
 import com.jgefroh.infopacks.ShieldInfoPackFactory;
 import com.jgefroh.infopacks.TargetInfoPackFactory;
 import com.jgefroh.infopacks.TargetTrackInfoPackFactory;
@@ -39,6 +40,7 @@ import com.jgefroh.systems.MaxRangeSystem;
 import com.jgefroh.systems.OutOfBoundsSystem;
 import com.jgefroh.systems.RenderSystem;
 import com.jgefroh.systems.ResourceLoader;
+import com.jgefroh.systems.ScoreSystem;
 import com.jgefroh.systems.ShieldSystem;
 import com.jgefroh.systems.TargetTrackSystem;
 import com.jgefroh.systems.TransformSystem;
@@ -119,6 +121,7 @@ public class Main
 		core.addSystem(new ShieldSystem(core));
 		core.addSystem(new KeepInBoundsSystem(core));
 		core.addSystem(new GUISystem(core));
+		core.addSystem(new ScoreSystem(core));
 		rl = new ResourceLoader(core);
 	}
 	
@@ -143,6 +146,7 @@ public class Main
 		core.addFactory(new ShieldInfoPackFactory());
 		core.addFactory(new KeepInBoundsInfoPackFactory());
 		core.addFactory(new GUIInfoPackFactory());
+		core.addFactory(new ScoreInfoPackFactory());
 	}
 	
 	/**

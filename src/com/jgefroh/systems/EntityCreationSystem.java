@@ -16,6 +16,7 @@ import com.jgefroh.components.MaxRangeComponent;
 import com.jgefroh.components.MouseTrackComponent;
 import com.jgefroh.components.OutOfBoundsComponent;
 import com.jgefroh.components.RenderComponent;
+import com.jgefroh.components.ScoreComponent;
 import com.jgefroh.components.ShieldComponent;
 import com.jgefroh.components.TargetComponent;
 import com.jgefroh.components.TargetTrackComponent;
@@ -329,6 +330,10 @@ public class EntityCreationSystem implements ISystem
 			
 		OutOfBoundsComponent oobc = new OutOfBoundsComponent(enemy);
 			enemy.add(oobc);
+			
+		ScoreComponent scc = new ScoreComponent(enemy);
+			scc.setScore(10);
+			enemy.add(scc);
 		core.add(enemy);
 	}
 	
@@ -399,6 +404,10 @@ public class EntityCreationSystem implements ISystem
 			
 		OutOfBoundsComponent oobc = new OutOfBoundsComponent(enemy);
 			enemy.add(oobc);
+			
+			ScoreComponent scc = new ScoreComponent(enemy);
+			scc.setScore(10);
+			enemy.add(scc);
 		core.add(enemy);
 	}
 
@@ -468,6 +477,10 @@ public class EntityCreationSystem implements ISystem
 		
 		OutOfBoundsComponent oobc = new OutOfBoundsComponent(enemy);
 		enemy.add(oobc);
+		
+		ScoreComponent scc = new ScoreComponent(enemy);
+		scc.setScore(10);
+		enemy.add(scc);
 		core.add(enemy);
 	}
 
@@ -540,7 +553,10 @@ public class EntityCreationSystem implements ISystem
 			
 			OutOfBoundsComponent oobc = new OutOfBoundsComponent(enemy);
 			enemy.add(oobc);
-			
+		
+			ScoreComponent scc = new ScoreComponent(enemy);
+			scc.setScore(10);
+			enemy.add(scc);
 		core.add(enemy);
 	}
 
@@ -611,7 +627,11 @@ public class EntityCreationSystem implements ISystem
 			enemy.add(ai);
 			
 		OutOfBoundsComponent oobc = new OutOfBoundsComponent(enemy);
-			enemy.add(oobc);	
+			enemy.add(oobc);
+			
+			ScoreComponent scc = new ScoreComponent(enemy);
+			scc.setScore(10);
+			enemy.add(scc);
 		core.add(enemy);
 	}
 
@@ -686,6 +706,10 @@ public class EntityCreationSystem implements ISystem
 			
 		OutOfBoundsComponent oobc = new OutOfBoundsComponent(enemy);
 			enemy.add(oobc);	
+			
+			ScoreComponent scc = new ScoreComponent(enemy);
+			scc.setScore(10);
+			enemy.add(scc);
 		core.add(enemy);
 	}
 	public void createEnemy0_2(final int x, final int y)
@@ -736,6 +760,10 @@ public class EntityCreationSystem implements ISystem
 			enemy.add(ai);
 		OutOfBoundsComponent oobc = new OutOfBoundsComponent(enemy);
 			enemy.add(oobc);	
+			
+			ScoreComponent scc = new ScoreComponent(enemy);
+			scc.setScore(10);
+			enemy.add(scc);
 		core.add(enemy);
 	}
 
