@@ -21,7 +21,7 @@ Have fun!
 ==========
 Current State:
 
-![Random Spawns](/ss/11JUL13.png)
+![GUI](/ss/18JUL13.png)
 
 ==========
 [Core](https://github.com/JGefroh/core)
