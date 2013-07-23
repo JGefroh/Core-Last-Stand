@@ -21,7 +21,7 @@ Have fun!
 ==========
 Current State:
 
-![GUI](/ss/18JUL13.png)
+![GUI](/ss/22JUL13_0.png)
 
 ==========
 [Core](https://github.com/JGefroh/core)
