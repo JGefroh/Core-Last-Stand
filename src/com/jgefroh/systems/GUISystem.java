@@ -2,6 +2,7 @@ package com.jgefroh.systems;
 
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -39,6 +40,9 @@ public class GUISystem implements ISystem
 		= LoggerFactory.getLogger(this.getClass(), Level.ALL);
 	
 	private HashMap<String, String> elements;
+	
+	int mouseX;
+	int mouseY;
 	//////////
 	// INIT
 	//////////
@@ -67,6 +71,9 @@ public class GUISystem implements ISystem
 		core.setInterested(this, "HEALTH_UPDATE");
 		core.setInterested(this, "SHIELD_UPDATE");
 		core.setInterested(this, "SCORE_UPDATE");
+		core.setInterested(this, "UPGRADE_DESC_UPDATE");
+		core.setInterested(this, "INPUT_CURSOR_POSITION");
+		core.setInterested(this, "UPGRADE_DESC_UPDATE");
 		
 		//Health bar settings
 		elements.put("HEALTH_BAR_XPOS", "25");
@@ -116,7 +123,7 @@ public class GUISystem implements ISystem
 		elements.put("SHIELD_CUR_COUNTER_HEIGHT", "16");
 		
 		//Maximum shield counter settings
-		elements.put("SHIELD_MAX_COUNTER_XPOS", "111");
+		elements.put("SHIELD_MAX_COUNTER_XPOS", "121");
 		elements.put("SHIELD_MAX_COUNTER_YPOS", "16");
 		elements.put("SHIELD_MAX_COUNTER_WIDTH", "16");
 		elements.put("SHIELD_MAX_COUNTER_HEIGHT", "16");	
@@ -128,28 +135,28 @@ public class GUISystem implements ISystem
 		elements.put("HEALTH_CUR_COUNTER_HEIGHT", "16");
 		
 		//Maximum health counter settings
-		elements.put("HEALTH_MAX_COUNTER_XPOS", "111");
+		elements.put("HEALTH_MAX_COUNTER_XPOS", "121");
 		elements.put("HEALTH_MAX_COUNTER_YPOS", "40");
 		elements.put("HEALTH_MAX_COUNTER_WIDTH", "16");
 		elements.put("HEALTH_MAX_COUNTER_HEIGHT", "16");
 		
 
 		//Repair Icon
-		elements.put("REPAIR_ICON_XPOS", "25");
+		elements.put("REPAIR_ICON_XPOS", "325");
 		elements.put("REPAIR_ICON_YPOS", "700");
 		elements.put("REPAIR_ICON_WIDTH", "32");
 		elements.put("REPAIR_ICON_HEIGHT", "32");
 		elements.put("REPAIR_ICON_SPRITEID", "1");
 
 		//Repair MAX Icon
-		elements.put("REPAIR_MAX_ICON_XPOS", "60");
+		elements.put("REPAIR_MAX_ICON_XPOS", "360");
 		elements.put("REPAIR_MAX_ICON_YPOS", "700");
 		elements.put("REPAIR_MAX_ICON_WIDTH", "32");
 		elements.put("REPAIR_MAX_ICON_HEIGHT", "32");
 		elements.put("REPAIR_MAX_ICON_SPRITEID", "2");
 
 		//Shield MAX Icon
-		elements.put("SHIELD_MAX_ICON_XPOS", "95");
+		elements.put("SHIELD_MAX_ICON_XPOS", "395");
 		elements.put("SHIELD_MAX_ICON_YPOS", "700");
 		elements.put("SHIELD_MAX_ICON_WIDTH", "32");
 		elements.put("SHIELD_MAX_ICON_HEIGHT", "32");
@@ -162,19 +169,43 @@ public class GUISystem implements ISystem
 		elements.put("SHIELD_BAR_SEPARATOR_HEIGHT", "16");
 		
 		elements.put("HEALTH_BAR_SEPARATOR_XPOS", "105");
-		elements.put("HEALTH_BAR_SEPARATOR_YPOS", "16");
+		elements.put("HEALTH_BAR_SEPARATOR_YPOS", "40");
 		elements.put("HEALTH_BAR_SEPARATOR_WIDTH", "16");
 		elements.put("HEALTH_BAR_SEPARATOR_HEIGHT", "16");
 		
-		elements.put("TIME_BAR_SEPARATOR_0_XPOS", "1184");
+		elements.put("TIME_BAR_SEPARATOR_0_XPOS", "1064");
 		elements.put("TIME_BAR_SEPARATOR_0_YPOS", "32");
 		elements.put("TIME_BAR_SEPARATOR_0_WIDTH", "32");
 		elements.put("TIME_BAR_SEPARATOR_0_HEIGHT", "32");
 		
-		elements.put("TIME_BAR_SEPARATOR_1_XPOS", "984");
+		elements.put("TIME_BAR_SEPARATOR_1_XPOS", "1164");
 		elements.put("TIME_BAR_SEPARATOR_1_YPOS", "32");
 		elements.put("TIME_BAR_SEPARATOR_1_WIDTH", "32");
 		elements.put("TIME_BAR_SEPARATOR_1_HEIGHT", "32");
+		
+		
+		//Words.
+		elements.put("HK_1_XPOS", "317");
+		elements.put("HK_1_YPOS", "670");
+		elements.put("HK_1_WIDTH", "10");
+		elements.put("HK_1_HEIGHT", "10");
+
+		elements.put("HK_2_XPOS", "352");
+		elements.put("HK_2_YPOS", "670");
+		elements.put("HK_2_WIDTH", "10");
+		elements.put("HK_2_HEIGHT", "10");
+
+		elements.put("HK_3_XPOS", "387");
+		elements.put("HK_3_YPOS", "670");
+		elements.put("HK_3_WIDTH", "10");
+		elements.put("HK_3_HEIGHT", "10");
+		
+
+		elements.put("UPGRADE_DESC_XPOS", "450");
+		elements.put("UPGRADE_DESC_YPOS", "700");
+		elements.put("UPGRADE_DESC_WIDTH", "10");
+		elements.put("UPGRADE_DESC_HEIGHT", "10");
+		
 	}
 	
 	@Override
@@ -205,13 +236,18 @@ public class GUISystem implements ISystem
 			updateCounter("TIME_MS_COUNTER", core.now() + "", 3, true, '0');
 			updateCounter("TIME_S_COUNTER", (core.now()/1000)%60 + "", 2, true, '0');
 			updateCounter("TIME_M_COUNTER", (core.now()/(1000*60))%60+ "", 2, true, '0');
-			//updateCounterSeparator("SHIELD_BAR_SEPARATOR");
-			//updateCounterSeparator("HEALTH_BAR_SEPARATOR");
-			//updateCounterSeparator("TIME_BAR_SEPARATOR_0");
-			//updateCounterSeparator("TIME_BAR_SEPARATOR_1");
-			updateIcon("REPAIR_ICON");
-			updateIcon("REPAIR_MAX_ICON");
-			updateIcon("SHIELD_MAX_ICON");
+			updateCounterSeparator("SHIELD_BAR_SEPARATOR", '/');
+			updateCounterSeparator("HEALTH_BAR_SEPARATOR", '/');
+			updateCounterSeparator("TIME_BAR_SEPARATOR_0", ':');
+			updateCounterSeparator("TIME_BAR_SEPARATOR_1",':');
+			updateIcon("REPAIR_ICON", "INQUIRE", "1");
+			updateIcon("REPAIR_MAX_ICON", "INQUIRE", "2");
+			updateIcon("SHIELD_MAX_ICON", "INQUIRE", "3");
+			updateWord("HK_1", "1");
+			updateWord("HK_2", "2");
+			updateWord("HK_3", "3");
+			
+			checkDesc();
 
 		}
 	}
@@ -271,12 +307,73 @@ public class GUISystem implements ISystem
 			elements.remove("PLAYER_HEALTH_BAR");
 			elements.remove("PLAYER_SHIELD_BAR");
 		}
+		else if(id.equals("UPGRADE_DESC_UPDATE"))
+		{
+			updateDesc(message);
+		}
+		else if(id.equals("INPUT_CURSOR_POSITION"))
+		{
+			updateCursorPos(message);
+		}
 	}
 	
 	//////////
 	// SYSTEM METHODS
 	//////////
+	private void updateCursorPos(final String[] message)
+	{
+		if(message.length>=2)
+		{
+			try
+			{
+				this.mouseX = Integer.parseInt(message[0]);
+				this.mouseY = Integer.parseInt(message[1]);
+			}
+			catch(NumberFormatException e)
+			{
+				LOGGER.log(Level.WARNING, "Error updating mouse coords.");
+			}
+		}
+	}
 	
+	private void checkDesc()
+	{
+		core.send("REQUEST_CURSOR_POSITION");
+		
+		Iterator<GUIInfoPack> packs = core.getInfoPacksOfType(GUIInfoPack.class);
+		boolean found = false;
+		while(packs.hasNext() && found == false)
+		{
+			GUIInfoPack pack = packs.next();
+			
+			if(pack!=null)
+			{
+				if(pack.getCategory().equals("HOVERABLE"))
+				{
+					if(pack.getXPos()-pack.getWidth()/2 <= this.mouseX
+							&& pack.getXPos()+pack.getWidth()/2>=this.mouseX
+							&&pack.getYPos()+pack.getHeight()/2>=this.mouseY
+							&&pack.getYPos()-pack.getHeight()/2<=this.mouseY)
+					{
+						core.send(pack.getCommandOnHover(), pack.getValueOnHover());
+						found = true;
+					}
+				}
+			}
+		}
+		
+		if(found==false)
+		{
+			updateWord("UPGRADE_DESC", "");
+		}
+	}
+	private void updateDesc(final String[] message)
+	{
+		if(message.length>=1)
+		{			
+			updateWord("UPGRADE_DESC", message[0]);
+		}
+	}
 	private void updateBar(final String name, final String curValueAsString, 
 								final String maxValueAsString)
 	{
@@ -410,7 +507,7 @@ public class GUISystem implements ISystem
 		}
 	}
 	
-	private void updateIcon(final String name)
+	private void updateIcon(final String name, final String command, final String value)
 	{
 		final EntityCreationSystem ecs 
 			= core.getSystem(EntityCreationSystem.class);
@@ -443,10 +540,10 @@ public class GUISystem implements ISystem
 			{
 				LOGGER.log(Level.WARNING, "Unable to create counter.");
 			}
-			elements.put(name, ecs.createIcon(xPos, yPos, width, height, spriteID));
+			elements.put(name, ecs.createIcon(xPos, yPos, width, height, spriteID, command, value));
 		}
 	}
-	private void updateCounterSeparator(final String name)
+	private void updateCounterSeparator(final String name, final char separator)
 	{
 		String sep = elements.get(name);
 		GUIInfoPack pack = core.getInfoPackFrom(sep, GUIInfoPack.class);
@@ -469,9 +566,54 @@ public class GUISystem implements ISystem
 			{
 				LOGGER.log(Level.WARNING, "Unable to create counter separator.");
 			}
-			elements.put(name, ecs.createLetter(xPos,yPos,width,height,'/'));	// / separator for health
+			elements.put(name, ecs.createLetter(xPos,yPos,width,height, separator));	
 		}
 	}
+	
+	private void updateWord(final String name, final String word)
+	{		
+		String text = word.toUpperCase();
+		for(int index=0;index<50;index++)
+		{
+			GUIInfoPack pack = core.getInfoPackFrom(elements.get(name + "_" + index), GUIInfoPack.class);
+			
+			if(pack!=null)
+			{
+				if(index<text.length())
+				{					
+					pack.setSpriteID(text.charAt(index));
+				}
+				else
+				{
+					pack.setSpriteID(' ');
+				}
+			}
+			else if(index<text.length())
+			{	
+				EntityCreationSystem ecs = core.getSystem(EntityCreationSystem.class);
+				int xPos = 0;
+				int yPos = 0;
+				int width = 0;
+				int height = 0;
+				try
+				{
+					xPos = Integer.parseInt(elements.get(name + "_XPOS"));
+					yPos = Integer.parseInt(elements.get(name + "_YPOS"));
+					width = Integer.parseInt(elements.get(name + "_WIDTH"));
+					height = Integer.parseInt(elements.get(name + "_HEIGHT"));
+					
+					xPos+=width*index;
+					
+				}
+				catch(NumberFormatException e)
+				{
+					LOGGER.log(Level.WARNING, "Unable to create counter separator.");
+				}
+				elements.put(name + "_" + index, ecs.createLetter(xPos,yPos,width,height, text.charAt(index)));	
+			}
+		}
+	}
+	
 	private void updateHealthAmount(final String[] message)
 	{
 		if(message.length>1)

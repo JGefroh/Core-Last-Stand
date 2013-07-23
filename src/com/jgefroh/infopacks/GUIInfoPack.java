@@ -111,6 +111,20 @@ public class GUIInfoPack implements IInfoPack
 		return tc.getHeight();
 	}
 
+	public String getCommandOnHover()
+	{
+		return gc.getCommandOnHover();
+	}
+	
+	public String getCategory()
+	{
+		return gc.getCategory();
+	}
+	
+	public String getValueOnHover()
+	{
+		return gc.getValueOnHover();
+	}
 	//////////
 	// SETTERS
 	//////////
@@ -149,5 +163,7 @@ public class GUIInfoPack implements IInfoPack
 	{
 		rc.setSpriteID(id);
 	}
+	
+	
 
 }

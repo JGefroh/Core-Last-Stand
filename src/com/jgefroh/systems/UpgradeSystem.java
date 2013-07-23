@@ -1,17 +1,14 @@
 package com.jgefroh.systems;
 
 
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.jgefroh.core.Core;
 import com.jgefroh.core.ISystem;
 import com.jgefroh.core.LoggerFactory;
-import com.jgefroh.infopacks.AIInfoPack;
-import com.jgefroh.infopacks.OutOfBoundsInfoPack;
-import com.jgefroh.infopacks.ScoreInfoPack;
-import com.jgefroh.tests.Benchmark;
+import com.jgefroh.data.Upgrade;
 
 
 /**
@@ -46,6 +43,7 @@ public class UpgradeSystem implements ISystem
 	
 	private String playerID = "-1";
 	
+	private HashMap<String, Upgrade> upgrades;
 	//////////
 	// INIT
 	//////////
@@ -79,6 +77,26 @@ public class UpgradeSystem implements ISystem
 		core.setInterested(this, "BUY_7");
 		core.setInterested(this, "BUY_8");
 		core.setInterested(this, "BUY_9");
+
+		core.setInterested(this, "INQUIRE");
+		core.setInterested(this, "INQUIRE_1");
+		core.setInterested(this, "INQUIRE_2");
+		core.setInterested(this, "INQUIRE_3");
+		core.setInterested(this, "INQUIRE_4");
+		core.setInterested(this, "INQUIRE_5");
+		core.setInterested(this, "INQUIRE_6");
+		core.setInterested(this, "INQUIRE_7");
+		core.setInterested(this, "INQUIRE_8");
+		core.setInterested(this, "INQUIRE_9");
+		
+		upgrades = new HashMap<String, Upgrade>();
+		
+		upgrades.put("1", 
+				new Upgrade("Repair", "Repairs your ship for 50HP.", 100, "CHANGE_HEALTH", 50));
+		upgrades.put("2", 
+				new Upgrade("Hull+", "Increases your maximum HP by 25 HP.", 200, "CHANGE_HEALTH_MAX", 25));
+		upgrades.put("3", 
+				new Upgrade("Batteries", "Increases your maximum shield by 10.", 500, "CHANGE_SHIELD_MAX", 10));
 	}
 	
 	@Override
@@ -129,18 +147,17 @@ public class UpgradeSystem implements ISystem
 	public void recv(final String id, final String... message)
 	{
 		LOGGER.log(Level.FINEST, "Received message: " + id);
-		
-		if(id.equals("BUY_1"))
+		if(id.startsWith("BUY_"))
 		{
-			buy("HEALTH", message);
+			buy(id.charAt(id.length()-1) + "", message);
 		}
-		else if(id.equals("BUY_2"))
+		else if(id.startsWith("INQUIRE_"))
 		{
-			buy("HEALTH_MAX", message);
+			inquire(id.charAt(id.length()-1) + "");
 		}
-		else if(id.equals("BUY_3"))
+		else if(id.equals("INQUIRE"))
 		{
-			buy("SHIELD_MAX", message);
+			inquire(message[0]);
 		}
 		else if(id.equals("SCORE_UPDATE"))
 		{
@@ -161,24 +178,25 @@ public class UpgradeSystem implements ISystem
 		
 		if(message.length>=0)
 		{
-			if(product.equals("HEALTH") &&  this.score>=100)
+			Upgrade upgrade = upgrades.get(product);
+			if(upgrade!=null)
 			{
-				this.score-=100;
-				core.send("ADJUST_SCORE", -100 + "");
-				core.send("CHANGE_HEALTH", playerID, "50");
+				if(this.score>=upgrade.getCost())
+				{
+					core.send("ADJUST_SCORE", -upgrade.getCost() + "");
+					core.send(upgrade.getCommand(), playerID, upgrade.getValue() + "");				
+				}
 			}
-			else if(product.equals("HEALTH_MAX") && this.score>=200)
-			{
-				this.score-=200;
-				core.send("ADJUST_SCORE", -200 + "");
-				core.send("CHANGE_HEALTH_MAX", playerID, "25");
-			}
-			else if(product.equals("SHIELD_MAX") && this.score>=500)
-			{
-				this.score-=500;
-				core.send("ADJUST_SCORE", -500 + "");
-				core.send("CHANGE_SHIELD_MAX", playerID, "10");
-			}
+		}
+	}
+	
+	private void inquire(final String product)
+	{
+		Upgrade upgrade = upgrades.get(product);
+
+		if(upgrade!=null)
+		{			
+			core.send("UPGRADE_DESC_UPDATE", upgrade.getDesc());
 		}
 	}
 	
@@ -197,10 +215,6 @@ public class UpgradeSystem implements ISystem
 		}
 	}
 	
-	private boolean checkPrice(final String item)
-	{
-		return true;
-	}
 	/**
 	 * Sets the debug level of this {@code System}.
 	 * @param level	the Level to set

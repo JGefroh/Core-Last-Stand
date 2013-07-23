@@ -110,15 +110,15 @@ public class InputSystem implements ISystem, IInputSystem
 		kbs.bind(Keyboard.KEY_9, "SWITCH_WEAPON_9", InputSystem.PRESS);
 		kbs.bind(Keyboard.KEY_0, "SWITCH_WEAPON_0", InputSystem.PRESS);
 		kbs.bind(Keyboard.KEY_NUMPAD0, "TOGGLE_WIREFRAME", InputSystem.RELEASE);
-		kbs.bind(Keyboard.KEY_F1, "BUY_1", InputSystem.RELEASE);
-		kbs.bind(Keyboard.KEY_F2, "BUY_2", InputSystem.RELEASE);
-		kbs.bind(Keyboard.KEY_F3, "BUY_3", InputSystem.RELEASE);
-		kbs.bind(Keyboard.KEY_F4, "BUY_4", InputSystem.RELEASE);
-		kbs.bind(Keyboard.KEY_F5, "BUY_5", InputSystem.RELEASE);
-		kbs.bind(Keyboard.KEY_F6, "BUY_6", InputSystem.RELEASE);
-		kbs.bind(Keyboard.KEY_F7, "BUY_7", InputSystem.RELEASE);
-		kbs.bind(Keyboard.KEY_F8, "BUY_8", InputSystem.RELEASE);
-		kbs.bind(Keyboard.KEY_F9, "BUY_9", InputSystem.RELEASE);
+		kbs.bind(Keyboard.KEY_1, "BUY_1", InputSystem.PRESS);
+		kbs.bind(Keyboard.KEY_2, "BUY_2", InputSystem.PRESS);
+		kbs.bind(Keyboard.KEY_3, "BUY_3", InputSystem.PRESS);
+		kbs.bind(Keyboard.KEY_4, "BUY_4", InputSystem.PRESS);
+		kbs.bind(Keyboard.KEY_5, "BUY_5", InputSystem.PRESS);
+		kbs.bind(Keyboard.KEY_6, "BUY_6", InputSystem.PRESS);
+		kbs.bind(Keyboard.KEY_7, "BUY_7", InputSystem.PRESS);
+		kbs.bind(Keyboard.KEY_8, "BUY_8", InputSystem.PRESS);
+		kbs.bind(Keyboard.KEY_9, "BUY_9", InputSystem.PRESS);
 
 		setBindSystem(IInputSystem.KEYBOARD, kbs);
 		setBindSystem(IInputSystem.MOUSE, mbs);	

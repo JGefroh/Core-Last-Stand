@@ -1127,7 +1127,8 @@ public class EntityCreationSystem implements ISystem
 	
 
 	public String createIcon(final double xPos, final double yPos, 
-			final double width, final double height, final int spriteID)
+			final double width, final double height, final int spriteID,
+			final String command, final String value)
 	{
 		IEntity entity = new Entity();
 		entity.setName("ICON");
@@ -1145,7 +1146,9 @@ public class EntityCreationSystem implements ISystem
 		rc.setTexturePath("res/icons.png");
 		rc.setSpriteID(spriteID);
 		
-		
+		gc.setCommandOnHover(command);
+		gc.setHoverValue(value);
+		gc.setCategory("HOVERABLE");
 		entity.add(tc);
 		entity.add(rc);
 		entity.add(gc);
