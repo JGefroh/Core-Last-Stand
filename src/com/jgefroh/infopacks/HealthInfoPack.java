@@ -93,4 +93,9 @@ public class HealthInfoPack implements IInfoPack
 	{
 		hc.setCurHealth(curHealth);
 	}
+	
+	public void setMaxHealth(final int maxHealth)
+	{
+		hc.setMaxHealth(maxHealth);
+	}
 }

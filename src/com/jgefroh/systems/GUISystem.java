@@ -132,6 +132,49 @@ public class GUISystem implements ISystem
 		elements.put("HEALTH_MAX_COUNTER_YPOS", "40");
 		elements.put("HEALTH_MAX_COUNTER_WIDTH", "16");
 		elements.put("HEALTH_MAX_COUNTER_HEIGHT", "16");
+		
+
+		//Repair Icon
+		elements.put("REPAIR_ICON_XPOS", "25");
+		elements.put("REPAIR_ICON_YPOS", "700");
+		elements.put("REPAIR_ICON_WIDTH", "32");
+		elements.put("REPAIR_ICON_HEIGHT", "32");
+		elements.put("REPAIR_ICON_SPRITEID", "1");
+
+		//Repair MAX Icon
+		elements.put("REPAIR_MAX_ICON_XPOS", "60");
+		elements.put("REPAIR_MAX_ICON_YPOS", "700");
+		elements.put("REPAIR_MAX_ICON_WIDTH", "32");
+		elements.put("REPAIR_MAX_ICON_HEIGHT", "32");
+		elements.put("REPAIR_MAX_ICON_SPRITEID", "2");
+
+		//Shield MAX Icon
+		elements.put("SHIELD_MAX_ICON_XPOS", "95");
+		elements.put("SHIELD_MAX_ICON_YPOS", "700");
+		elements.put("SHIELD_MAX_ICON_WIDTH", "32");
+		elements.put("SHIELD_MAX_ICON_HEIGHT", "32");
+		elements.put("SHIELD_MAX_ICON_SPRITEID", "3");
+		
+		//Separators
+		elements.put("SHIELD_BAR_SEPARATOR_XPOS", "105");
+		elements.put("SHIELD_BAR_SEPARATOR_YPOS", "16");
+		elements.put("SHIELD_BAR_SEPARATOR_WIDTH", "16");
+		elements.put("SHIELD_BAR_SEPARATOR_HEIGHT", "16");
+		
+		elements.put("HEALTH_BAR_SEPARATOR_XPOS", "105");
+		elements.put("HEALTH_BAR_SEPARATOR_YPOS", "16");
+		elements.put("HEALTH_BAR_SEPARATOR_WIDTH", "16");
+		elements.put("HEALTH_BAR_SEPARATOR_HEIGHT", "16");
+		
+		elements.put("TIME_BAR_SEPARATOR_0_XPOS", "1184");
+		elements.put("TIME_BAR_SEPARATOR_0_YPOS", "32");
+		elements.put("TIME_BAR_SEPARATOR_0_WIDTH", "32");
+		elements.put("TIME_BAR_SEPARATOR_0_HEIGHT", "32");
+		
+		elements.put("TIME_BAR_SEPARATOR_1_XPOS", "984");
+		elements.put("TIME_BAR_SEPARATOR_1_YPOS", "32");
+		elements.put("TIME_BAR_SEPARATOR_1_WIDTH", "32");
+		elements.put("TIME_BAR_SEPARATOR_1_HEIGHT", "32");
 	}
 	
 	@Override
@@ -162,6 +205,13 @@ public class GUISystem implements ISystem
 			updateCounter("TIME_MS_COUNTER", core.now() + "", 3, true, '0');
 			updateCounter("TIME_S_COUNTER", (core.now()/1000)%60 + "", 2, true, '0');
 			updateCounter("TIME_M_COUNTER", (core.now()/(1000*60))%60+ "", 2, true, '0');
+			//updateCounterSeparator("SHIELD_BAR_SEPARATOR");
+			//updateCounterSeparator("HEALTH_BAR_SEPARATOR");
+			//updateCounterSeparator("TIME_BAR_SEPARATOR_0");
+			//updateCounterSeparator("TIME_BAR_SEPARATOR_1");
+			updateIcon("REPAIR_ICON");
+			updateIcon("REPAIR_MAX_ICON");
+			updateIcon("SHIELD_MAX_ICON");
 
 		}
 	}
@@ -360,25 +410,67 @@ public class GUISystem implements ISystem
 		}
 	}
 	
-	private void updateCounterSeparators()
+	private void updateIcon(final String name)
 	{
-		String sep = elements.get("HEALTH_BAR_COUNTER_SEPARATOR");
+		final EntityCreationSystem ecs 
+			= core.getSystem(EntityCreationSystem.class);
+		
+		String id = elements.get(name);
+		
+		GUIInfoPack pack = core.getInfoPackFrom(id, GUIInfoPack.class);
+		
+		if(pack!=null)
+		{
+			
+		}
+		else
+		{
+			int xPos = 0;
+			int yPos = 0;
+			int width = 0;
+			int height = 0;
+			int spriteID = -1;
+			//Create the number slot
+			try
+			{
+				xPos = Integer.parseInt(elements.get(name + "_XPOS"));
+				yPos = Integer.parseInt(elements.get(name + "_YPOS"));
+				width = Integer.parseInt(elements.get(name + "_WIDTH"));
+				height = Integer.parseInt(elements.get(name + "_HEIGHT"));
+				spriteID = Integer.parseInt(elements.get(name + "_SPRITEID"));
+			}
+			catch(NumberFormatException e)
+			{
+				LOGGER.log(Level.WARNING, "Unable to create counter.");
+			}
+			elements.put(name, ecs.createIcon(xPos, yPos, width, height, spriteID));
+		}
+	}
+	private void updateCounterSeparator(final String name)
+	{
+		String sep = elements.get(name);
 		GUIInfoPack pack = core.getInfoPackFrom(sep, GUIInfoPack.class);
 		
-		EntityCreationSystem ecs = core.getSystem(EntityCreationSystem.class);
 		if(pack==null)
-		{			
-			elements.put("HEALTH_BAR_COUNTER_SEPARATOR", ecs.createLetter(125,40,16,16,'/'));	// / separator for health
+		{	
+			EntityCreationSystem ecs = core.getSystem(EntityCreationSystem.class);
+			int xPos = 0;
+			int yPos = 0;
+			int width = 0;
+			int height = 0;
+			try
+			{
+				xPos = Integer.parseInt(elements.get(name + "_XPOS"));
+				yPos = Integer.parseInt(elements.get(name + "_YPOS"));
+				width = Integer.parseInt(elements.get(name + "_WIDTH"));
+				height = Integer.parseInt(elements.get(name + "_HEIGHT"));
+			}
+			catch(NumberFormatException e)
+			{
+				LOGGER.log(Level.WARNING, "Unable to create counter separator.");
+			}
+			elements.put(name, ecs.createLetter(xPos,yPos,width,height,'/'));	// / separator for health
 		}
-		
-		sep = elements.get("SHIELD_BAR_COUNTER_SEPARATOR");
-		pack = core.getInfoPackFrom(sep, GUIInfoPack.class);
-		
-		if(pack==null)
-		{			
-			elements.put("SHIELD_BAR_COUNTER_SEPARATOR", ecs.createLetter(125,16,16,16,'/'));	// / separator for shield
-		}
-		
 	}
 	private void updateHealthAmount(final String[] message)
 	{

@@ -1,0 +1,31 @@
+{
+	"width":128,
+	"height":128,
+	"sprites":
+		[
+			{
+				"id":1,
+				"name":"repair",
+				"xmin":0,
+				"xmax":32,
+				"ymin":32,
+				"ymax":64
+			},
+			{
+				"id":2,
+				"name":"repair_max",
+				"xmin":32,
+				"xmax":64,
+				"ymin":32,
+				"ymax":64
+			},
+			{
+				"id":3,
+				"name":"shield_max",
+				"xmin":0,
+				"xmax":32,
+				"ymin":0,
+				"ymax":32
+			}
+		]
+}

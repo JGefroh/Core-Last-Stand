@@ -17,7 +17,7 @@ import com.jgefroh.tests.Benchmark;
 /**
  * @author Joseph Gefroh
  */
-public class ScoreSystem implements ISystem
+public class UpgradeSystem implements ISystem
 {
 	//////////
 	// DATA
@@ -42,8 +42,9 @@ public class ScoreSystem implements ISystem
 	private final Logger LOGGER 
 		= LoggerFactory.getLogger(this.getClass(), Level.ALL);
 	
-	/**The amount of points you have.*/
-	private int score = 1000;
+	private int score;
+	
+	private String playerID = "-1";
 	
 	//////////
 	// INIT
@@ -52,7 +53,7 @@ public class ScoreSystem implements ISystem
 	 * Create a new instance of this {@code System}.
 	 * @param core	 a reference to the Core controlling this system
 	 */
-	public ScoreSystem(final Core core)
+	public UpgradeSystem(final Core core)
 	{
 		this.core = core;
 		setDebugLevel(this.debugLevel);
@@ -67,9 +68,17 @@ public class ScoreSystem implements ISystem
 	public void init()
 	{
 		LOGGER.log(Level.FINE, "Setting system values to default.");
-		core.setInterested(this, "REQUEST_SCORE");
-		core.setInterested(this, "DESTROYING_ENTITY");
-		core.setInterested(this, "ADJUST_SCORE");
+		core.setInterested(this, "SCORE_UPDATE");
+		core.setInterested(this, "PLAYER_CREATED");
+		core.setInterested(this, "BUY_1");
+		core.setInterested(this, "BUY_2");
+		core.setInterested(this, "BUY_3");
+		core.setInterested(this, "BUY_4");
+		core.setInterested(this, "BUY_5");
+		core.setInterested(this, "BUY_6");
+		core.setInterested(this, "BUY_7");
+		core.setInterested(this, "BUY_8");
+		core.setInterested(this, "BUY_9");
 	}
 	
 	@Override
@@ -120,54 +129,78 @@ public class ScoreSystem implements ISystem
 	public void recv(final String id, final String... message)
 	{
 		LOGGER.log(Level.FINEST, "Received message: " + id);
-		if(id.equals("REQUEST_SCORE"))
+		
+		if(id.equals("BUY_1"))
 		{
-			core.send("SCORE_UPDATE", score + "");
+			buy("HEALTH", message);
 		}
-		else if(id.equals("DESTROYING_ENTITY"))
+		else if(id.equals("BUY_2"))
 		{
-			changeScore(message);
+			buy("HEALTH_MAX", message);
 		}
-		else if(id.equals("ADJUST_SCORE"))
+		else if(id.equals("BUY_3"))
 		{
-			adjustScore(message);
+			buy("SHIELD_MAX", message);
 		}
-
+		else if(id.equals("SCORE_UPDATE"))
+		{
+			updateScore(message);
+		}
+		else if(id.equals("PLAYER_CREATED"))
+		{
+			this.playerID = message[0];
+		}
 	}
 	
-	private void adjustScore(final String[] message)
+	/////////
+	// SYSTEM METHODS
+	/////////
+	private void buy(final String product, final String[] message)
+	{
+		core.send("REQUEST_SCORE");
+		
+		if(message.length>=0)
+		{
+			if(product.equals("HEALTH") &&  this.score>=100)
+			{
+				this.score-=100;
+				core.send("ADJUST_SCORE", -100 + "");
+				core.send("CHANGE_HEALTH", playerID, "50");
+			}
+			else if(product.equals("HEALTH_MAX") && this.score>=200)
+			{
+				this.score-=200;
+				core.send("ADJUST_SCORE", -200 + "");
+				core.send("CHANGE_HEALTH_MAX", playerID, "25");
+			}
+			else if(product.equals("SHIELD_MAX") && this.score>=500)
+			{
+				this.score-=500;
+				core.send("ADJUST_SCORE", -500 + "");
+				core.send("CHANGE_SHIELD_MAX", playerID, "10");
+			}
+		}
+	}
+	
+	private void updateScore(final String[] message)
 	{
 		if(message.length>=1)
 		{
 			try
 			{
-				int adjust = Integer.parseInt(message[0]);
-				this.score+=adjust;
+				this.score = Integer.parseInt(message[0]);				
 			}
 			catch(NumberFormatException e)
 			{
-				LOGGER.log(Level.WARNING, "Bad score.");
+				LOGGER.log(Level.WARNING, "Unable to update score.");
 			}
 		}
 	}
-	private void changeScore(final String[] message)
-	{
-		if(message.length>0)
-		{
-			String entityID = message[0];
-			
-			ScoreInfoPack pack = core.getInfoPackFrom(entityID, ScoreInfoPack.class);
-			
-			if(pack!=null)
-			{
-				this.score+=pack.getScore();
-			}
-		}
-	}
-	/////////
-	// SYSTEM METHODS
-	/////////
 	
+	private boolean checkPrice(final String item)
+	{
+		return true;
+	}
 	/**
 	 * Sets the debug level of this {@code System}.
 	 * @param level	the Level to set

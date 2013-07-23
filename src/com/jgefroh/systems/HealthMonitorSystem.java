@@ -32,7 +32,7 @@ public class HealthMonitorSystem implements ISystem
 	private long last;
 	
 	/**The level of detail in debug messages.*/
-	private Level debugLevel = Level.INFO;
+	private Level debugLevel = Level.FINE;
 	
 	/**Logger for debug purposes.*/
 	private final Logger LOGGER 
@@ -62,6 +62,8 @@ public class HealthMonitorSystem implements ISystem
 	public void init()
 	{
 		core.setInterested(this, "REQUEST_HEALTH");
+		core.setInterested(this, "CHANGE_HEALTH");
+		core.setInterested(this, "CHANGE_HEALTH_MAX");
 	}
 	
 	@Override
@@ -120,6 +122,14 @@ public class HealthMonitorSystem implements ISystem
 		{
 			requestHealth(message);
 		}
+		else if(id.equals("CHANGE_HEALTH"))
+		{
+			changeHealth(message);
+		}
+		else if(id.equals("CHANGE_HEALTH_MAX"))
+		{
+			changeHealthMax(message);
+		}
 
 	}
 	
@@ -173,6 +183,68 @@ public class HealthMonitorSystem implements ISystem
 							pack.getCurHealth() + "",
 							pack.getMaxHealth() + "");
 			}
+		}
+	}
+	
+	private void changeHealth(final String[] message)
+	{
+		if(message.length>=2)
+		{
+			HealthInfoPack pack 
+				= core.getInfoPackFrom(message[0], HealthInfoPack.class);
+			
+			int amount = 0;
+			try
+			{				
+				amount = Integer.parseInt(message[1]);
+			}
+			catch(NumberFormatException e)
+			{
+				LOGGER.log(Level.WARNING, "Unable to change health.");
+			}
+
+			if(pack!=null)
+			{
+				if(pack.getCurHealth()+amount<=pack.getMaxHealth())
+				{
+					pack.setCurHealth(pack.getCurHealth()+amount);
+				}
+				else
+				{
+					pack.setCurHealth(pack.getMaxHealth());
+				}
+				LOGGER.log(Level.FINE, 
+						"Added " + amount + " health to: " + message[0]);
+			}
+
+		}
+	}
+	
+	
+	private void changeHealthMax(final String[] message)
+	{
+		if(message.length>=2)
+		{
+			HealthInfoPack pack 
+				= core.getInfoPackFrom(message[0], HealthInfoPack.class);
+			
+			int amount = 0;
+			try
+			{				
+				amount = Integer.parseInt(message[1]);
+			}
+			catch(NumberFormatException e)
+			{
+				LOGGER.log(Level.WARNING, "Unable to change health max.");
+			}
+
+			if(pack!=null)
+			{
+				pack.setMaxHealth(pack.getMaxHealth()+amount);
+				LOGGER.log(Level.FINE, 
+						"Added " + amount + " health to: " + message[0]);
+			}
+
 		}
 	}
 	/**

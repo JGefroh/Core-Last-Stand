@@ -22,7 +22,7 @@ public class HealthComponent implements IComponent
 	private int curHealth;
 	
 	/**The maximum number of health points the entity can have.*/
-	private int maxHealth;
+	private int maxHealth = 0;
 	
 	//////////
 	// INIT
@@ -40,7 +40,6 @@ public class HealthComponent implements IComponent
 	@Override
 	public void init()
 	{
-		setCurHealth(0);
 	}
 
 	

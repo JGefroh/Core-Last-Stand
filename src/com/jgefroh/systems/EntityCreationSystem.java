@@ -240,22 +240,22 @@ public class EntityCreationSystem implements ISystem
 			player.add(mc);
 		
 		HealthComponent hc = new HealthComponent(player);
-			hc.setCurHealth(340);
-			hc.setMaxHealth(340);
+			hc.setCurHealth(100);
+			hc.setMaxHealth(100);
 			player.add(hc);
 			
 		TargetComponent tarc = new TargetComponent(player);
 			player.add(tarc);
 		
 		ShieldComponent sc = new ShieldComponent(player);
-			sc.setShieldCur(0);
-			sc.setShieldInc(10);
-			sc.setShieldDec(2);
-			sc.setShieldRechargeInterval(200);
-			sc.setShieldRechargeDelay(1000);
-			sc.setShieldMax(30000);
-			sc.setShieldMin(30);
-			sc.setShieldDrainInterval(200);
+			sc.setShieldInc(1);
+			sc.setShieldDec(1);
+			sc.setShieldRechargeInterval(100);
+			sc.setShieldRechargeDelay(5000);
+			sc.setShieldCur(50);
+			sc.setShieldMax(50);
+			sc.setShieldMin(10);
+			sc.setShieldDrainInterval(100);
 			player.add(sc);
 			
 		KeepInBoundsComponent kibc = new KeepInBoundsComponent();
@@ -1122,8 +1122,36 @@ public class EntityCreationSystem implements ISystem
 		entity.add(gc);
 		
 		core.add(entity);
+		return entity.getID();
+	}
+	
+
+	public String createIcon(final double xPos, final double yPos, 
+			final double width, final double height, final int spriteID)
+	{
+		IEntity entity = new Entity();
+		entity.setName("ICON");
 		
-		System.out.println("WHATWHAT" + character);
+		TransformComponent tc = new TransformComponent(entity);
+		RenderComponent rc = new RenderComponent(entity);
+		GUIComponent gc = new GUIComponent();
+		
+		tc.setHeight(height);
+		tc.setWidth(width);
+		tc.setXPos(xPos);
+		tc.setYPos(yPos);
+		tc.setBearing(-90);
+		
+		rc.setTexturePath("res/icons.png");
+		rc.setSpriteID(spriteID);
+		
+		
+		entity.add(tc);
+		entity.add(rc);
+		entity.add(gc);
+		
+		core.add(entity);
+		
 		return entity.getID();
 	}
 	/**

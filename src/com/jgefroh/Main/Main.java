@@ -44,6 +44,7 @@ import com.jgefroh.systems.ScoreSystem;
 import com.jgefroh.systems.ShieldSystem;
 import com.jgefroh.systems.TargetTrackSystem;
 import com.jgefroh.systems.TransformSystem;
+import com.jgefroh.systems.UpgradeSystem;
 import com.jgefroh.systems.WeaponSystem;
 import com.jgefroh.systems.WindowSystem;
 
@@ -122,6 +123,7 @@ public class Main
 		core.addSystem(new KeepInBoundsSystem(core));
 		core.addSystem(new GUISystem(core));
 		core.addSystem(new ScoreSystem(core));
+		core.addSystem(new UpgradeSystem(core));
 		rl = new ResourceLoader(core);
 	}
 	
@@ -193,5 +195,6 @@ public class Main
 		rl.loadTexture("res/bg.png");
 		rl.loadTexture("res/fx.png");
 		rl.loadTexture("res/alphabet.png");
+		rl.loadTexture("res/icons.png");
 	}
 }

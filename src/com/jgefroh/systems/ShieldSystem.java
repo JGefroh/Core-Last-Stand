@@ -64,6 +64,7 @@ public class ShieldSystem implements ISystem
 	{
 		core.setInterested(this, "REQUEST_SHIELD");
 		core.setInterested(this, "REQUEST_SHIELD_ACTIVE");
+		core.setInterested(this, "CHANGE_SHIELD_MAX");
 	}
 	
 	@Override
@@ -126,6 +127,10 @@ public class ShieldSystem implements ISystem
 		else if(id.equals("REQUEST_SHIELD"))
 		{
 			requestShield(message);
+		}
+		else if(id.equals("CHANGE_SHIELD_MAX"))
+		{
+			adjustShieldMax(message);
 		}
 	}
 	
@@ -317,6 +322,29 @@ public class ShieldSystem implements ISystem
 				core.send("SHIELD_UPDATE", pack.getOwner().getID(), 
 							pack.getShieldCur() + "",
 							pack.getShieldMax() + "");
+			}
+		}
+	}
+	
+	private void adjustShieldMax(final String[] message)
+	{
+		if(message.length>=1)
+		{
+			ShieldInfoPack pack 
+				= core.getInfoPackFrom(message[0], ShieldInfoPack.class);
+			
+			if(pack!=null)
+			{
+				int amount = 0;
+				try
+				{
+					amount = Integer.parseInt(message[1]);
+				}
+				catch(NumberFormatException e)
+				{
+					LOGGER.log(Level.WARNING, "Unable to change shield max.");
+				}
+				pack.setShieldMax(pack.getShieldMax()+amount);
 			}
 		}
 	}
