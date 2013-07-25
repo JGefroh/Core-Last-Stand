@@ -43,7 +43,7 @@ public class ScoreSystem implements ISystem
 		= LoggerFactory.getLogger(this.getClass(), Level.ALL);
 	
 	/**The amount of points you have.*/
-	private int score = 1000;
+	private int score = 100000;
 	
 	//////////
 	// INIT

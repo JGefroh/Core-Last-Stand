@@ -10,7 +10,11 @@ import com.jgefroh.infopacks.AnimationInfoPackFactory;
 import com.jgefroh.infopacks.CollisionInfoPackFactory;
 import com.jgefroh.infopacks.DamageInfoPackFactory;
 import com.jgefroh.infopacks.ForceInfoPackFactory;
+import com.jgefroh.infopacks.GUIBarInfoPackFactory;
+import com.jgefroh.infopacks.GUICharSlotInfoPackFactory;
+import com.jgefroh.infopacks.GUICounterInfoPackFactory;
 import com.jgefroh.infopacks.GUIInfoPackFactory;
+import com.jgefroh.infopacks.GUITextInfoPackFactory;
 import com.jgefroh.infopacks.HealthBarInfoPackFactory;
 import com.jgefroh.infopacks.HealthInfoPackFactory;
 import com.jgefroh.infopacks.InputInfoPackFactory;
@@ -148,6 +152,10 @@ public class Main
 		core.addFactory(new ShieldInfoPackFactory());
 		core.addFactory(new KeepInBoundsInfoPackFactory());
 		core.addFactory(new GUIInfoPackFactory());
+		core.addFactory(new GUIBarInfoPackFactory());
+		core.addFactory(new GUICharSlotInfoPackFactory());
+		core.addFactory(new GUICounterInfoPackFactory());
+		core.addFactory(new GUITextInfoPackFactory());
 		core.addFactory(new ScoreInfoPackFactory());
 	}
 	
@@ -161,7 +169,7 @@ public class Main
 		{
 			Display.update();
 			core.work();
-			Display.sync(240);
+			//Display.sync(240);
 		}
 	}
 	

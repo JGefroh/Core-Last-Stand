@@ -1,5 +1,6 @@
 package com.jgefroh.systems;
 
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -7,7 +8,11 @@ import com.jgefroh.components.AIComponent;
 import com.jgefroh.components.CollisionComponent;
 import com.jgefroh.components.DamageComponent;
 import com.jgefroh.components.ForceGeneratorComponent;
+import com.jgefroh.components.GUIBarComponent;
+import com.jgefroh.components.GUICharSlotComponent;
 import com.jgefroh.components.GUIComponent;
+import com.jgefroh.components.GUICounterComponent;
+import com.jgefroh.components.GUITextComponent;
 import com.jgefroh.components.HealthBarComponent;
 import com.jgefroh.components.HealthComponent;
 import com.jgefroh.components.InputComponent;
@@ -1027,6 +1032,7 @@ public class EntityCreationSystem implements ISystem
 		core.add(shield);
 		return shield;
 	}
+	
 	public void createEnemy(final int xOffset, final int y, final int type)
 	{
 		int x = 1366 + xOffset;
@@ -1070,8 +1076,21 @@ public class EntityCreationSystem implements ISystem
 		}
 	}
 	
+	/**
+	 * Creates a GUI bar.
+	 * @param xPos
+	 * @param yPos
+	 * @param width
+	 * @param height
+	 * @param shrinkDir
+	 * @param r
+	 * @param g
+	 * @param b
+	 * @return
+	 */
 	public String createGUIBar(final double xPos, final double yPos,
 								final double width, final double height,
+								final int shrinkDir,
 								final float r, final float g, final float b)
 	{
 		IEntity entity = new Entity();
@@ -1080,32 +1099,115 @@ public class EntityCreationSystem implements ISystem
 		TransformComponent tc = new TransformComponent(entity);
 		RenderComponent rc = new RenderComponent(entity);
 		GUIComponent gc = new GUIComponent();
+		GUIBarComponent gbc = new GUIBarComponent();
 		
-		tc.setHeight(16);
+		tc.setWidth(width);
+		tc.setHeight(height);
 		tc.setXPos(xPos);
 		tc.setYPos(yPos);
 
 		rc.setRGB(r, g, b);
 		
+		
+		gbc.setShrinkDir(shrinkDir);
+		gbc.setDefWidth(width);
+		gbc.setDefHeight(height);
+		gbc.setDefXPos(xPos);
+		gbc.setDefYPos(yPos);
+		gbc.setMaxWidth(width);
+		gbc.setMaxHeight(height);
+		
+		if(gbc.right())
+		{
+			gbc.setDefXPos(xPos+width);
+		}
+		else if(gbc.collapseMiddleH() || gbc.collapseMiddleV())
+		{
+			tc.setXPos(xPos+width/2);
+		}
+
 		entity.add(tc);
 		entity.add(rc);
 		entity.add(gc);
+		entity.add(gbc);
 		
 		core.add(entity);
 		
 		return entity.getID();
 	}
-
-	public String createLetter(final double xPos, final double yPos, 
-			final double width, final double height, 
-			final char character)
+	
+	/**
+	 * 
+	 * @param xPos
+	 * @param yPos
+	 * @param charWidth
+	 * @param charHeight
+	 * @param numSlots
+	 * @param defaultChar
+	 * @return
+	 */
+	public String createGUICounter(final double xPos, final double yPos,
+									final int charWidth, final int charHeight,
+									final int numSlots, final char defaultChar)
 	{
 		IEntity entity = new Entity();
-		entity.setName("LETTER");
+		entity.setName("GUI_BAR");
 		
 		TransformComponent tc = new TransformComponent(entity);
 		RenderComponent rc = new RenderComponent(entity);
 		GUIComponent gc = new GUIComponent();
+		GUICounterComponent gcc = new GUICounterComponent();
+		
+		tc.setXPos(xPos);
+		tc.setYPos(yPos);
+		
+		gcc.setCharHeight(charHeight);
+		gcc.setCharWidth(charWidth);
+		gcc.setNumSlots(numSlots);
+		gcc.setDefaultChar(defaultChar);
+
+		
+		rc.setVisible(false);
+		ArrayList<String> children = new ArrayList<String>(numSlots);
+
+		for(int index=0;index<numSlots;index++)
+		{
+			children.add(createGUICharSlot(xPos+charWidth*index, yPos, charWidth, charHeight, defaultChar, index));
+		}
+		
+		gcc.setChildren(children);
+		entity.add(tc);
+		entity.add(rc);
+		entity.add(gc);
+		entity.add(gcc);
+
+		core.add(entity);
+		
+		return entity.getID();
+	}
+
+	/**
+	 * 
+	 * @param xPos
+	 * @param yPos
+	 * @param width
+	 * @param height
+	 * @param defChar
+	 * @param slotNum
+	 * @return
+	 */
+	public String createGUICharSlot(final double xPos, final double yPos,
+										final double width, final double height,
+										final char defChar, final int slotNum)
+	{
+		IEntity entity = new Entity();
+		entity.setName("CHAR_SLOT");
+		
+		TransformComponent tc = new TransformComponent(entity);
+		RenderComponent rc = new RenderComponent(entity);
+		GUIComponent gc = new GUIComponent();
+		GUICharSlotComponent gcsc = new GUICharSlotComponent();
+		
 		
 		tc.setHeight(height);
 		tc.setWidth(width);
@@ -1114,17 +1216,38 @@ public class EntityCreationSystem implements ISystem
 		tc.setBearing(-90);
 		
 		rc.setTexturePath("res/alphabet.png");
-		rc.setSpriteID(character);
+				
+		gcsc.setSlotNum(slotNum);
 		
+		entity.add(tc);
+		entity.add(rc);
+		entity.add(gc);
+		entity.add(gcsc);
+		
+		core.add(entity);
+		return entity.getID();
+	}
+	
+	
+	public String createGUIData()
+	{
+		IEntity entity = new Entity();
+		entity.setName("GUI_DATA");
+		
+		TransformComponent tc = new TransformComponent(entity);
+		RenderComponent rc = new RenderComponent(entity);
+		GUIComponent gc = new GUIComponent();
 		
 		entity.add(tc);
 		entity.add(rc);
 		entity.add(gc);
 		
 		core.add(entity);
+		
 		return entity.getID();
 	}
 	
+
 
 	public String createIcon(final double xPos, final double yPos, 
 			final double width, final double height, final int spriteID,
@@ -1151,6 +1274,51 @@ public class EntityCreationSystem implements ISystem
 		gc.setCategory("HOVERABLE");
 		entity.add(tc);
 		entity.add(rc);
+		entity.add(gc);
+		
+		core.add(entity);
+		
+		return entity.getID();
+	}
+	
+	public String createGUITextArea(final double xPos, final double yPos, 
+										final int numLines, final int numCharsPerLine, 
+										final double charWidth, final double charHeight,
+										final char defaultChar)
+	{
+		IEntity entity = new Entity();
+		entity.setName("ICON");
+		
+		TransformComponent tc = new TransformComponent(entity);
+		RenderComponent rc = new RenderComponent(entity);
+		GUIComponent gc = new GUIComponent();
+		GUITextComponent gtc = new GUITextComponent();
+		
+		tc.setXPos(xPos);
+		tc.setYPos(yPos);
+		
+		rc.setVisible(false);
+		
+		gtc.setNumCharsPerLine(numCharsPerLine);
+		gtc.setNumLines(numLines);
+		ArrayList<String> childrenIDs = new ArrayList<String>(numLines*numCharsPerLine);
+		
+		int curSlot = 0;
+
+		for(int line = 0;line<numLines;line++)
+		{
+			for(int slot = 0;slot<numCharsPerLine;slot++)
+			{
+				childrenIDs.add(this.createGUICharSlot(xPos+(charWidth*slot), yPos+(charHeight*line), charWidth, charHeight, defaultChar, curSlot));
+				curSlot++;
+			}
+		}
+		gtc.setChildren(childrenIDs);
+		gtc.setDefaultChar(defaultChar);
+		
+		entity.add(tc);
+		entity.add(rc);
+		entity.add(gtc);
 		entity.add(gc);
 		
 		core.add(entity);

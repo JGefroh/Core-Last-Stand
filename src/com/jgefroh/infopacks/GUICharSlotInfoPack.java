@@ -2,6 +2,7 @@ package com.jgefroh.infopacks;
 
 import java.util.ArrayList;
 
+import com.jgefroh.components.GUICharSlotComponent;
 import com.jgefroh.components.GUIComponent;
 import com.jgefroh.components.RenderComponent;
 import com.jgefroh.components.TransformComponent;
@@ -9,7 +10,7 @@ import com.jgefroh.core.IEntity;
 import com.jgefroh.core.IInfoPack;
 
 
-public class GUIInfoPack implements IInfoPack
+public class GUICharSlotInfoPack implements IInfoPack
 {
 	//////////
 	// DATA
@@ -24,6 +25,8 @@ public class GUIInfoPack implements IInfoPack
 	private RenderComponent rc;
 	
 	private GUIComponent gc;
+
+	private GUICharSlotComponent gcsc;
 	
 	/**Flag that indicates the InfoPack is invalid and unreliable.*/
 	private boolean isDirty;
@@ -34,7 +37,7 @@ public class GUIInfoPack implements IInfoPack
 	 * Create a new instance of this InfoPack.
 	 * @param owner	the entity associated with this InfoPack
 	 */
-	public GUIInfoPack(final IEntity owner)
+	public GUICharSlotInfoPack(final IEntity owner)
 	{
 		this.owner = owner;
 	}
@@ -51,7 +54,8 @@ public class GUIInfoPack implements IInfoPack
 			tc = owner.getComponent(TransformComponent.class);
 			rc = owner.getComponent(RenderComponent.class);
 			gc = owner.getComponent(GUIComponent.class);
-			if(tc==null||rc==null||gc==null)
+			gcsc = owner.getComponent(GUICharSlotComponent.class);
+			if(tc==null||rc==null||gc==null||gcsc==null)
 			{
 				setDirty(true);
 				return true;
@@ -113,59 +117,10 @@ public class GUIInfoPack implements IInfoPack
 		return tc.getHeight();
 	}
 
-	public String getCommandOnHover()
+
+	public int getSlotNum()
 	{
-		return gc.getCommandOnHover();
-	}
-	
-	public String getCategory()
-	{
-		return gc.getCategory();
-	}
-	
-	public String getValueOnHover()
-	{
-		return gc.getValueOnHover();
-	}
-	
-	public double getDefXPos()
-	{
-		return gc.getDefXPos();
-	}
-	
-	public double getDefYPos()
-	{
-		return gc.getDefYPos();
-	}
-	
-	public double getDefHeight()
-	{
-		return gc.getDefHeight();
-	}
-	
-	public double getDefWidth()
-	{
-		return gc.getDefWidth();
-	}
-	
-	public int getMinVal()
-	{
-		return gc.getMinVal();
-	}
-	
-	public int getMaxVal()
-	{
-		return gc.getMaxVal();
-	}
-	
-	public int getCurVal()
-	{
-		return gc.getCurVal();
-	}
-	
-	public ArrayList<String> getChildren()
-	{
-		return gc.getChildren();
+		return gcsc.getSlotNum();
 	}
 	//////////
 	// SETTERS
@@ -206,25 +161,6 @@ public class GUIInfoPack implements IInfoPack
 		rc.setSpriteID(id);
 	}
 	
-	public void setMinVal(final int minVal)
-	{
-		gc.setMinVal(minVal);
-	}
-	
-	public void setMaxVal(final int maxVal)
-	{
-		gc.setMaxVal(maxVal);
-	}
-	
-	public void setCurVal(final int curVal)
-	{
-		gc.setCurVal(curVal);
-	}
-	
-	public void setChildren(final ArrayList<String> children)
-	{
-		gc.setChildren(children);
-	}
 	
 	public void setVisible(final boolean isVisible)
 	{

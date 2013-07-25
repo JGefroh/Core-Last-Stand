@@ -1,15 +1,16 @@
 package com.jgefroh.infopacks;
 
-import java.util.ArrayList;
+import java.util.Iterator;
 
 import com.jgefroh.components.GUIComponent;
+import com.jgefroh.components.GUITextComponent;
 import com.jgefroh.components.RenderComponent;
 import com.jgefroh.components.TransformComponent;
 import com.jgefroh.core.IEntity;
 import com.jgefroh.core.IInfoPack;
 
 
-public class GUIInfoPack implements IInfoPack
+public class GUITextInfoPack implements IInfoPack
 {
 	//////////
 	// DATA
@@ -23,7 +24,11 @@ public class GUIInfoPack implements IInfoPack
 	/**A component this InfoPack depends on.*/
 	private RenderComponent rc;
 	
+	/**A component this InfoPack depends on.*/
 	private GUIComponent gc;
+	
+	/**A component this InfoPack depends on.*/
+	private GUITextComponent gtc;
 	
 	/**Flag that indicates the InfoPack is invalid and unreliable.*/
 	private boolean isDirty;
@@ -34,7 +39,7 @@ public class GUIInfoPack implements IInfoPack
 	 * Create a new instance of this InfoPack.
 	 * @param owner	the entity associated with this InfoPack
 	 */
-	public GUIInfoPack(final IEntity owner)
+	public GUITextInfoPack(final IEntity owner)
 	{
 		this.owner = owner;
 	}
@@ -51,7 +56,8 @@ public class GUIInfoPack implements IInfoPack
 			tc = owner.getComponent(TransformComponent.class);
 			rc = owner.getComponent(RenderComponent.class);
 			gc = owner.getComponent(GUIComponent.class);
-			if(tc==null||rc==null||gc==null)
+			gtc = owner.getComponent(GUITextComponent.class);
+			if(tc==null||rc==null||gc==null||gtc==null)
 			{
 				setDirty(true);
 				return true;
@@ -73,99 +79,64 @@ public class GUIInfoPack implements IInfoPack
 		return this.owner;
 	}
 	
-	/**
-	 * @see TransformComponent#getXPos() 
-	 */
 	public double getXPos()
 	{
 		return tc.getXPos();
 	}	
 	
-	/**
-	 * @see TransformComponent#getYPos() 
-	 */
 	public double getYPos()
 	{
 		return tc.getYPos();
 	}
 	
-	/**
-	 * @see TransformComponent#getZPos() 
-	 */
 	public double getZPos()
 	{
 		return tc.getZPos();
 	}
 	
-	/**
-	 * @see TransformComponent#getWidth() 
-	 */
 	public double getWidth()
 	{
 		return tc.getWidth();
 	}
 	
-	/**
-	 * @see TransformComponent#getHeight() 
-	 */
 	public double getHeight()
 	{
 		return tc.getHeight();
 	}
+	
+	public int getCharWidth()
+	{
+		return gtc.getCharWidth();
+	}
 
-	public String getCommandOnHover()
+	public int getCharHeight()
 	{
-		return gc.getCommandOnHover();
+		return gtc.getCharHeight();
 	}
 	
-	public String getCategory()
+	public Iterator<String> getChildren()
 	{
-		return gc.getCategory();
+		return gtc.getChildren().iterator();
 	}
 	
-	public String getValueOnHover()
+	public char getDefaultChar()
 	{
-		return gc.getValueOnHover();
+		return gtc.getDefaultChar();
 	}
 	
-	public double getDefXPos()
+	public String getText()
 	{
-		return gc.getDefXPos();
+		return gtc.getText();
 	}
 	
-	public double getDefYPos()
+	public int getNumCharsPerLine()
 	{
-		return gc.getDefYPos();
+		return gtc.getNumCharsPerLine();
 	}
 	
-	public double getDefHeight()
+	public int getNumLines()
 	{
-		return gc.getDefHeight();
-	}
-	
-	public double getDefWidth()
-	{
-		return gc.getDefWidth();
-	}
-	
-	public int getMinVal()
-	{
-		return gc.getMinVal();
-	}
-	
-	public int getMaxVal()
-	{
-		return gc.getMaxVal();
-	}
-	
-	public int getCurVal()
-	{
-		return gc.getCurVal();
-	}
-	
-	public ArrayList<String> getChildren()
-	{
-		return gc.getChildren();
+		return gtc.getNumLines();
 	}
 	//////////
 	// SETTERS
@@ -186,14 +157,14 @@ public class GUIInfoPack implements IInfoPack
 		tc.setYPos(yPos);
 	}
 	
-	public void setWidth(final double width)
+	public void setCharWidth(final int charWidth)
 	{
-		tc.setWidth(width);
+		gtc.setCharWidth(charWidth);
 	}
 	
-	public void setHeight(final double height)
+	public void setCharHeight(final int charHeight)
 	{
-		tc.setHeight(height);
+		gtc.setCharHeight(charHeight);
 	}
 	
 	public void setRGB(final float r, final float g, final float b)
@@ -206,29 +177,13 @@ public class GUIInfoPack implements IInfoPack
 		rc.setSpriteID(id);
 	}
 	
-	public void setMinVal(final int minVal)
+	public void setDefaultChar(final char defaultChar)
 	{
-		gc.setMinVal(minVal);
+		gtc.setDefaultChar(defaultChar);
 	}
 	
-	public void setMaxVal(final int maxVal)
+	public void setText(final String text)
 	{
-		gc.setMaxVal(maxVal);
+		gtc.setText(text);
 	}
-	
-	public void setCurVal(final int curVal)
-	{
-		gc.setCurVal(curVal);
-	}
-	
-	public void setChildren(final ArrayList<String> children)
-	{
-		gc.setChildren(children);
-	}
-	
-	public void setVisible(final boolean isVisible)
-	{
-		rc.setVisible(isVisible);
-	}
-
 }

@@ -12,7 +12,7 @@ import com.jgefroh.core.IEntity;
  * Date: 05JUL13
  * @author Joseph Gefroh
  */
-public class GUIComponent implements IComponent
+public class GUIDataComponent implements IComponent
 {
 	//////////
 	// DATA
@@ -42,7 +42,7 @@ public class GUIComponent implements IComponent
 	//////////
 	// INIT
 	//////////
-	public GUIComponent()
+	public GUIDataComponent()
 	{	
 	}
 

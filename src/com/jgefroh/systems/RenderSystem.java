@@ -284,7 +284,7 @@ public class RenderSystem implements ISystem
 		{
 			RenderInfoPack pack = packs.next();
 			
-			if(pack.isDirty()==false)
+			if(pack.isDirty()==false&&pack.isVisible()==true)
 			{
 				if(pack.getTextureID()==-1)
 				{//If the component doesn't know its textureID...

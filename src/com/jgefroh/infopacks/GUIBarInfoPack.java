@@ -2,6 +2,7 @@ package com.jgefroh.infopacks;
 
 import java.util.ArrayList;
 
+import com.jgefroh.components.GUIBarComponent;
 import com.jgefroh.components.GUIComponent;
 import com.jgefroh.components.RenderComponent;
 import com.jgefroh.components.TransformComponent;
@@ -9,7 +10,7 @@ import com.jgefroh.core.IEntity;
 import com.jgefroh.core.IInfoPack;
 
 
-public class GUIInfoPack implements IInfoPack
+public class GUIBarInfoPack implements IInfoPack
 {
 	//////////
 	// DATA
@@ -23,7 +24,11 @@ public class GUIInfoPack implements IInfoPack
 	/**A component this InfoPack depends on.*/
 	private RenderComponent rc;
 	
+	/**A component this InfoPack depends on.*/
 	private GUIComponent gc;
+	
+	/**A component this InfoPack depends on.*/
+	private GUIBarComponent gbc;
 	
 	/**Flag that indicates the InfoPack is invalid and unreliable.*/
 	private boolean isDirty;
@@ -34,7 +39,7 @@ public class GUIInfoPack implements IInfoPack
 	 * Create a new instance of this InfoPack.
 	 * @param owner	the entity associated with this InfoPack
 	 */
-	public GUIInfoPack(final IEntity owner)
+	public GUIBarInfoPack(final IEntity owner)
 	{
 		this.owner = owner;
 	}
@@ -51,7 +56,8 @@ public class GUIInfoPack implements IInfoPack
 			tc = owner.getComponent(TransformComponent.class);
 			rc = owner.getComponent(RenderComponent.class);
 			gc = owner.getComponent(GUIComponent.class);
-			if(tc==null||rc==null||gc==null)
+			gbc = owner.getComponent(GUIBarComponent.class);
+			if(tc==null||rc==null||gc==null||gbc==null)
 			{
 				setDirty(true);
 				return true;
@@ -73,99 +79,99 @@ public class GUIInfoPack implements IInfoPack
 		return this.owner;
 	}
 	
-	/**
-	 * @see TransformComponent#getXPos() 
-	 */
 	public double getXPos()
 	{
 		return tc.getXPos();
 	}	
 	
-	/**
-	 * @see TransformComponent#getYPos() 
-	 */
 	public double getYPos()
 	{
 		return tc.getYPos();
 	}
 	
-	/**
-	 * @see TransformComponent#getZPos() 
-	 */
 	public double getZPos()
 	{
 		return tc.getZPos();
 	}
 	
-	/**
-	 * @see TransformComponent#getWidth() 
-	 */
 	public double getWidth()
 	{
 		return tc.getWidth();
 	}
 	
-	/**
-	 * @see TransformComponent#getHeight() 
-	 */
 	public double getHeight()
 	{
 		return tc.getHeight();
 	}
-
-	public String getCommandOnHover()
-	{
-		return gc.getCommandOnHover();
-	}
-	
-	public String getCategory()
-	{
-		return gc.getCategory();
-	}
-	
-	public String getValueOnHover()
-	{
-		return gc.getValueOnHover();
-	}
 	
 	public double getDefXPos()
 	{
-		return gc.getDefXPos();
+		return gbc.getDefXPos();
 	}
 	
 	public double getDefYPos()
 	{
-		return gc.getDefYPos();
+		return gbc.getDefYPos();
 	}
 	
 	public double getDefHeight()
 	{
-		return gc.getDefHeight();
+		return gbc.getDefHeight();
 	}
 	
 	public double getDefWidth()
 	{
-		return gc.getDefWidth();
+		return gbc.getDefWidth();
 	}
 	
-	public int getMinVal()
+	public double getMaxValue()
 	{
-		return gc.getMinVal();
+		return gbc.getMaxValue();
 	}
 	
-	public int getMaxVal()
+	public double getCurValue()
 	{
-		return gc.getMaxVal();
+		return gbc.getCurValue();
 	}
 	
-	public int getCurVal()
+	public double getMaxWidth()
 	{
-		return gc.getCurVal();
+		return gbc.getMaxWidth();
 	}
 	
-	public ArrayList<String> getChildren()
+	public double getMaxHeight()
 	{
-		return gc.getChildren();
+		return gbc.getMaxHeight();
+	}
+
+	public boolean left()
+	{
+		return gbc.left();
+	}
+	
+	public boolean right()
+	{
+		return gbc.right();
+	}
+	
+	public boolean up()
+	{
+		return gbc.up();
+	}
+	
+	public boolean down()
+	{
+		return gbc.down();
+	}
+	
+	public boolean collapseMiddleH()
+	{
+		return gbc.collapseMiddleH();
+	}
+	
+	public boolean collapseMiddleV()
+	{
+		return gbc.collapseMiddleV();
 	}
 	//////////
 	// SETTERS
@@ -206,29 +212,18 @@ public class GUIInfoPack implements IInfoPack
 		rc.setSpriteID(id);
 	}
 	
-	public void setMinVal(final int minVal)
+	public void setMaxValue(final int maxValue)
 	{
-		gc.setMinVal(minVal);
+		gbc.setMaxValue(maxValue);
 	}
 	
-	public void setMaxVal(final int maxVal)
+	public void setCurValue(final int curValue)
 	{
-		gc.setMaxVal(maxVal);
+		gbc.setCurValue(curValue);
 	}
 	
-	public void setCurVal(final int curVal)
+	public void getShrinkDir(final int shrinkDir)
 	{
-		gc.setCurVal(curVal);
+		gbc.getShrinkDir();
 	}
-	
-	public void setChildren(final ArrayList<String> children)
-	{
-		gc.setChildren(children);
-	}
-	
-	public void setVisible(final boolean isVisible)
-	{
-		rc.setVisible(isVisible);
-	}
-
 }

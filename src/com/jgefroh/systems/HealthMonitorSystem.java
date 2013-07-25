@@ -157,6 +157,7 @@ public class HealthMonitorSystem implements ISystem
 					if(each.getOwner().getName().equalsIgnoreCase("PLAYER"))
 					{
 						core.removeAllEntities();
+						core.send("RESET_GAME");
 						core.getSystem(EntityCreationSystem.class).createPlayer(32, 384);
 					}
 					core.removeEntity(each.getOwner());
