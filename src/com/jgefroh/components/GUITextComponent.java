@@ -81,7 +81,7 @@ public class GUITextComponent implements IComponent
 	
 	public String getText()
 	{
-		return (this.text!=null) ? this.text : "";
+		return this.text;
 	}
 	//////////
 	// SETTERS

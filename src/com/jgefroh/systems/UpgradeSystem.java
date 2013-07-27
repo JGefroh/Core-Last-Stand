@@ -79,15 +79,6 @@ public class UpgradeSystem implements ISystem
 		core.setInterested(this, "BUY_9");
 
 		core.setInterested(this, "INQUIRE");
-		core.setInterested(this, "INQUIRE_1");
-		core.setInterested(this, "INQUIRE_2");
-		core.setInterested(this, "INQUIRE_3");
-		core.setInterested(this, "INQUIRE_4");
-		core.setInterested(this, "INQUIRE_5");
-		core.setInterested(this, "INQUIRE_6");
-		core.setInterested(this, "INQUIRE_7");
-		core.setInterested(this, "INQUIRE_8");
-		core.setInterested(this, "INQUIRE_9");
 		
 		upgrades = new HashMap<String, Upgrade>();
 		
@@ -151,13 +142,9 @@ public class UpgradeSystem implements ISystem
 		{
 			buy(id.charAt(id.length()-1) + "", message);
 		}
-		else if(id.startsWith("INQUIRE_"))
-		{
-			inquire(id.charAt(id.length()-1) + "");
-		}
 		else if(id.equals("INQUIRE"))
 		{
-			inquire(message[0]);
+			processInquiry(message);
 		}
 		else if(id.equals("SCORE_UPDATE"))
 		{
@@ -190,13 +177,16 @@ public class UpgradeSystem implements ISystem
 		}
 	}
 	
-	private void inquire(final String product)
+	private void processInquiry(final String[] message)
 	{
-		Upgrade upgrade = upgrades.get(product);
+		if(message.length>=1)
+		{
+			Upgrade upgrade = upgrades.get(message[0]);
 
-		if(upgrade!=null)
-		{			
-			core.send("UPGRADE_DESC_UPDATE", upgrade.getDesc());
+			if(upgrade!=null)
+			{			
+				core.send("UPGRADE_DESC_UPDATE", upgrade.getDesc());
+			}
 		}
 	}
 	

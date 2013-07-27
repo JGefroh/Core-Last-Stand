@@ -129,6 +129,7 @@ public class Main
 		core.addSystem(new ScoreSystem(core));
 		core.addSystem(new UpgradeSystem(core));
 		rl = new ResourceLoader(core);
+
 	}
 	
 	private void initFactories()
@@ -191,8 +192,13 @@ public class Main
 		ecs.createFormation(4, 1700);
 	*/
 
-		core.getSystem(CollisionSystem.class).setCollision(1, 2, true);	//alien, pbullet
-		core.getSystem(CollisionSystem.class).setCollision(0, 3, true);	//player, abullet
+		CollisionSystem cs = core.getSystem(CollisionSystem.class);
+				
+		if(cs!=null)
+		{
+			cs.setCollision(1, 2, true);	//alien, pbullet
+			cs.setCollision(0, 3, true);	//player, abullet
+		}
 	}
 	
 	public void loadTexture()

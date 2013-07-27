@@ -45,14 +45,14 @@ public class GUISystem implements ISystem
 	private final Logger LOGGER 
 		= LoggerFactory.getLogger(this.getClass(), Level.ALL);
 	
-	private HashMap<String, String> elements;
 	private Benchmark bench = new Benchmark(this.getClass().getName(), true);
 
 	int mouseX;
 	int mouseY;
 	
 	private HashMap<String, String> elementIDs;
-	
+
+	private HashMap<String, String> dataValues;
 	//////////
 	// INIT
 	//////////
@@ -75,9 +75,8 @@ public class GUISystem implements ISystem
 	@Override
 	public void init()
 	{
-		elements = new HashMap<String, String>();
 		elementIDs = new HashMap<String, String>();
-		EntityCreationSystem ecs = core.getSystem(EntityCreationSystem.class);
+		dataValues = new HashMap<String, String>();
 
 		createGUIElements();
 
@@ -87,48 +86,7 @@ public class GUISystem implements ISystem
 		core.setInterested(this, "SCORE_UPDATE");
 		core.setInterested(this, "UPGRADE_DESC_UPDATE");
 		core.setInterested(this, "INPUT_CURSOR_POSITION");
-		core.setInterested(this, "UPGRADE_DESC_UPDATE");
 		core.setInterested(this, "RESET_GAME");
-
-		
-
-
-
-		
-		//Words.
-		elements.put("HK_1_XPOS", "317");
-		elements.put("HK_1_YPOS", "670");
-		elements.put("HK_1_WIDTH", "10");
-		elements.put("HK_1_HEIGHT", "10");
-		elements.put("HK_1_CHARSPERLINE", "2");
-		elements.put("HK_1_NUMLINES", "1");
-		elements.put("HK_1_HASCHANGED", "true");
-
-		elements.put("HK_2_XPOS", "352");
-		elements.put("HK_2_YPOS", "670");
-		elements.put("HK_2_WIDTH", "10");
-		elements.put("HK_2_HEIGHT", "10");
-		elements.put("HK_2_HASCHANGED", "true");
-		elements.put("HK_2_CHARSPERLINE", "2");
-		elements.put("HK_2_NUMLINES", "1");
-		
-		elements.put("HK_3_XPOS", "387");
-		elements.put("HK_3_YPOS", "670");
-		elements.put("HK_3_WIDTH", "10");
-		elements.put("HK_3_HEIGHT", "10");
-		elements.put("HK_3_HASCHANGED", "true");
-		elements.put("HK_3_CHARSPERLINE", "2");
-		elements.put("HK_3_NUMLINES", "1");
-
-		elements.put("BUY_DESC", "");
-		elements.put("BUY_DESC_XPOS", "450");
-		elements.put("BUY_DESC_YPOS", "700");
-		elements.put("BUY_DESC_WIDTH", "10");
-		elements.put("BUY_DESC_HEIGHT", "10");
-		elements.put("BUY_DESC_CHARSPERLINE", "50");
-		elements.put("BUY_DESC_NUMLINES", "10");
-		elements.put("BUY_DESC_SPACEY", "5");
-		elements.put("BUY_DESC_HASCHANGED", "true");
 	}
 	
 	@Override
@@ -147,62 +105,50 @@ public class GUISystem implements ISystem
 			
 
 			//Update the data the GUI elements rely on.
+			long checkTime = System.nanoTime();
 			core.send("REQUEST_SCORE");
-			core.send("REQUEST_HEALTH", elements.get("PLAYER_ID"));
-			core.send("REQUEST_SHIELD", elements.get("PLAYER_ID"));
-
+			core.send("REQUEST_HEALTH", dataValues.get("PLAYER_ID"));
+			core.send("REQUEST_SHIELD", dataValues.get("PLAYER_ID"));
+		//	System.out.println("REQUEST: " + (double)(System.nanoTime()-checkTime)/1000000 + "ms");
+			
+			checkTime = System.nanoTime();
 			//Update the GUI elements.
-			updateBar("SHIELD_BAR", "SHIELD_DATA");
-			updateBar("HEALTH_BAR", "HEALTH_DATA");
+			updateBar("SHIELD_BAR", dataValues.get("SHIELD_CUR"), dataValues.get("SHIELD_MAX"));
+			updateBar("HEALTH_BAR", dataValues.get("HEALTH_CUR"), dataValues.get("HEALTH_MAX"));
+			//System.out.println("BARS: " + (double)(System.nanoTime()-checkTime)/1000000 + "ms");
 			
-			startTime = System.nanoTime();
-
-			GUIInfoPack pack = core.getInfoPackFrom(elementIDs.get("SHIELD_DATA"), GUIInfoPack.class);
-
-			if(pack!=null)
-			{
-				updateCounter("SHIELD_CUR_COUNTER", pack.getCurVal() + "", false);
-				updateCounter("SHIELD_MAX_COUNTER", pack.getMaxVal() + "", true);				
-			}
+			checkTime = System.nanoTime();
+			updateCounter("SHIELD_CUR_COUNTER", dataValues.get("SHIELD_CUR"), false);
+			updateCounter("SHIELD_MAX_COUNTER", dataValues.get("SHIELD_MAX"), true);				
+			updateCounter("HEALTH_CUR_COUNTER", dataValues.get("HEALTH_CUR"), false);
+			updateCounter("HEALTH_MAX_COUNTER", dataValues.get("HEALTH_MAX"), true);							
+			updateCounter("SCORE_COUNTER", dataValues.get("SCORE_CUR"), false);
+			//System.out.println("COUNTERS: " + (double)(System.nanoTime()-checkTime)/1000000 + "ms");
 			
-			pack = core.getInfoPackFrom(elementIDs.get("HEALTH_DATA"), GUIInfoPack.class);
-			if(pack!=null)
-			{
-				updateCounter("HEALTH_CUR_COUNTER", pack.getCurVal() + "", false);
-				updateCounter("HEALTH_MAX_COUNTER", pack.getMaxVal() + "", true);				
-			}
-			
-			pack = core.getInfoPackFrom(elementIDs.get("SCORE_DATA"), GUIInfoPack.class);
-			if(pack!=null)
-			{				
-				updateCounter("SCORE_COUNTER", pack.getCurVal() + "", false);
-			}
-			
+			checkTime = System.nanoTime();
 			updateCounter("TIMER_MS_COUNTER", core.now() + "", false);
 			updateCounter("TIMER_S_COUNTER", (core.now()/1000)%60 + "", false);
 			updateCounter("TIMER_M_COUNTER", (core.now()/(1000*60))%60+ "", false);
-			System.out.println("COUNTER TIMES:" + (double)(System.nanoTime()-startTime)/1000000);
-
-			updateCharSlot("SHIELD_COUNTER_/", '/');
-			updateCharSlot("HEALTH_COUNTER_/", '/');
-			updateCharSlot("TIME_COUNTER_:_0", ':');
-			updateCharSlot("TIME_COUNTER_:_1",':');
-
-					startTime = System.nanoTime();
-			//updateText("TEST_TEXT", "300 400 500");
-			System.out.println("NEW_TEXT_AREA TIMES:" + (double)(System.nanoTime()-startTime)/1000000);
+			//System.out.println("TIMER: " + (double)(System.nanoTime()-checkTime)/1000000 + "ms");
 			
-			startTime = System.nanoTime();
-			//updateTextArea("HK_1", "1");	//WHY IS THIS TAKING SO LONG
-			//updateTextArea("HK_2", "2"); 	
-			//updateTextArea("HK_3", "3");
-			System.out.println("TEXT_HOTKEY TIMES:" + (double)(System.nanoTime()-startTime)/1000000);
-
-			//updateTextArea("TEST_DESC", "ALPHA BRAVO CHARLIE ALPHABRAVOCHARLIE DELTA ECHO");
-			startTime = System.nanoTime();
-			//checkDesc();
-			//updateTextArea("BUY_DESC", elements.get("BUY_DESC"));
-			System.out.println("TEXT_DESC TIMES:" + (double)(System.nanoTime()-startTime)/1000000);
+			checkTime = System.nanoTime();
+			updateCharSlot(elementIDs.get("SHIELD_COUNTER_/"), '/');
+			updateCharSlot(elementIDs.get("HEALTH_COUNTER_/"), '/');
+			updateCharSlot(elementIDs.get("TIME_COUNTER_:_0"), ':');
+			updateCharSlot(elementIDs.get("TIME_COUNTER_:_1"),':');
+			//System.out.println("SEPARATORS: " + (double)(System.nanoTime()-checkTime)/1000000 + "ms");
+			
+			checkTime = System.nanoTime();
+			updateCharSlot(elementIDs.get("HK_1"), '1');
+			updateCharSlot(elementIDs.get("HK_2"), '2');
+			updateCharSlot(elementIDs.get("HK_3"), '3');	
+			//System.out.println("HOTKEYS: " + (double)(System.nanoTime()-checkTime)/1000000 + "ms");
+			
+			checkTime = System.nanoTime();
+			//updateText("UPGRADE_DESC", dataValues.get("UPGRADE_DESC"));
+			updateText("UPGRADE_DESC", null);
+			//System.out.println("TEXT: " + (double)(System.nanoTime()-checkTime)/1000000 + "ms");
+			//System.out.println("ALL: " + (double)(System.nanoTime()-checkTime)/1000000 + "ms");
 
 			bench.benchmark(System.nanoTime()-startTime, 0);
 		}
@@ -244,7 +190,7 @@ public class GUISystem implements ISystem
 	public void recv(final String id, final String... message)
 	{
 		LOGGER.log(Level.FINEST, "Received message: " + id);
-		
+
 		if(id.equals("HEALTH_UPDATE"))
 		{
 			processHealthUpdate(message);
@@ -259,13 +205,13 @@ public class GUISystem implements ISystem
 		}
 		else if(id.equals("PLAYER_CREATED"))
 		{
-			elements.put("PLAYER_ID", message[0]);
-			elements.remove("PLAYER_HEALTH_BAR");
-			elements.remove("PLAYER_SHIELD_BAR");
+			dataValues.put("PLAYER_ID", message[0]);
+			dataValues.remove("PLAYER_HEALTH_BAR");
+			dataValues.remove("PLAYER_SHIELD_BAR");
 		}
 		else if(id.equals("UPGRADE_DESC_UPDATE"))
 		{
-			//updateDesc(message);
+			processDescUpdate(message);
 		}
 		else if(id.equals("INPUT_CURSOR_POSITION"))
 		{
@@ -277,6 +223,32 @@ public class GUISystem implements ISystem
 		}
 	}
 
+	private void checkHover()
+	{
+		Iterator<GUIInfoPack> packs = core.getInfoPacksOfType(GUIInfoPack.class);
+		
+		while(packs.hasNext())
+		{
+			GUIInfoPack pack = packs.next();
+			
+			if(pack.hasHoverEffect())
+			{
+				double xPos = pack.getXPos();
+				double yPos = pack.getYPos();
+				double width = pack.getWidth();
+				double height = pack.getHeight();
+				
+				if(this.mouseX<=xPos+width
+						&&this.mouseX>=xPos-width
+						&&this.mouseY<=yPos-height
+						&&this.mouseY>=yPos+height)
+				{
+					pack.executeHoverEffect();
+				}
+			}
+
+		}
+	}
 	private void createGUIElements()
 	{
 		Iterator<String> values = elementIDs.values().iterator();
@@ -285,9 +257,6 @@ public class GUISystem implements ISystem
 			core.removeEntity(values.next());
 		}
 		EntityCreationSystem ecs = core.getSystem(EntityCreationSystem.class);
-		elementIDs.put("SHIELD_DATA", ecs.createGUIData());
-		elementIDs.put("HEALTH_DATA", ecs.createGUIData());
-		elementIDs.put("SCORE_DATA", ecs.createGUIData());
 
 		elementIDs.put("SHIELD_BAR", ecs.createGUIBar(25, 16, 200, 16, 0, 0, 125, 255));
 		elementIDs.put("HEALTH_BAR", ecs.createGUIBar(25, 40, 200, 16, 0, 0, 128, 0));
@@ -303,7 +272,6 @@ public class GUISystem implements ISystem
 		elementIDs.put("TIMER_S_COUNTER", ecs.createGUICounter(1100, 32, 32, 32, 2, '0'));
 		elementIDs.put("TIMER_MS_COUNTER", ecs.createGUICounter(1200, 32, 32, 32, 3, '0'));
 		
-		elementIDs.put("TEST_TEXT", ecs.createGUITextArea(200, 300, 5, 10, 16, 16, ' '));
 		
 		elementIDs.put("SHIELD_COUNTER_/", ecs.createGUICharSlot(105, 16, 16, 16, '/', 1));
 		elementIDs.put("HEALTH_COUNTER_/", ecs.createGUICharSlot(105, 40, 16, 16, '/', 1));
@@ -313,6 +281,12 @@ public class GUISystem implements ISystem
 		elementIDs.put("REPAIR_ICON", ecs.createIcon(325, 700, 32, 32, 1, "INQUIRE", "1"));
 		elementIDs.put("REPAIR_MAX_ICON", ecs.createIcon(360, 700, 32, 32, 2, "INQUIRE", "2"));
 		elementIDs.put("SHIELD_MAX_ICON", ecs.createIcon(395, 700, 32, 32, 3, "INQUIRE", "3"));
+		
+		elementIDs.put("HK_1", ecs.createGUICharSlot(325, 668, 16, 16, ' ', 1));
+		elementIDs.put("HK_2", ecs.createGUICharSlot(360, 668, 16, 16, ' ', 1));
+		elementIDs.put("HK_3", ecs.createGUICharSlot(395, 668, 16, 16, ' ', 1));
+		
+		elementIDs.put("UPGRADE_DESC", ecs.createGUITextArea(450, 684, 3, 50, 10, 10, 10, ' '));
 	}
 	
 	/**
@@ -320,20 +294,27 @@ public class GUISystem implements ISystem
 	 * @param elementName	the unique name of this element
 	 * @param dataName		the unique name of the data this element uses
 	 */
-	private void updateBar(final String elementName, final String dataName)
+	private void updateBar(final String elementName, final String curValAsStr, final String maxValAsStr)
 	{
 		GUIBarInfoPack barPack = core.getInfoPackFrom(elementIDs.get(elementName), GUIBarInfoPack.class);
-		GUIInfoPack dataPack = core.getInfoPackFrom(elementIDs.get(dataName), GUIInfoPack.class);
-		
-		if(barPack==null || dataPack == null)
+
+		if(barPack==null || curValAsStr == null || maxValAsStr == null)
 		{
 			//The element doesn't exist.
 			return;
 		}
-		
+
 		//Get current and max value the bar represents
-		double curVal = dataPack.getCurVal();	
-		double maxVal = (dataPack.getMaxVal()>0) ? dataPack.getMaxVal() : 1;
+		double curVal = 0;
+		double maxVal = 0;
+		try
+		{
+			curVal = Integer.parseInt(curValAsStr);
+			maxVal = Integer.parseInt(maxValAsStr);			
+		}
+		catch(NumberFormatException e)
+		{
+		}
 		
 		//Shrink based on direction
 		if(barPack.left())
@@ -386,9 +367,6 @@ public class GUISystem implements ISystem
 			height = (curVal/maxVal)*height;		//Normalize height to max size
 			barPack.setHeight(height);				//Set new height
 		}
-		
-		barPack.setCurValue(dataPack.getCurVal());	//Not required
-		barPack.setMaxValue(dataPack.getMaxVal());	//Not required
 	}
 
 	/**
@@ -401,7 +379,7 @@ public class GUISystem implements ISystem
 	{
 		GUICounterInfoPack pack = core.getInfoPackFrom(elementIDs.get(name), GUICounterInfoPack.class);
 		
-		if(pack==null || pack.getText().equals(value))
+		if(pack==null || value==null || pack.getText().equals(value))
 		{
 			return;
 		}
@@ -414,7 +392,7 @@ public class GUISystem implements ISystem
 		
 		while(childrenIDs.hasNext())
 		{
-			GUIInfoPack charSlot = core.getInfoPackFrom(childrenIDs.next(), GUIInfoPack.class);
+			GUICharSlotInfoPack charSlot = core.getInfoPackFrom(childrenIDs.next(), GUICharSlotInfoPack.class);
 			
 			if(alignLeft)
 			{
@@ -453,9 +431,9 @@ public class GUISystem implements ISystem
 	 * @param name
 	 * @param newChar
 	 */
-	private void updateCharSlot(final String name, final char newChar)
+	private void updateCharSlot(final String id, final char newChar)
 	{
-		GUICharSlotInfoPack pack = core.getInfoPackFrom(elementIDs.get(name), GUICharSlotInfoPack.class);
+		GUICharSlotInfoPack pack = core.getInfoPackFrom(id, GUICharSlotInfoPack.class);
 		
 		if(pack==null)
 		{
@@ -464,7 +442,7 @@ public class GUISystem implements ISystem
 
 		if(newChar=='\0' || newChar==' ')
 		{
-			pack.setVisible(false);
+			//pack.setVisible(false);
 		}
 		else
 		{			
@@ -491,396 +469,178 @@ public class GUISystem implements ISystem
 			}
 		}
 	}
-
-
-	private void updateText(final String name, final String newText)
+	
+	private void updateText(final String name, final String text)
 	{
-		//Convert to upper case (until I get lower case sprites)
-		String upperText = newText.toUpperCase();
-		
-		//Get the text area
 		GUITextInfoPack pack = core.getInfoPackFrom(elementIDs.get(name), GUITextInfoPack.class);
-		
-		boolean alignLeft = false;
-		if(pack==null||pack.getText().equals(newText))
+
+		if(pack==null
+				||(pack.getText()!=null&&pack.getText().equals(text))
+				||(pack.getText()==null&&text==null))
 		{
-			//If the area doesn't exist or the text hasn't changed...
-			return;
+			return;	//If it hasn't changed, don't change it.
+		}
+		pack.setText(text);
+
+		String[] words = {};
+		if(text!=null)
+		{
+			words = text.toUpperCase().split(" ");
 		}
 
-		//Get all of the text "slots"
 		Iterator<String> slots = pack.getChildren();
-		int textIndex = 0;
-		int slotIndex = 0;
-		int lineNum = 0;
-		int slotOnLineNum = 0;
+		int numSlotsRemaining = pack.getNumCharsPerLine();
+		int curWordIndex = 0;
 		
-		int numSlotsPerLine = pack.getNumCharsPerLine();
-		int numLines = pack.getNumLines();
-		int numSlots = numLines*numSlotsPerLine;
-		int numCharsToWrite = upperText.length();
+		while(curWordIndex<words.length)
+		{//For each word in the list of words to write...
+			String word = words[curWordIndex];	//Get the word
+			if(word.equals("\n"))
+			{//new line
+				for(int slotIndex = 0;slotIndex<numSlotsRemaining;slotIndex++)
+				{
+					if(slots.hasNext())
+					{						
+						updateCharSlot(slots.next(), '\0');
+					}
+				}
+				numSlotsRemaining = pack.getNumCharsPerLine();
+				curWordIndex++;
+				continue;
+			}
+						
+			int wordSize = word.length();
+			if(wordSize<=numSlotsRemaining)
+			{//If the word will fit on the current line...
+				if(wordSize<numSlotsRemaining)
+				{//If the word doesn't take up all the space...
+					wordSize++;	//Use up an extra slot than necessary.
+				}
+				
+				String[] freeSlots = new String[wordSize];
+				for(int index=0;index<freeSlots.length;index++)
+				{
+					if(slots.hasNext())
+					{						
+						freeSlots[index] = slots.next();
+					}
+				}
+				writeWord(word, freeSlots);
+				numSlotsRemaining-=wordSize;
+				curWordIndex++;
+			}
+			else if(wordSize>numSlotsRemaining&&wordSize<=pack.getNumCharsPerLine())
+			{//If the word won't fit on the current line but will on the next
+				for(int index=numSlotsRemaining;index>0;index--)
+				{
+					if(slots.hasNext())
+					{					
+						updateCharSlot(slots.next(), '\0');
+					}
+				}
+				numSlotsRemaining = pack.getNumCharsPerLine();
+			}
+			else
+			{//If the word won't fit on any line, write on separate lines.
+				String[] freeSlots = new String[wordSize];
+				for(int index=0;index<freeSlots.length;index++)
+				{
+					if(slots.hasNext())
+					{						
+						freeSlots[index] = slots.next();
+					}
+				}
+				writeWord(word, freeSlots);
+				numSlotsRemaining = pack.getNumCharsPerLine()-(wordSize-numSlotsRemaining)%pack.getNumCharsPerLine();
+				curWordIndex++;
+			}
+		}
+		
 		while(slots.hasNext())
-		{
-			//Go through each slot...
-			GUIInfoPack slot = 
-					core.getInfoPackFrom(slots.next(), GUIInfoPack.class);
-			
-			char charToWrite = '\0';
-			
-			//Figure out which character to write...
-			if(alignLeft)
-			{//If aligned left, write normally...
-				if(textIndex<upperText.length())
-				{
-					charToWrite = upperText.charAt(textIndex);
-					textIndex++;
-				}
-			}
-			else
-			{//If aligned right, write empty spaces first...
-				if(slotIndex<numSlotsPerLine-numCharsToWrite)
-				{					
-					charToWrite = pack.getDefaultChar();
-				}
-				else
-				{
-					charToWrite = upperText.charAt(textIndex);
-					textIndex++;
-				}
-			}
-			
-			//Set to default
-			if(charToWrite=='\0')
-			{
-				charToWrite=pack.getDefaultChar();
-			}
-			
-			//Write it.
-			if(charToWrite!=' ' && charToWrite!='\0')
-			{
-				slot.setSpriteID(charToWrite);
-				slot.setVisible(true);
-			}
-			else
-			{					
-				slot.setVisible(false);
-			}
-			slotIndex++;
+		{//Blank out unused slots.
+			System.out.println("HUR");
+			updateCharSlot(slots.next(), '\0');
 		}
 	}
 	
-	/*
-	 * 	private void updateText(final String name, final String newText)
-	{
-		//Convert to upper case (until I get lower case sprites)
-		String upperText = newText.toUpperCase();
-		
-		//Get the text area
-		GUITextInfoPack pack = core.getInfoPackFrom(elementIDs.get(name), GUITextInfoPack.class);
-		
-		boolean alignLeft;
-		if(pack==null||pack.getText().equals(newText))
-		{
-			//If the area doesn't exist or the text hasn't changed...
-			return;
-		}
-
-		//Get all of the text "slots"
-		Iterator<String> slots = pack.getChildren();
-		int index = 0;
-		
-		while(slots.hasNext())
-		{
-			//Go through each slot...
-			GUIInfoPack slot = 
-					core.getInfoPackFrom(slots.next(), GUIInfoPack.class);
-			
-			//Figure out which character to write...
-			char charToWrite;
-			
-			if(alignLeft)
-			{
-				if(index<upperText.length())
-				{					
-					charToWrite = upperText.charAt(index);
-				}
-			}
-			else
-			{
-				
-			}
-			//Write it.
-			slot.setSpriteID(charToWrite);
-			if(index<upperText.length())
-			{				
-				//Set the character to the proper one...
-				char nextChar = newText.charAt(index);
-				slot.setSpriteID(nextChar);
-				slot.setVisible(true);
-				
-				if(true)
-				{			
-					index
-				}
-				else
-				{
-					index++;
-				}
-			}
-			else
-			{	
-				//Replace unused slots with default char
-				if(pack.getDefaultChar()==' ')
-				{
-					//If space is default, set inivislbe
-					slot.setVisible(false);
-				}
-				else
-				{					
-					slot.setVisible(true);
-					slot.setSpriteID(pack.getDefaultChar());
-				}
-			}
-		}
-	}
+	/**
+	 * Used by the updateText() method to update character slots.
+	 * @param word				the word to write
+	 * @param charSlotIDs		the entity IDs of the slots to use
 	 */
-	/*
-	private void updateTextArea(final String name, final String text)
+	private void writeWord(final String word, final String... charSlotIDs)
 	{
-		if(Boolean.parseBoolean(elements.get(name +"_HASCHANGED"))==false)
-		{
-			return;
-		}
-		//Step 1: Convert to upper case.
-		String upperText = text.toUpperCase();
-		
-		//Step 2: Split into individual words.
-		String[] words = upperText.split(" ");
-		
-		//Step 3: Get the settings of the text area.
-		int maxCharsPerLine = 20;
-		int maxNumLines = 10;
-		
-		try
-		{
-			maxCharsPerLine = Integer.parseInt(elements.get(name +"_CHARSPERLINE"));
-			maxNumLines= Integer.parseInt(elements.get(name +"_NUMLINES"));
-		}
-		catch(NumberFormatException e)
-		{
-			LOGGER.log(Level.SEVERE, "Error setting up text area.");
-			elements.put(name +"_CHARSPERLINE", maxCharsPerLine + "");
-			elements.put(name +"_NUMLINES", maxNumLines + "");
-		}
-		//Step 4: Set the temp variables needed to put text in the text area.
-		int charSlot = 0;
-		int line = 0;
-		boolean addSpace = false;
-		
-		for(String word:words)
-		{
-			//For each word...
-			if(word.length()<=maxCharsPerLine-charSlot)
-			{
-				if(line<maxNumLines)
-				{
-					//If the word fits in the remaining space...
-					writeWord(name, word, charSlot, line);
-					charSlot+=word.length();
-					addSpace = true;
-				}
-			}
-			else if(word.length()>maxCharsPerLine)
-			{
-				//If the word cannot fit on a single line...
-				//Go to the beginning of the next line...
-				line++;	
-				charSlot = 0;
-				int numLines = word.length()/maxCharsPerLine;
-				int charsProcessed = 0;
-				int charsRemaining = 0;
-				
-				//For each line required to write the entire word...
-				for(int index=0;index<=numLines;index++)
-				{
-					charsRemaining = word.length()-charsProcessed;
-					if(line<maxNumLines)
-					{
-						//If there are still lines left...
-	
-						if(charsRemaining>=maxCharsPerLine)
-						{						
-							//If the remaining portion still needs a single line or more.
-							writeWord(name, word.substring(charsProcessed, charsProcessed+maxCharsPerLine-1) + "-", charSlot, line);
-							
-							//Go to the beginning of the next line
-							line++;	
-							charSlot = 0;
-							
-							//Set the number of characters processed this iteration.
-							charsProcessed+=maxCharsPerLine-1;
-						}
-						else
-						{
-							//If the remaining portion can be written now...
-							writeWord(name, word.substring(charsProcessed, word.length()), charSlot, line);
-							charSlot+=charsRemaining;	//Move cursor to end of word
-							addSpace = true;
-						}
-					}
-					else
-					{
-						index = numLines+1;
-					}
-				}
-			}
-			else if(word.length()>maxCharsPerLine-charSlot)
-			{
-				//If the word fits on the next line...
-				line++;
-				charSlot = 0;
-				if(line<maxNumLines)
-				{
-					//If there are still lines left...
-					writeWord(name, word, charSlot, line); //If the word will fit on the next line.
-					charSlot+=word.length();
-					addSpace = true;
-				}
-			}
-			
-			if(addSpace==true)
-			{				
-				writeWord(name, " ", charSlot, line);
-				charSlot++;
-				addSpace = false;
-			}
-		}
-		
-		for(int remainingLines = line;remainingLines<maxNumLines;remainingLines++)
-		{
-			for(int index=charSlot;index<maxCharsPerLine;index++)
-			{
-				GUIInfoPack pack 
-					= core.getInfoPackFrom(elements.get(name + "_" + index + "_" + line), GUIInfoPack.class);
-				if(pack!=null)
-				{
-					pack.setSpriteID(-1);
-				}
-			}
-		}
-		elements.put("BUY_DESC_HASCHANGED", "false");
-	}
-*/
-
-	/*
-
-	private void checkDesc()
-	{
-		core.send("REQUEST_CURSOR_POSITION");
-		
-		Iterator<GUIInfoPack> packs = core.getInfoPacksOfType(GUIInfoPack.class);
-		boolean found = false;	//While loop sentinel
-		while(packs.hasNext() && found == false)
-		{
-			GUIInfoPack pack = packs.next();
-			
+		int index=0;
+		for(String id:charSlotIDs)
+		{//For each slot...
+			GUICharSlotInfoPack pack = core.getInfoPackFrom(id, GUICharSlotInfoPack.class);
 			if(pack!=null)
 			{
-				if(pack.getCategory().equals("HOVERABLE"))
+				if(index<word.length())
 				{
-					if(pack.getXPos()-pack.getWidth()/2 <= this.mouseX
-							&& pack.getXPos()+pack.getWidth()/2>=this.mouseX
-							&&pack.getYPos()+pack.getHeight()/2>=this.mouseY
-							&&pack.getYPos()-pack.getHeight()/2<=this.mouseY)
-					{
-						//If the cursor is hovering over this object...
-						core.send(pack.getCommandOnHover(), pack.getValueOnHover());
-						found = true;	//Sentinel to break loop early
-					}
+					pack.setSpriteID(word.charAt(index));
+					pack.setVisible(true);
+					index++;
+				}
+				else
+				{//set all extra slots blank.
+					pack.setVisible(false);
 				}
 			}
-		}
-		
-		if(found==false)
-		{
-			elements.put("BUY_DESC", " ");
-		//	elements.put("BUY_DESC_HASCHANGED", "true");
-		}
-	}
-*/
-/*
-	private void updateDesc(final String[] message)
-	{
-		if(message.length>=1)
-		{			
-			if(message[0].equals(elements.get("BUY_DESC"))==false)
+			else
 			{
-				elements.put("BUY_DESC", message[0]);			
-				elements.put("BUY_DESC_HASCHANGED", "true");
+				return;
 			}
 		}
-	}*/
-
-
+	}
+	
+	/**
+	 * Stores the health's current and maximum values for GUI elements to use.
+	 * @param message	[0] the entity ID of the health's owner
+	 * 					[1] the current health value (int)
+	 * 					[2] the max health value (int)
+	 */
 	private void processHealthUpdate(final String[] message)
 	{
 		if(message.length>=3)
 		{
-			try
-			{
-				GUIInfoPack pack 
-					= core.getInfoPackFrom(elementIDs.get("HEALTH_DATA"), GUIInfoPack.class);
-				if(pack!=null)
-				{
-					pack.setCurVal(Integer.parseInt(message[1]));
-					pack.setMaxVal(Integer.parseInt(message[2]));					
-				}
-			}
-			catch(NumberFormatException e)
-			{
-				LOGGER.log(Level.WARNING, "Bad values for health.");
-			}
+			dataValues.put("HEALTH_CUR", message[1]);
+			dataValues.put("HEALTH_MAX", message[2]);
 		}
 	}
 	
+	/**
+	 * Stores the shield's current and maximum values for GUI elements to use.
+	 * @param message	[0] the entity ID of the shield's owner
+	 * 					[1] the current shield value (int)
+	 * 					[2] the max shield value (int)
+	 */
 	private void processShieldUpdate(final String[] message)
 	{
 		if(message.length>=3)
 		{
-			try
-			{
-				GUIInfoPack pack 
-					= core.getInfoPackFrom(elementIDs.get("SHIELD_DATA"), GUIInfoPack.class);
-				if(pack!=null)
-				{
-					pack.setCurVal(Integer.parseInt(message[1]));					
-					pack.setMaxVal(Integer.parseInt(message[2]));
-				}
-			}
-			catch(NumberFormatException e)
-			{
-				LOGGER.log(Level.WARNING, "Bad values for shield.");
-			}
+				dataValues.put("SHIELD_CUR", message[1]);
+				dataValues.put("SHIELD_MAX", message[2]);
 		}
 	}
 	
+	/**
+	 * Stores the passed score so that GUI elements can refer to it.
+	 * @param message	[0] the integer score
+	 */
 	private void processScoreUpdate(final String[] message)
 	{
 		if(message.length>=1)
 		{
-			try
-			{
-				GUIInfoPack pack 
-					= core.getInfoPackFrom(elementIDs.get("SCORE_DATA"), GUIInfoPack.class);
-				if(pack!=null)
-				{
-					pack.setCurVal(Integer.parseInt(message[0]));		
-				}
-			}
-			catch(NumberFormatException e)
-			{
-				LOGGER.log(Level.WARNING, "Bad values for score.");
-			}
+			dataValues.put("SCORE_CUR", message[0]);
+		}
+	}
+	
+	private void processDescUpdate(final String[] message)
+	{
+		if(message.length>=1)
+		{
+			dataValues.put("UPGRADE_DESC", message[0]);
 		}
 	}
 	/**

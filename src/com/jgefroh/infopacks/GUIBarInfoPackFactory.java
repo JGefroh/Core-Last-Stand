@@ -17,8 +17,7 @@ public class GUIBarInfoPackFactory implements IInfoPackFactory
 	@Override
 	public IInfoPack generate(final IEntity entity)
 	{
-		if(entity.getComponent(GUIComponent.class)!=null
-				&&entity.getComponent(GUIBarComponent.class)!=null
+		if(entity.getComponent(GUIBarComponent.class)!=null
 				&&entity.getComponent(RenderComponent.class)!=null
 				&&entity.getComponent(TransformComponent.class)!=null)
 		{

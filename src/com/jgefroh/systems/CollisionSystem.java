@@ -52,7 +52,7 @@ public class CollisionSystem implements ISystem
 	/**Stores effects to execute when collisions are detected.*/
 	private ArrayList<IEffect> effects;
 	
-	private Benchmark bench = new Benchmark(this.getClass().getName(), false);
+	private Benchmark bench = new Benchmark(this.getClass().getName(), true);
 
 	//////////
 	// INIT
@@ -160,6 +160,7 @@ public class CollisionSystem implements ISystem
 			{
 				Iterator<CollisionInfoPack> checkAgainst =
 						core.getInfoPacksOfType(CollisionInfoPack.class);
+				
 				while(checkAgainst.hasNext())
 				{
 					CollisionInfoPack cipB = checkAgainst.next();

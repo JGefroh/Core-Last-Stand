@@ -25,9 +25,6 @@ public class GUIBarInfoPack implements IInfoPack
 	private RenderComponent rc;
 	
 	/**A component this InfoPack depends on.*/
-	private GUIComponent gc;
-	
-	/**A component this InfoPack depends on.*/
 	private GUIBarComponent gbc;
 	
 	/**Flag that indicates the InfoPack is invalid and unreliable.*/
@@ -55,9 +52,8 @@ public class GUIBarInfoPack implements IInfoPack
 		{
 			tc = owner.getComponent(TransformComponent.class);
 			rc = owner.getComponent(RenderComponent.class);
-			gc = owner.getComponent(GUIComponent.class);
 			gbc = owner.getComponent(GUIBarComponent.class);
-			if(tc==null||rc==null||gc==null||gbc==null)
+			if(tc==null||rc==null||gbc==null)
 			{
 				setDirty(true);
 				return true;

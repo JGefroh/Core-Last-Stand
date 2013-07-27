@@ -25,9 +25,6 @@ public class GUITextInfoPack implements IInfoPack
 	private RenderComponent rc;
 	
 	/**A component this InfoPack depends on.*/
-	private GUIComponent gc;
-	
-	/**A component this InfoPack depends on.*/
 	private GUITextComponent gtc;
 	
 	/**Flag that indicates the InfoPack is invalid and unreliable.*/
@@ -55,9 +52,8 @@ public class GUITextInfoPack implements IInfoPack
 		{
 			tc = owner.getComponent(TransformComponent.class);
 			rc = owner.getComponent(RenderComponent.class);
-			gc = owner.getComponent(GUIComponent.class);
 			gtc = owner.getComponent(GUITextComponent.class);
-			if(tc==null||rc==null||gc==null||gtc==null)
+			if(tc==null||rc==null||gtc==null)
 			{
 				setDirty(true);
 				return true;

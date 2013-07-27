@@ -24,8 +24,6 @@ public class GUICharSlotInfoPack implements IInfoPack
 	/**A component this InfoPack depends on.*/
 	private RenderComponent rc;
 	
-	private GUIComponent gc;
-
 	private GUICharSlotComponent gcsc;
 	
 	/**Flag that indicates the InfoPack is invalid and unreliable.*/
@@ -53,9 +51,8 @@ public class GUICharSlotInfoPack implements IInfoPack
 		{
 			tc = owner.getComponent(TransformComponent.class);
 			rc = owner.getComponent(RenderComponent.class);
-			gc = owner.getComponent(GUIComponent.class);
 			gcsc = owner.getComponent(GUICharSlotComponent.class);
-			if(tc==null||rc==null||gc==null||gcsc==null)
+			if(tc==null||rc==null||gcsc==null)
 			{
 				setDirty(true);
 				return true;

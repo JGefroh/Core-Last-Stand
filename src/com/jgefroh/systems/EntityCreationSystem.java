@@ -1,6 +1,7 @@
 package com.jgefroh.systems;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -70,6 +71,8 @@ public class EntityCreationSystem implements ISystem
 		= LoggerFactory.getLogger(this.getClass(), Level.ALL);
 	
 	private double bearing;
+	
+	HashMap<String, ArrayList<IEntity>> entityPool;
 	//////////
 	// INIT
 	//////////
@@ -94,6 +97,7 @@ public class EntityCreationSystem implements ISystem
 	{
 		setDebugLevel(this.debugLevel);
 
+		entityPool = new HashMap<String, ArrayList<IEntity>>();
 		core.setInterested(this, "BEARING_TO_MOUSE");
 	}
 	
@@ -149,6 +153,21 @@ public class EntityCreationSystem implements ISystem
 	//////////
 	// SYSTEM METHODS
 	//////////
+	public void addToPool(final IEntity entity)
+	{
+		ArrayList<IEntity> entities = entityPool.get(entity.getName());
+		
+		if(entities!=null)
+		{			
+			entities.add(entity);
+		}
+		else
+		{
+			ArrayList<IEntity> newEntities = new ArrayList<IEntity>();
+			newEntities.add(entity);
+			entityPool.put(entity.getName(), newEntities);		
+		}
+	}
 	public void createBG()
 	{
 		IEntity bg = new Entity();
@@ -1205,7 +1224,6 @@ public class EntityCreationSystem implements ISystem
 		
 		TransformComponent tc = new TransformComponent(entity);
 		RenderComponent rc = new RenderComponent(entity);
-		GUIComponent gc = new GUIComponent();
 		GUICharSlotComponent gcsc = new GUICharSlotComponent();
 		
 		
@@ -1216,36 +1234,17 @@ public class EntityCreationSystem implements ISystem
 		tc.setBearing(-90);
 		
 		rc.setTexturePath("res/alphabet.png");
-				
+		rc.setSpriteID(-1);
 		gcsc.setSlotNum(slotNum);
 		
 		entity.add(tc);
 		entity.add(rc);
-		entity.add(gc);
 		entity.add(gcsc);
 		
 		core.add(entity);
 		return entity.getID();
 	}
-	
-	
-	public String createGUIData()
-	{
-		IEntity entity = new Entity();
-		entity.setName("GUI_DATA");
-		
-		TransformComponent tc = new TransformComponent(entity);
-		RenderComponent rc = new RenderComponent(entity);
-		GUIComponent gc = new GUIComponent();
-		
-		entity.add(tc);
-		entity.add(rc);
-		entity.add(gc);
-		
-		core.add(entity);
-		
-		return entity.getID();
-	}
+
 	
 
 
@@ -1284,14 +1283,15 @@ public class EntityCreationSystem implements ISystem
 	public String createGUITextArea(final double xPos, final double yPos, 
 										final int numLines, final int numCharsPerLine, 
 										final double charWidth, final double charHeight,
+										final int ySpacing,
 										final char defaultChar)
 	{
+		System.out.println("MAKING TEXT AREA");
 		IEntity entity = new Entity();
 		entity.setName("ICON");
 		
 		TransformComponent tc = new TransformComponent(entity);
 		RenderComponent rc = new RenderComponent(entity);
-		GUIComponent gc = new GUIComponent();
 		GUITextComponent gtc = new GUITextComponent();
 		
 		tc.setXPos(xPos);
@@ -1309,7 +1309,7 @@ public class EntityCreationSystem implements ISystem
 		{
 			for(int slot = 0;slot<numCharsPerLine;slot++)
 			{
-				childrenIDs.add(this.createGUICharSlot(xPos+(charWidth*slot), yPos+(charHeight*line), charWidth, charHeight, defaultChar, curSlot));
+				childrenIDs.add(this.createGUICharSlot(xPos+(charWidth*slot), yPos+(charHeight*line)+(ySpacing*line), charWidth, charHeight, defaultChar, curSlot));
 				curSlot++;
 			}
 		}
@@ -1319,7 +1319,6 @@ public class EntityCreationSystem implements ISystem
 		entity.add(tc);
 		entity.add(rc);
 		entity.add(gtc);
-		entity.add(gc);
 		
 		core.add(entity);
 		

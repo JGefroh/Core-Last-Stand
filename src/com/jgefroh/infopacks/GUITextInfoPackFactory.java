@@ -1,6 +1,5 @@
 package com.jgefroh.infopacks;
 
-import com.jgefroh.components.GUIComponent;
 import com.jgefroh.components.GUITextComponent;
 import com.jgefroh.components.RenderComponent;
 import com.jgefroh.components.TransformComponent;
@@ -17,8 +16,7 @@ public class GUITextInfoPackFactory implements IInfoPackFactory
 	@Override
 	public IInfoPack generate(final IEntity entity)
 	{
-		if(entity.getComponent(GUIComponent.class)!=null
-				&&entity.getComponent(GUITextComponent.class)!=null
+		if(entity.getComponent(GUITextComponent.class)!=null
 				&&entity.getComponent(RenderComponent.class)!=null
 				&&entity.getComponent(TransformComponent.class)!=null)
 		{

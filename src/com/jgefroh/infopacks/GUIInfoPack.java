@@ -112,61 +112,17 @@ public class GUIInfoPack implements IInfoPack
 	{
 		return tc.getHeight();
 	}
+	
+	public boolean hasHoverEffect()
+	{
+		return false;//gc.hasHoverEffect();
+	}
+	
+	public void executeHoverEffect()
+	{
+		//gc.executeHoverEffect();
+	}
 
-	public String getCommandOnHover()
-	{
-		return gc.getCommandOnHover();
-	}
-	
-	public String getCategory()
-	{
-		return gc.getCategory();
-	}
-	
-	public String getValueOnHover()
-	{
-		return gc.getValueOnHover();
-	}
-	
-	public double getDefXPos()
-	{
-		return gc.getDefXPos();
-	}
-	
-	public double getDefYPos()
-	{
-		return gc.getDefYPos();
-	}
-	
-	public double getDefHeight()
-	{
-		return gc.getDefHeight();
-	}
-	
-	public double getDefWidth()
-	{
-		return gc.getDefWidth();
-	}
-	
-	public int getMinVal()
-	{
-		return gc.getMinVal();
-	}
-	
-	public int getMaxVal()
-	{
-		return gc.getMaxVal();
-	}
-	
-	public int getCurVal()
-	{
-		return gc.getCurVal();
-	}
-	
-	public ArrayList<String> getChildren()
-	{
-		return gc.getChildren();
-	}
 	//////////
 	// SETTERS
 	//////////
@@ -195,40 +151,4 @@ public class GUIInfoPack implements IInfoPack
 	{
 		tc.setHeight(height);
 	}
-	
-	public void setRGB(final float r, final float g, final float b)
-	{
-		rc.setRGB(r, g, b);
-	}
-	
-	public void setSpriteID(final int id)
-	{
-		rc.setSpriteID(id);
-	}
-	
-	public void setMinVal(final int minVal)
-	{
-		gc.setMinVal(minVal);
-	}
-	
-	public void setMaxVal(final int maxVal)
-	{
-		gc.setMaxVal(maxVal);
-	}
-	
-	public void setCurVal(final int curVal)
-	{
-		gc.setCurVal(curVal);
-	}
-	
-	public void setChildren(final ArrayList<String> children)
-	{
-		gc.setChildren(children);
-	}
-	
-	public void setVisible(final boolean isVisible)
-	{
-		rc.setVisible(isVisible);
-	}
-
 }

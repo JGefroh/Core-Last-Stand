@@ -17,8 +17,7 @@ public class GUICounterInfoPackFactory implements IInfoPackFactory
 	@Override
 	public IInfoPack generate(final IEntity entity)
 	{
-		if(entity.getComponent(GUIComponent.class)!=null
-				&&entity.getComponent(GUICounterComponent.class)!=null
+		if(entity.getComponent(GUICounterComponent.class)!=null
 				&&entity.getComponent(RenderComponent.class)!=null
 				&&entity.getComponent(TransformComponent.class)!=null)
 		{

@@ -25,9 +25,6 @@ public class GUICounterInfoPack implements IInfoPack
 	private RenderComponent rc;
 	
 	/**A component this InfoPack depends on.*/
-	private GUIComponent gc;
-	
-	/**A component this InfoPack depends on.*/
 	private GUICounterComponent gcc;
 	
 	/**Flag that indicates the InfoPack is invalid and unreliable.*/
@@ -55,9 +52,8 @@ public class GUICounterInfoPack implements IInfoPack
 		{
 			tc = owner.getComponent(TransformComponent.class);
 			rc = owner.getComponent(RenderComponent.class);
-			gc = owner.getComponent(GUIComponent.class);
 			gcc = owner.getComponent(GUICounterComponent.class);
-			if(tc==null||rc==null||gc==null||gcc==null)
+			if(tc==null||rc==null||gcc==null)
 			{
 				setDirty(true);
 				return true;
