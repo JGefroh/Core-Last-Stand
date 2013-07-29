@@ -2,11 +2,11 @@ package com.jgefroh.infopacks;
 
 import com.jgefroh.components.OutOfBoundsComponent;
 import com.jgefroh.components.TransformComponent;
+import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
-import com.jgefroh.core.IInfoPack;
 
 
-public class OutOfBoundsInfoPack implements IInfoPack
+public class OutOfBoundsInfoPack extends AbstractInfoPack
 {
 	//////////
 	// DATA

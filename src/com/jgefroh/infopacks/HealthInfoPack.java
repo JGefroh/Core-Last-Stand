@@ -1,10 +1,10 @@
 package com.jgefroh.infopacks;
 
 import com.jgefroh.components.HealthComponent;
+import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
-import com.jgefroh.core.IInfoPack;
 
-public class HealthInfoPack implements IInfoPack
+public class HealthInfoPack extends AbstractInfoPack
 {
 	//////////
 	// DATA

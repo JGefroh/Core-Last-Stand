@@ -11,6 +11,7 @@ import com.jgefroh.core.ISystem;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.data.Vector;
 import com.jgefroh.infopacks.MovementInfoPack;
+import com.jgefroh.infopacks.TestInfoPack;
 import com.jgefroh.tests.Benchmark;
 
 
@@ -18,7 +19,7 @@ import com.jgefroh.tests.Benchmark;
  * System that handles movement and repositioning of entities.
  * @author Joseph Gefroh
  */
-public class TransformSystem implements ISystem
+public class TestSystem implements ISystem
 {
 	//////////
 	// DATA
@@ -42,7 +43,7 @@ public class TransformSystem implements ISystem
 	private final Logger LOGGER 
 		= LoggerFactory.getLogger(this.getClass(), Level.ALL);
 	
-	private Benchmark bench = new Benchmark(this.getClass().getName(), false);
+	private Benchmark bench = new Benchmark(this.getClass().getName(), true);
 
 	//////////
 	// INIT
@@ -51,7 +52,7 @@ public class TransformSystem implements ISystem
 	 * Creates a new instance of this {@code System}.
 	 * @param core	 a reference to the Core controlling this system
 	 */
-	public TransformSystem(final Core core)
+	public TestSystem(final Core core)
 	{
 		this.core = core;
 		setDebugLevel(this.debugLevel);
@@ -177,9 +178,8 @@ public class TransformSystem implements ISystem
 	 */
 	public void setInterval(final IEntity entity, final long interval)
 	{
-		MovementInfoPack pack =
-				core.getInfoPackFrom(entity, MovementInfoPack.class);
-		pack.setInterval(interval);
+		TestInfoPack pack =
+				core.getInfoPackFrom(entity, TestInfoPack.class);
 	}
 	
 	/**

@@ -18,6 +18,7 @@ public class RenderInfoPackFactory implements IInfoPackFactory
 		if(entity.getComponent(RenderComponent.class)!=null
 				&&entity.getComponent(TransformComponent.class)!=null)
 		{
+
 			return new RenderInfoPack(entity);
 		}
 		return null;

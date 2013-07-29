@@ -1,10 +1,9 @@
 package com.jgefroh.main;
 
-import java.util.logging.Level;
-
 import org.lwjgl.opengl.Display;
 
 import com.jgefroh.core.Core;
+import com.jgefroh.core.ISystem;
 import com.jgefroh.infopacks.AIInfoPackFactory;
 import com.jgefroh.infopacks.AnimationInfoPackFactory;
 import com.jgefroh.infopacks.CollisionInfoPackFactory;
@@ -28,6 +27,7 @@ import com.jgefroh.infopacks.ScoreInfoPackFactory;
 import com.jgefroh.infopacks.ShieldInfoPackFactory;
 import com.jgefroh.infopacks.TargetInfoPackFactory;
 import com.jgefroh.infopacks.TargetTrackInfoPackFactory;
+import com.jgefroh.infopacks.TestInfoPack;
 import com.jgefroh.infopacks.WeaponInfoPackFactory;
 import com.jgefroh.input.InputSystem;
 import com.jgefroh.systems.AISystem;
@@ -93,14 +93,14 @@ public class Main
 	 */
 	private void initSystems()
 	{
-		core.setDebugLevel(Level.INFO);
-		core.addSystem(new WindowSystem(core, 1366, 768, "Last Stand"), true);
+		core.addSystem(new WindowSystem(core, 1366, 768, "Last Stand - 29JUL13"));
 		core.addSystem(new RenderSystem(core), true);
+		
 		core.addSystem(new ForceSystem(core));
 		TransformSystem tranSys = new TransformSystem(core);
 		tranSys.setWait(30);
 		core.addSystem(tranSys);
-		core.addSystem(new InputSystem(core), true);
+		core.addSystem(new InputSystem(core));
 		
 		core.addSystem(new CollisionSystem(core));
 		core.addSystem(new EntityCreationSystem(core), true);
@@ -120,8 +120,8 @@ public class Main
 		OutOfBoundsSystem oobSys = new OutOfBoundsSystem(core);
 		core.addSystem(oobSys);
 		EnemySpawnSystem eSpawn = new EnemySpawnSystem(core);
-		eSpawn.setWait(30000);
-		eSpawn.setLast(core.now()-31000);
+			eSpawn.setWait(30000);
+			eSpawn.setLast(core.now()-31000);
 		core.addSystem(eSpawn); 
 		core.addSystem(new ShieldSystem(core));
 		core.addSystem(new KeepInBoundsSystem(core));
@@ -129,6 +129,8 @@ public class Main
 		core.addSystem(new ScoreSystem(core));
 		core.addSystem(new UpgradeSystem(core));
 		rl = new ResourceLoader(core);
+		
+		
 
 	}
 	
@@ -180,18 +182,10 @@ public class Main
 
 		EntityCreationSystem ecs = 
 				core.getSystem(EntityCreationSystem.class);
-		ecs.createPlayer(32, 384);
-
-		//ecs.createEnemy1_0(128, 128);
-	/*	
-	 * 
-		ecs.createFormation(0, 100);	
-		ecs.createFormation(1, 500);
-		ecs.createFormation(2, 900);
-		ecs.createFormation(3, 1300);
-		ecs.createFormation(4, 1700);
-	*/
-
+		if(ecs!=null)
+		{			
+			ecs.createPlayer(32, 384);
+		}
 		CollisionSystem cs = core.getSystem(CollisionSystem.class);
 				
 		if(cs!=null)
@@ -203,12 +197,15 @@ public class Main
 	
 	public void loadTexture()
 	{
-		rl.loadTexture("res/player.png");
-		rl.loadTexture("res/bullet.png");
-		rl.loadTexture("res/enemy.png");
-		rl.loadTexture("res/bg.png");
-		rl.loadTexture("res/fx.png");
-		rl.loadTexture("res/alphabet.png");
-		rl.loadTexture("res/icons.png");
+		if(rl!=null)
+		{
+			rl.loadTexture("res/player.png");
+			rl.loadTexture("res/bullet.png");
+			rl.loadTexture("res/enemy.png");
+			rl.loadTexture("res/bg.png");
+			rl.loadTexture("res/fx.png");
+			rl.loadTexture("res/alphabet.png");
+			rl.loadTexture("res/icons.png");
+		}
 	}
 }

@@ -2,15 +2,14 @@ package com.jgefroh.infopacks;
 
 import java.util.Iterator;
 
-import com.jgefroh.components.GUIComponent;
 import com.jgefroh.components.GUITextComponent;
 import com.jgefroh.components.RenderComponent;
 import com.jgefroh.components.TransformComponent;
+import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
-import com.jgefroh.core.IInfoPack;
 
 
-public class GUITextInfoPack implements IInfoPack
+public class GUITextInfoPack extends AbstractInfoPack
 {
 	//////////
 	// DATA

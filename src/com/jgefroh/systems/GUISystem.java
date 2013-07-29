@@ -43,9 +43,9 @@ public class GUISystem implements ISystem
 	
 	/**Logger for debug purposes.*/
 	private final Logger LOGGER 
-		= LoggerFactory.getLogger(this.getClass(), Level.ALL);
+		= LoggerFactory.getLogger(this.getClass(), Level.INFO);
 	
-	private Benchmark bench = new Benchmark(this.getClass().getName(), true);
+	private Benchmark bench = new Benchmark(this.getClass().getName(), false);
 
 	int mouseX;
 	int mouseY;

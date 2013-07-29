@@ -1009,7 +1009,10 @@ public class EntityCreationSystem implements ISystem
 		IEntity healthBar = new Entity();
 		healthBar.setName("HEALTHBAR");
 		TransformComponent otc = owner.getComponent(TransformComponent.class);
-		
+		if(otc==null)
+		{
+			return null;
+		}
 		TransformComponent htc = new TransformComponent(healthBar);
 			htc.setXPos(otc.getXPos());
 			htc.setYPos(otc.getYPos()+15);

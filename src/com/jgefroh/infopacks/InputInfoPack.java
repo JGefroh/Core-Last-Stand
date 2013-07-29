@@ -1,8 +1,8 @@
 package com.jgefroh.infopacks;
 
 import com.jgefroh.components.InputComponent;
+import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
-import com.jgefroh.core.IInfoPack;
 
 /**
  * Intended to be used by the InputSystem.
@@ -12,7 +12,7 @@ import com.jgefroh.core.IInfoPack;
  * 
  * @author Joseph Gefroh
  */
-public class InputInfoPack implements IInfoPack
+public class InputInfoPack extends AbstractInfoPack
 {
 	//////////
 	// DATA

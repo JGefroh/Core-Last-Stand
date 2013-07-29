@@ -3,11 +3,11 @@ package com.jgefroh.infopacks;
 import com.jgefroh.components.ForceGeneratorComponent;
 import com.jgefroh.components.TransformComponent;
 import com.jgefroh.components.VelocityComponent;
+import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
-import com.jgefroh.core.IInfoPack;
 import com.jgefroh.data.Vector;
 
-public class ForceInfoPack implements IInfoPack
+public class ForceInfoPack extends AbstractInfoPack
 {
 	//////////
 	// DATA

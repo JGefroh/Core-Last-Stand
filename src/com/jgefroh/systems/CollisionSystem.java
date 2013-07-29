@@ -52,7 +52,7 @@ public class CollisionSystem implements ISystem
 	/**Stores effects to execute when collisions are detected.*/
 	private ArrayList<IEffect> effects;
 	
-	private Benchmark bench = new Benchmark(this.getClass().getName(), true);
+	private Benchmark bench = new Benchmark(this.getClass().getName(), false);
 
 	//////////
 	// INIT

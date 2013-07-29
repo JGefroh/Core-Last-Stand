@@ -16,6 +16,7 @@ import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.data.Sprite;
 import com.jgefroh.data.Texture;
 import com.jgefroh.infopacks.RenderInfoPack;
+import com.jgefroh.tests.Benchmark;
 
 
 /**
@@ -63,6 +64,9 @@ public class RenderSystem implements ISystem
 	
 	/**The rendered height.*/
 	private final int NATIVE_HEIGHT = 768;
+	
+	private Benchmark bench = new Benchmark(this.getClass().getName(), true);
+
 	//////////
 	// INIT
 	//////////
@@ -133,7 +137,10 @@ public class RenderSystem implements ISystem
 	{
 		if(isRunning)
 		{	
-			render();
+			long startTime = System.nanoTime();
+			int numEntities = render();
+			bench.benchmark(System.nanoTime()-startTime, numEntities);
+
 		}
 	}
 
@@ -274,16 +281,16 @@ public class RenderSystem implements ISystem
 	/**
 	 * Render the entities that have render components.
 	 */
-	public void render()
+	public int render()
 	{
 		newFrame();
 		Iterator<RenderInfoPack> packs = 
 				core.getInfoPacksOfType(RenderInfoPack.class);
-		
+		int numEntities = 0;
 		while(packs.hasNext())
 		{
 			RenderInfoPack pack = packs.next();
-			
+
 			if(pack.isDirty()==false&&pack.isVisible()==true)
 			{
 				if(pack.getTextureID()==-1)
@@ -304,21 +311,12 @@ public class RenderSystem implements ISystem
 						idMan.put(pack.getPath(), -1);	//Avoid repeat log msgs.
 					}
 				}
-				/*	//Too many params
-				drawQuadAt(pack.getTextureID(), 
-						pack.getXPos()-pack.getWidth()/2, pack.getYPos()-pack.getHeight()/2, pack.getZPos(),
-						pack.getWidth(), pack.getHeight(),
-						pack.getBearing(),
-						getUMin(pack.getTextureID(), pack.getSpriteID()),
-						getUMax(pack.getTextureID(), pack.getSpriteID()),
-						getVMin(pack.getTextureID(), pack.getSpriteID()),
-						getVMax(pack.getTextureID(), pack.getSpriteID()),
-						pack.getR(), pack.getG(), pack.getB());
-				*/
-				
 				drawQuadAt(pack);
 			}
+			
+			numEntities++;
 		}
+		return numEntities;
 	}
 
 	/**

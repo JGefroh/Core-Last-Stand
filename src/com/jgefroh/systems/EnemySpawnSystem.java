@@ -75,7 +75,7 @@ public class EnemySpawnSystem implements ISystem
 	{
 		if(this.isRunning)
 		{
-			decideSpawns();
+			decideSpawns(now);
 		}
 	}
 
@@ -119,8 +119,9 @@ public class EnemySpawnSystem implements ISystem
 	//////////
 	// SYSTEM METHODS
 	//////////
-	private void decideSpawns()
+	private void decideSpawns(final long now)
 	{
+		System.out.println("LOL");
 		EntityCreationSystem ecs = core.getSystem(EntityCreationSystem.class);
 		Random r = new Random();
 		int numEnemies = 0;

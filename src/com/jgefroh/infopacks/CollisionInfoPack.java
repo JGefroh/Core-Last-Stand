@@ -2,8 +2,8 @@ package com.jgefroh.infopacks;
 
 import com.jgefroh.components.CollisionComponent;
 import com.jgefroh.components.TransformComponent;
+import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
-import com.jgefroh.core.IInfoPack;
 
 /**
  * Intended to be used by the CollisionSystem.
@@ -14,7 +14,7 @@ import com.jgefroh.core.IInfoPack;
  * 
  * @author Joseph Gefroh
  */
-public class CollisionInfoPack implements IInfoPack
+public class CollisionInfoPack extends AbstractInfoPack
 {
 	//////////
 	// DATA

@@ -1,8 +1,8 @@
 package com.jgefroh.infopacks;
 
 import com.jgefroh.components.SlaveComponent;
+import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
-import com.jgefroh.core.IInfoPack;
 
 
 /**
@@ -10,7 +10,7 @@ import com.jgefroh.core.IInfoPack;
  * 
  * @author Joseph Gefroh
  */
-public class SlaveInfoPack implements IInfoPack
+public class SlaveInfoPack extends AbstractInfoPack
 {
 	//////////
 	// DATA

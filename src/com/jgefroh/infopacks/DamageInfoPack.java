@@ -1,14 +1,13 @@
 package com.jgefroh.infopacks;
 
 import com.jgefroh.components.DamageComponent;
-import com.jgefroh.components.HealthComponent;
+import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
-import com.jgefroh.core.IInfoPack;
 
 /**
  * @author Joseph Gefroh
  */
-public class DamageInfoPack implements IInfoPack
+public class DamageInfoPack extends AbstractInfoPack
 {
 	//////////
 	// DATA

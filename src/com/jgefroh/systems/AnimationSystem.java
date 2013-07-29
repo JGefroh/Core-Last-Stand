@@ -9,6 +9,7 @@ import com.jgefroh.core.Core;
 import com.jgefroh.core.ISystem;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.infopacks.AnimationInfoPack;
+import com.jgefroh.tests.Benchmark;
 
 
 /**
@@ -44,6 +45,7 @@ public class AnimationSystem implements ISystem
 	private final Logger LOGGER 
 		= LoggerFactory.getLogger(this.getClass(), Level.ALL);
 	
+	private Benchmark bench = new Benchmark(this.getClass().getName(), true);
 
 	
 	//////////
@@ -85,7 +87,9 @@ public class AnimationSystem implements ISystem
 	{		
 		if(isRunning)
 		{			
-			animate(now);
+			long startTime = System.nanoTime();
+			int numEntities = animate(now);
+			bench.benchmark(System.nanoTime()-startTime, numEntities);
 		}
 	}
 
@@ -140,10 +144,12 @@ public class AnimationSystem implements ISystem
 	 * Updates all animations and advances their frames.
 	 * @param now	the current time
 	 */
-	private void animate(final long now)
+	private int animate(final long now)
 	{
 		Iterator<AnimationInfoPack> infoPacks = 
 				core.getInfoPacksOfType(AnimationInfoPack.class);
+		
+		int numEntities = 0;
 		while(infoPacks.hasNext())
 		{
 			AnimationInfoPack pack = infoPacks.next();
@@ -155,7 +161,9 @@ public class AnimationSystem implements ISystem
 					pack.setLastUpdateTime(now);
 				}
 			}
+			numEntities ++;
 		}
+		return numEntities;
 	}
 	
 	/**

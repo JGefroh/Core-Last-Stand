@@ -2,8 +2,8 @@ package com.jgefroh.infopacks;
 
 import com.jgefroh.components.RenderComponent;
 import com.jgefroh.components.TransformComponent;
+import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
-import com.jgefroh.core.IInfoPack;
 
 
 /**
@@ -15,7 +15,7 @@ import com.jgefroh.core.IInfoPack;
  * 
  * @author Joseph Gefroh
  */
-public class RenderInfoPack implements IInfoPack
+public class RenderInfoPack extends AbstractInfoPack
 {
 	//////////
 	// DATA

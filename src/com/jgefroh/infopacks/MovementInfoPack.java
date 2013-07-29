@@ -1,11 +1,9 @@
 package com.jgefroh.infopacks;
 
-import java.util.ArrayList;
-
 import com.jgefroh.components.TransformComponent;
 import com.jgefroh.components.VelocityComponent;
+import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
-import com.jgefroh.core.IInfoPack;
 import com.jgefroh.data.Vector;
 
 
@@ -18,7 +16,7 @@ import com.jgefroh.data.Vector;
  * 
  * @author Joseph Gefroh
  */
-public class MovementInfoPack implements IInfoPack
+public class MovementInfoPack extends AbstractInfoPack
 {
 	//////////
 	// DATA

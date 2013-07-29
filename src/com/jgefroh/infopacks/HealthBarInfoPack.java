@@ -3,13 +3,13 @@ package com.jgefroh.infopacks;
 import com.jgefroh.components.HealthBarComponent;
 import com.jgefroh.components.HealthComponent;
 import com.jgefroh.components.TransformComponent;
+import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
-import com.jgefroh.core.IInfoPack;
 
 /**
  * @author Joseph Gefroh
  */
-public class HealthBarInfoPack implements IInfoPack
+public class HealthBarInfoPack extends AbstractInfoPack
 {
 	//////////
 	// DATA

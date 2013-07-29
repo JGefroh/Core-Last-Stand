@@ -1,15 +1,20 @@
 package com.jgefroh.infopacks;
 
-import com.jgefroh.components.MaxRangeComponent;
+import com.jgefroh.components.CollisionComponent;
 import com.jgefroh.components.TransformComponent;
 import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
 
-
 /**
+ * Intended to be used by the CollisionSystem.
+ * 
+ * Controls access to the following components:
+ * TransformComponent
+ * CollisionComponent
+ * 
  * @author Joseph Gefroh
  */
-public class MaxRangeInfoPack extends AbstractInfoPack
+public class TestInfoPack extends AbstractInfoPack
 {
 	//////////
 	// DATA
@@ -21,10 +26,10 @@ public class MaxRangeInfoPack extends AbstractInfoPack
 	private TransformComponent tc;
 	
 	/**A component this InfoPack depends on.*/
-	private MaxRangeComponent mc;
+	private CollisionComponent cc;
 	
 	/**Flag that indicates the InfoPack is invalid and unreliable.*/
-	private boolean isDirty;	
+	private boolean isDirty;
 	
 	
 	//////////
@@ -34,7 +39,7 @@ public class MaxRangeInfoPack extends AbstractInfoPack
 	 * Create a new instance of this InfoPack.
 	 * @param owner	the entity associated with this InfoPack
 	 */
-	public MaxRangeInfoPack(final IEntity owner)
+	public TestInfoPack(final IEntity owner)
 	{
 		this.owner = owner;
 	}
@@ -58,20 +63,17 @@ public class MaxRangeInfoPack extends AbstractInfoPack
 	@Override
 	public boolean checkDirty()
 	{
-		if(owner.hasChanged())
-		{
-			tc = owner.getComponent(TransformComponent.class);
-			mc = owner.getComponent(MaxRangeComponent.class);			
-			if(tc==null||mc==null)
-			{
-				setDirty(true);
-				return true;
-			}
-		}
-		setDirty(false);
 		return false;
 	}
-
+	
+	/**
+	 * @see CollisionComponent#getCollisionGroup()
+	 */
+	public int getGroup()
+	{
+		return cc.getCollisionGroup();
+	}
+	
 	/**
 	 * @see TransformComponent#getXPos()
 	 */
@@ -88,25 +90,23 @@ public class MaxRangeInfoPack extends AbstractInfoPack
 		return tc.getYPos();
 	}
 	
-	public double getLastXPos()
+	/**
+	 * @see TransformComponent#getWidth()
+	 */
+	public double getWidth()
 	{
-		return mc.getLastXPos();
-	}
-
-	public double getLastYPos()
-	{
-		return mc.getLastYPos();
+		return tc.getWidth();
 	}
 	
-	public int getMaxRange()
+	/**
+	 * @see TransformComponent#getHeight()
+	 */
+	public double getHeight()
 	{
-		return mc.getMaxRange();
+		return tc.getHeight();
 	}
 	
-	public double getDistanceTraveled()
-	{
-		return mc.getDistanceTraveled();
-	}
+	
 	//////////
 	// SETTERS
 	//////////
@@ -116,18 +116,20 @@ public class MaxRangeInfoPack extends AbstractInfoPack
 		this.isDirty = isDirty;
 	}
 	
-	public void setLastXPos(final double lastXPos)
+	/**
+	 * @see TransformComponent#setXPos(int)
+	 */
+	public void setXPos(final int xPos)
 	{
-		mc.setLastXPos(lastXPos);
+		tc.setXPos(xPos);
 	}
 	
-	public void setLastYPos(final double lastYPos)
+	/**
+	 * @see TransformComponent#setYPos(int)
+	 */
+	public void setYPos(final int yPos)
 	{
-		mc.setLastYPos(lastYPos);
-	}
-	public void setDistanceTraveled(final double distanceTraveled)
-	{
-		mc.setDistanceTraveled(distanceTraveled);
+		tc.setYPos(yPos);
 	}
 	
 }

@@ -41,7 +41,7 @@ public class AISystem implements ISystem
 	private final Logger LOGGER 
 		= LoggerFactory.getLogger(this.getClass(), Level.ALL);
 	
-	private Benchmark bench = new Benchmark(this.getClass().getName(), true);
+	private Benchmark bench = new Benchmark(this.getClass().getName(), false);
 
 	
 	//////////

@@ -1,8 +1,8 @@
 package com.jgefroh.infopacks;
 
 import com.jgefroh.components.WeaponComponent;
+import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
-import com.jgefroh.core.IInfoPack;
 import com.jgefroh.data.Weapon;
 
 
@@ -14,7 +14,7 @@ import com.jgefroh.data.Weapon;
  * 
  * @author Joseph Gefroh
  */
-public class WeaponInfoPack implements IInfoPack
+public class WeaponInfoPack extends AbstractInfoPack
 {
 	//////////
 	// DATA
