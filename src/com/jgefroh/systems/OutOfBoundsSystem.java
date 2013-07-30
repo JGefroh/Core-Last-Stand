@@ -155,7 +155,7 @@ public class OutOfBoundsSystem implements ISystem
 					|| pack.getYPos()+pack.getHeight()/2<0
 					|| pack.getYPos()-pack.getHeight ()/2>nativeHeight))
 			{
-				core.send("DESTROYING_ENTITY", pack.getOwner().getID());
+				core.send("DESTROYING_ENTITY", pack.getOwner().getID(), "OUT_OF_BOUNDS");
 				LOGGER.log(Level.FINEST, 
 					"Entity " + pack.getOwner().getID() + " out of bounds.");
 				core.removeEntity(pack.getOwner());

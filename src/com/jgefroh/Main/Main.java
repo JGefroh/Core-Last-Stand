@@ -98,7 +98,7 @@ public class Main
 		
 		core.addSystem(new ForceSystem(core));
 		TransformSystem tranSys = new TransformSystem(core);
-		tranSys.setWait(30);
+		//tranSys.setWait(30);
 		core.addSystem(tranSys);
 		core.addSystem(new InputSystem(core));
 		
@@ -114,7 +114,7 @@ public class Main
 		core.addSystem(new HealthMonitorSystem(core));
 		core.addSystem(new GUIHealthBarSystem(core));
 		AISystem aiSys = new AISystem(core);
-			//aiSys.setWait(1000);
+			aiSys.setWait(1000);
 		core.addSystem(aiSys);
 		core.addSystem(new TargetTrackSystem(core));
 		OutOfBoundsSystem oobSys = new OutOfBoundsSystem(core);

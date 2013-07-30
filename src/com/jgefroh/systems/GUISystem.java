@@ -145,11 +145,11 @@ public class GUISystem implements ISystem
 			//System.out.println("HOTKEYS: " + (double)(System.nanoTime()-checkTime)/1000000 + "ms");
 			
 			checkTime = System.nanoTime();
-			//updateText("UPGRADE_DESC", dataValues.get("UPGRADE_DESC"));
-			updateText("UPGRADE_DESC", null);
+			updateText("UPGRADE_DESC", dataValues.get("UPGRADE_DESC"));
+			//updateText("UPGRADE_DESC", null);
 			//System.out.println("TEXT: " + (double)(System.nanoTime()-checkTime)/1000000 + "ms");
 			//System.out.println("ALL: " + (double)(System.nanoTime()-checkTime)/1000000 + "ms");
-
+			//checkHover();
 			bench.benchmark(System.nanoTime()-startTime, 0);
 		}
 	}

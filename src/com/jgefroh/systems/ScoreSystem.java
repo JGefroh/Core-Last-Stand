@@ -43,7 +43,7 @@ public class ScoreSystem implements ISystem
 		= LoggerFactory.getLogger(this.getClass(), Level.ALL);
 	
 	/**The amount of points you have.*/
-	private int score = 100000;
+	private int score = 1000;
 	
 	//////////
 	// INIT
@@ -69,6 +69,7 @@ public class ScoreSystem implements ISystem
 		LOGGER.log(Level.FINE, "Setting system values to default.");
 		core.setInterested(this, "REQUEST_SCORE");
 		core.setInterested(this, "DESTROYING_ENTITY");
+		core.setInterested(this, "RESET_GAME");
 		core.setInterested(this, "ADJUST_SCORE");
 	}
 	
@@ -132,6 +133,10 @@ public class ScoreSystem implements ISystem
 		{
 			adjustScore(message);
 		}
+		else if(id.equals("RESET_GAME"))
+		{
+			this.score = 1000;
+		}
 
 	}
 	
@@ -152,9 +157,14 @@ public class ScoreSystem implements ISystem
 	}
 	private void changeScore(final String[] message)
 	{
-		if(message.length>0)
+		if(message.length>=2)
 		{
 			String entityID = message[0];
+			
+			if(message[1].equals("NO_HEALTH")==false)
+			{
+				return;
+			}
 			
 			ScoreInfoPack pack = core.getInfoPackFrom(entityID, ScoreInfoPack.class);
 			

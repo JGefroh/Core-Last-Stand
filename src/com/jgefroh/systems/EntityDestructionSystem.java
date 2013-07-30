@@ -134,6 +134,8 @@ public class EntityDestructionSystem implements ISystem
 			{
 				//EntityCreationSystem ecs = core.getSystem(EntityCreationSystem.class);
 				//ecs.addToPool(entity);
+				core.removeEntity(entityID);
+
 			}
 			else
 			{

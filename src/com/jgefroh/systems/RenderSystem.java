@@ -65,7 +65,7 @@ public class RenderSystem implements ISystem
 	/**The rendered height.*/
 	private final int NATIVE_HEIGHT = 768;
 	
-	private Benchmark bench = new Benchmark(this.getClass().getName(), true);
+	private Benchmark bench = new Benchmark(this.getClass().getName(), false);
 
 	//////////
 	// INIT
@@ -140,7 +140,6 @@ public class RenderSystem implements ISystem
 			long startTime = System.nanoTime();
 			int numEntities = render();
 			bench.benchmark(System.nanoTime()-startTime, numEntities);
-
 		}
 	}
 
@@ -290,7 +289,6 @@ public class RenderSystem implements ISystem
 		while(packs.hasNext())
 		{
 			RenderInfoPack pack = packs.next();
-
 			if(pack.isDirty()==false&&pack.isVisible()==true)
 			{
 				if(pack.getTextureID()==-1)

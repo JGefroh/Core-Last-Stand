@@ -207,7 +207,7 @@ public class EntityCreationSystem implements ISystem
 			player.add(rc);
 		
 		VelocityComponent vc = new VelocityComponent(player);
-			vc.setInterval(4);
+			vc.setInterval(24);
 			vc.setContinuous(false);
 			player.add(vc);
 			
@@ -264,8 +264,8 @@ public class EntityCreationSystem implements ISystem
 			player.add(mc);
 		
 		HealthComponent hc = new HealthComponent(player);
-			hc.setCurHealth(100);
-			hc.setMaxHealth(100);
+			hc.setCurHealth(200);
+			hc.setMaxHealth(200);
 			player.add(hc);
 			
 		TargetComponent tarc = new TargetComponent(player);
@@ -333,13 +333,13 @@ public class EntityCreationSystem implements ISystem
 			
 
 		VelocityComponent vc = new VelocityComponent(enemy);
-			vc.setInterval(4);
+			vc.setInterval(24);
 			
 
 		Vector v = new Vector();
 			v.setAngle(180);
 			v.setMaxMagnitude(900);
-			v.setMagnitude(1);
+			v.setMagnitude(0.60);
 			v.calcComponents();
 			vc.setTotalMovementVector(v);
 			vc.setContinuous(true);
@@ -404,13 +404,13 @@ public class EntityCreationSystem implements ISystem
 			
 	
 		VelocityComponent vc = new VelocityComponent(enemy);
-			vc.setInterval(4);
+			vc.setInterval(24);
 			
 	
 		Vector v = new Vector();
 			v.setAngle(180);
 			v.setMaxMagnitude(900);
-			v.setMagnitude(1);
+			v.setMagnitude(0.60);
 			vc.setContinuous(true);
 			v.calcComponents();
 			vc.setTotalMovementVector(v);
@@ -482,13 +482,13 @@ public class EntityCreationSystem implements ISystem
 			
 	
 		VelocityComponent vc = new VelocityComponent(enemy);
-			vc.setInterval(4);
+			vc.setInterval(24);
 			
 	
 		Vector v = new Vector();
 			v.setAngle(180);
 			v.setMaxMagnitude(900);
-			v.setMagnitude(1);
+			v.setMagnitude(0.60);
 			vc.setContinuous(true);
 			v.calcComponents();
 			vc.setTotalMovementVector(v);
@@ -555,13 +555,13 @@ public class EntityCreationSystem implements ISystem
 			
 	
 		VelocityComponent vc = new VelocityComponent(enemy);
-			vc.setInterval(4);
+			vc.setInterval(24);
 			
 	
 		Vector v = new Vector();
 			v.setAngle(180);
 			v.setMaxMagnitude(900);
-			v.setMagnitude(1);
+			v.setMagnitude(0.60);
 			vc.setContinuous(true);
 			v.calcComponents();
 			vc.setTotalMovementVector(v);
@@ -630,13 +630,13 @@ public class EntityCreationSystem implements ISystem
 			enemy.add(wc);
 		
 		VelocityComponent vc = new VelocityComponent(enemy);
-			vc.setInterval(4);
+			vc.setInterval(24);
 			
 	
 		Vector v = new Vector();
 			v.setAngle(180);
 			v.setMaxMagnitude(900);
-			v.setMagnitude(1);
+			v.setMagnitude(0.60);
 			vc.setContinuous(true);
 			v.calcComponents();
 			vc.setTotalMovementVector(v);
@@ -708,13 +708,13 @@ public class EntityCreationSystem implements ISystem
 			enemy.add(wc);
 		
 		VelocityComponent vc = new VelocityComponent(enemy);
-			vc.setInterval(4);
+			vc.setInterval(24);
 			
 	
 		Vector v = new Vector();
 			v.setAngle(180);
 			v.setMaxMagnitude(900);
-			v.setMagnitude(1);
+			v.setMagnitude(0.60);
 			vc.setContinuous(true);
 			v.calcComponents();
 			vc.setTotalMovementVector(v);
@@ -767,13 +767,13 @@ public class EntityCreationSystem implements ISystem
 			enemy.add(hbc);
 		
 		VelocityComponent vc = new VelocityComponent(enemy);
-			vc.setInterval(4);
+			vc.setInterval(24);
 			
 	
 		Vector v = new Vector();
 			v.setAngle(180);
 			v.setMaxMagnitude(900);
-			v.setMagnitude(1);
+			v.setMagnitude(0.60);
 			vc.setContinuous(true);
 			v.calcComponents();
 			vc.setTotalMovementVector(v);
@@ -884,7 +884,7 @@ public class EntityCreationSystem implements ISystem
 			bullet.add(rc);
 
 		VelocityComponent vc = new VelocityComponent(bullet);
-			vc.setInterval(4);
+			vc.setInterval(24);
 			
 
 
@@ -892,7 +892,7 @@ public class EntityCreationSystem implements ISystem
 		double recoil2 = Math.random()*(recoil/2);
 		Vector v = new Vector();
 			v.setAngle(otc.getBearing()+recoil1-recoil2);
-			v.setMagnitude(20);
+			v.setMagnitude(15);
 			vc.setContinuous(true);
 			v.calcComponents();
 			vc.setTotalMovementVector(v);
@@ -912,6 +912,7 @@ public class EntityCreationSystem implements ISystem
 			bullet.add(dc);
 			
 		OutOfBoundsComponent oobc = new OutOfBoundsComponent(bullet);
+			oobc.setChecking(true);
 			bullet.add(oobc);
 			
 		switch(type)

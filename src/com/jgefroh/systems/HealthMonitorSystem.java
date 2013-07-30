@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.jgefroh.components.MaxRangeComponent;
 import com.jgefroh.core.Core;
 import com.jgefroh.core.ISystem;
 import com.jgefroh.core.LoggerFactory;
@@ -150,7 +151,7 @@ public class HealthMonitorSystem implements ISystem
 			{
 				if(each.getCurHealth()<=0)
 				{
-					core.send("DESTROYING_ENTITY", each.getOwner().getID());
+					core.send("DESTROYING_ENTITY", each.getOwner().getID(), "NO_HEALTH");
 					LOGGER.log(Level.FINE, 
 							each.getOwner().getName() + "(" + each.getOwner().getID()
 									+ ") destroyed.");
