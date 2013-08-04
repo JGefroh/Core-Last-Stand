@@ -1,6 +1,6 @@
 package com.jgefroh.components;
 
-import com.jgefroh.core.IComponent;
+import com.jgefroh.core.AbstractComponent;
 import com.jgefroh.core.IEntity;
 
 /**
@@ -10,7 +10,7 @@ import com.jgefroh.core.IEntity;
  * DATE: 17JUN13
  * @author Joseph Gefroh
  */
-public class RenderComponent implements IComponent
+public class RenderComponent extends AbstractComponent
 {
 	//////////
 	// DATA
@@ -49,11 +49,9 @@ public class RenderComponent implements IComponent
 	//////////
 	/**
 	 * Creates a new instance of this {@code Component}.
-	 * @param owner	the IEntity owner of this component
 	 */
-	public RenderComponent(final IEntity owner)
+	public RenderComponent()
 	{
-		setOwner(owner);
 		init();
 	}
 	
@@ -69,12 +67,6 @@ public class RenderComponent implements IComponent
 	//////////
 	// GETTERS
 	//////////
-	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
-	}
-	
 	/**
 	 * Returns the ID of the texture this entity uses.
 	 * @return
@@ -156,13 +148,7 @@ public class RenderComponent implements IComponent
 	}
 	//////////
 	// SETTERS
-	//////////
-	@Override
-	public void setOwner(final IEntity owner)
-	{
-		this.owner = owner;
-	}
-	
+	//////////	
 	/**
 	 * Sets the sprite ID of the image being drawn.
 	 * @param spriteID	the ID of the sprite to draw

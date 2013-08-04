@@ -2,7 +2,7 @@ package com.jgefroh.components;
 
 import java.util.ArrayList;
 
-import com.jgefroh.core.IComponent;
+import com.jgefroh.core.AbstractComponent;
 import com.jgefroh.core.IEntity;
 
 /**
@@ -12,7 +12,7 @@ import com.jgefroh.core.IEntity;
  * Date: 05JUL13
  * @author Joseph Gefroh
  */
-public class GUICounterComponent implements IComponent
+public class GUICounterComponent extends AbstractComponent
 {
 	//////////
 	// DATA
@@ -43,12 +43,6 @@ public class GUICounterComponent implements IComponent
 	//////////
 	// GETTERS
 	//////////
-	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
-	}
-	
 	public int getCharWidth()
 	{
 		return this.charWidth;
@@ -79,12 +73,6 @@ public class GUICounterComponent implements IComponent
 	//////////
 	// SETTERS
 	//////////
-	@Override
-	public void setOwner(final IEntity owner)
-	{
-		this.owner = owner;
-	}
-	
 	public void setChildren(final ArrayList<String> children)
 	{
 		this.childrenIDs = (children == null) ? new ArrayList<String>() : children;

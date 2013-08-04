@@ -1,10 +1,8 @@
 package com.jgefroh.components;
 
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
 
-import com.jgefroh.core.IComponent;
+import com.jgefroh.core.AbstractComponent;
 import com.jgefroh.core.IEntity;
 import com.jgefroh.data.Vector;
 
@@ -15,7 +13,7 @@ import com.jgefroh.data.Vector;
  * Date: 17JUN13
  * @author Joseph Gefroh
  */
-public class VelocityComponent implements IComponent
+public class VelocityComponent extends AbstractComponent
 {
 	//////////
 	// DATA
@@ -43,11 +41,9 @@ public class VelocityComponent implements IComponent
 	//////////
 	/**
 	 * Creates a new instance of this {@code Component}.
-	 * @param owner	the IEntity owner of the component
 	 */
-	public VelocityComponent(final IEntity owner)
+	public VelocityComponent()
 	{
-		setOwner(owner);
 		init();
 	}
 	
@@ -63,13 +59,7 @@ public class VelocityComponent implements IComponent
 	
 	//////////
 	// GETTERS
-	//////////
-	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
-	}
-	
+	//////////	
 	/**
 	 * Gets the update interval of the component.
 	 * @return	the time, in ms, to wait before attempting an update
@@ -119,12 +109,6 @@ public class VelocityComponent implements IComponent
 	//////////
 	// SETTERS
 	//////////
-	@Override
-	public void setOwner(final IEntity owner)
-	{
-		this.owner = owner;
-	}
-		
 	/**
 	 * Sets the update interval of the component.
 	 * @param interval	the time, in ms, to wait before attempting a move

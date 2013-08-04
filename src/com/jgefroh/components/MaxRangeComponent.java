@@ -1,6 +1,6 @@
 package com.jgefroh.components;
 
-import com.jgefroh.core.IComponent;
+import com.jgefroh.core.AbstractComponent;
 import com.jgefroh.core.IEntity;
 
 /**
@@ -10,7 +10,7 @@ import com.jgefroh.core.IEntity;
  * Date: 17JUN13
  * @author Joseph Gefroh
  */
-public class MaxRangeComponent implements IComponent
+public class MaxRangeComponent extends AbstractComponent
 {
 	//////////
 	// DATA
@@ -36,11 +36,9 @@ public class MaxRangeComponent implements IComponent
 	//////////
 	/**
 	 * Creates a new instance of this {@code Component}.
-	 * @param owner	the IEntity owner of this component
 	 */
-	public MaxRangeComponent(final IEntity owner)
+	public MaxRangeComponent()
 	{
-		setOwner(owner);
 		init();
 	}
 	
@@ -53,12 +51,6 @@ public class MaxRangeComponent implements IComponent
 	//////////
 	// GETTERS
 	//////////
-	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
-	}
-	
 	
 	/**
 	 * Gets the maximum movement range of the owning {@code Entity}.
@@ -98,11 +90,6 @@ public class MaxRangeComponent implements IComponent
 	//////////
 	// SETTERS
 	//////////
-	@Override
-	public void setOwner(final IEntity owner)
-	{
-		this.owner = owner;
-	}
 	
 	/**
 	 * Sets the maximum movement range of the owning {@code Entity}.

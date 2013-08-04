@@ -1,6 +1,6 @@
 package com.jgefroh.components;
 
-import com.jgefroh.core.IComponent;
+import com.jgefroh.core.AbstractComponent;
 import com.jgefroh.core.IEntity;
 
 /**
@@ -10,7 +10,7 @@ import com.jgefroh.core.IEntity;
  * Date: 17JUN13
  * @author Joseph Gefroh
  */
-public class TargetComponent implements IComponent
+public class TargetComponent extends AbstractComponent
 {
 	//////////
 	// DATA
@@ -27,11 +27,9 @@ public class TargetComponent implements IComponent
 	//////////
 	/**
 	 * Creates a new instance of this {@code Component}.
-	 * @param owner	the IEntity owner of this component
 	 */
-	public TargetComponent(final IEntity owner)
+	public TargetComponent()
 	{
-		setOwner(owner);
 		init();
 	}
 	
@@ -45,19 +43,8 @@ public class TargetComponent implements IComponent
 	//////////
 	// GETTERS
 	//////////
-	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
-	}
-	
 	
 	//////////
 	// SETTERS
 	//////////
-	@Override
-	public void setOwner(final IEntity owner)
-	{
-		this.owner = owner;
-	}
 }

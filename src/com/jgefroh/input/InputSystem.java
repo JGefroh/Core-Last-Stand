@@ -110,6 +110,7 @@ public class InputSystem implements ISystem, IInputSystem
 		kbs.bind(Keyboard.KEY_9, "SWITCH_WEAPON_9", InputSystem.PRESS);
 		kbs.bind(Keyboard.KEY_0, "SWITCH_WEAPON_0", InputSystem.PRESS);
 		kbs.bind(Keyboard.KEY_NUMPAD0, "TOGGLE_WIREFRAME", InputSystem.RELEASE);
+		kbs.bind(Keyboard.KEY_NUMPAD9, "BOOM", InputSystem.RELEASE);
 		kbs.bind(Keyboard.KEY_1, "BUY_1", InputSystem.PRESS);
 		kbs.bind(Keyboard.KEY_2, "BUY_2", InputSystem.PRESS);
 		kbs.bind(Keyboard.KEY_3, "BUY_3", InputSystem.PRESS);

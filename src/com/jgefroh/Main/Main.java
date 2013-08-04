@@ -3,11 +3,12 @@ package com.jgefroh.main;
 import org.lwjgl.opengl.Display;
 
 import com.jgefroh.core.Core;
-import com.jgefroh.core.ISystem;
 import com.jgefroh.infopacks.AIInfoPackFactory;
 import com.jgefroh.infopacks.AnimationInfoPackFactory;
 import com.jgefroh.infopacks.CollisionInfoPackFactory;
 import com.jgefroh.infopacks.DamageInfoPackFactory;
+import com.jgefroh.infopacks.DecayInfoPackFactory;
+import com.jgefroh.infopacks.ExplosionInfoPackFactory;
 import com.jgefroh.infopacks.ForceInfoPackFactory;
 import com.jgefroh.infopacks.GUIBarInfoPackFactory;
 import com.jgefroh.infopacks.GUICharSlotInfoPackFactory;
@@ -27,14 +28,15 @@ import com.jgefroh.infopacks.ScoreInfoPackFactory;
 import com.jgefroh.infopacks.ShieldInfoPackFactory;
 import com.jgefroh.infopacks.TargetInfoPackFactory;
 import com.jgefroh.infopacks.TargetTrackInfoPackFactory;
-import com.jgefroh.infopacks.TestInfoPack;
 import com.jgefroh.infopacks.WeaponInfoPackFactory;
 import com.jgefroh.input.InputSystem;
 import com.jgefroh.systems.AISystem;
 import com.jgefroh.systems.CollisionSystem;
 import com.jgefroh.systems.DamageSystem;
+import com.jgefroh.systems.DecaySystem;
 import com.jgefroh.systems.EnemySpawnSystem;
 import com.jgefroh.systems.EntityCreationSystem;
+import com.jgefroh.systems.ExplosionSystem;
 import com.jgefroh.systems.ForceSystem;
 import com.jgefroh.systems.GUIHealthBarSystem;
 import com.jgefroh.systems.GUISystem;
@@ -128,6 +130,8 @@ public class Main
 		core.addSystem(new GUISystem(core));
 		core.addSystem(new ScoreSystem(core));
 		core.addSystem(new UpgradeSystem(core));
+		core.addSystem(new DecaySystem(core));
+		core.addSystem(new ExplosionSystem(core));
 		rl = new ResourceLoader(core);
 		
 		
@@ -160,6 +164,8 @@ public class Main
 		core.addFactory(new GUICounterInfoPackFactory());
 		core.addFactory(new GUITextInfoPackFactory());
 		core.addFactory(new ScoreInfoPackFactory());
+		core.addFactory(new DecayInfoPackFactory());
+		core.addFactory(new ExplosionInfoPackFactory());
 	}
 	
 	/**
@@ -172,7 +178,6 @@ public class Main
 		{
 			Display.update();
 			core.work();
-			//Display.sync(240);
 		}
 	}
 	

@@ -331,6 +331,8 @@ public class RenderSystem implements ISystem
 	{
 		int textureID = pack.getTextureID();
 		int spriteID = pack.getSpriteID();
+		
+		//Texture coordinates [0,1]
 		float uMin = getUMin(textureID, spriteID);
 		float uMax = getUMax(textureID, spriteID);
 		float vMin = getVMin(textureID, spriteID);
@@ -376,53 +378,6 @@ public class RenderSystem implements ISystem
 		GL11.glEnd();
 		GL11.glPopMatrix();
 	}
-	/**
-	 * Draw a textured quad.
-	 * @param x			the x-position on screen to draw.
-	 * @param y			the y-position on screen to draw.
-	 * @param z			the z-position on screen to draw. (NOT USED)
-	 * @param width		the width of the quad
-	 * @param height	the height of the quad
-	 * @param uMin		the u-texture coordinate minimum
-	 * @param uMax		the u-texture coordinate maximum
-	 * @param vMin		the v-texture coordinate minimum
-	 * @param vMax		the v-texture coordinate maximum
-	 */
-	private void drawQuadAt(final int textureID, 
-							final double x, final double y, final double z, 
-							final double width, final double height,
-							final int rotation,
-							final float uMin, final float uMax, final float vMin, final float vMax,
-							final float r, final float g, final float b)
-	{
-		GL11.glColor3f(r, g, b);
- 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
-		//(Bottom up translations)
-		GL11.glPushMatrix();
-		GL11.glTranslated(x, y, 0);	//Move to specified draw location
-		GL11.glTranslated(width/2, height/2, -1);	//Center
-		GL11.glRotatef(rotation, 0, 0, 1);			//Rotate
-		GL11.glTranslated(-width/2, -height/2, 1);	//Center
-		GL11.glBegin(GL11.GL_QUADS);
-		{
-
-			GL11.glTexCoord3d(uMin, vMax, z);	//Bottom Left
-			GL11.glVertex3d(0, 0, z);		//Top Left
-
-			GL11.glTexCoord3d(uMin, vMin, z);	//Top Left
-			GL11.glVertex3d(width, 0, z);	//Top Right
-
-			GL11.glTexCoord3d(uMax, vMin, z);	//Top Right
-			GL11.glVertex3d(width, height, z);	//Bottom Right
-
-			GL11.glTexCoord3d(uMax, vMax, z);	//Bottom Right
-			GL11.glVertex3d(0, height, z);	//Bottom Left
-		}
-
-		GL11.glEnd();
-		GL11.glPopMatrix();
-	}
-
 	
 	/**
 	 * Load a texture and its metadata into the Render system.

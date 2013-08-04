@@ -2,7 +2,7 @@ package com.jgefroh.components;
 
 import java.util.ArrayList;
 
-import com.jgefroh.core.IComponent;
+import com.jgefroh.core.AbstractComponent;
 import com.jgefroh.core.IEntity;
 
 /**
@@ -12,7 +12,7 @@ import com.jgefroh.core.IEntity;
  * Date: 05JUL13
  * @author Joseph Gefroh
  */
-public class GUIDataComponent implements IComponent
+public class GUIDataComponent extends AbstractComponent
 {
 	//////////
 	// DATA
@@ -55,12 +55,6 @@ public class GUIDataComponent implements IComponent
 	//////////
 	// GETTERS
 	//////////
-	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
-	}
-	
 	/**
 	 * Gets the command that is executed when this GUI element is hovered over.
 	 * @return	the command to execute
@@ -146,12 +140,6 @@ public class GUIDataComponent implements IComponent
 	//////////
 	// SETTERS
 	//////////
-	@Override
-	public void setOwner(final IEntity owner)
-	{
-		this.owner = owner;
-	}
-	
 	/**
 	 * Sets the command on hover of this GUI element.
 	 * @param commandOnHover	the command to execute

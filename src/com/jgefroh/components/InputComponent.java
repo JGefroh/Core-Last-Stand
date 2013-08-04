@@ -2,7 +2,7 @@ package com.jgefroh.components;
 
 import java.util.ArrayList;
 
-import com.jgefroh.core.IComponent;
+import com.jgefroh.core.AbstractComponent;
 import com.jgefroh.core.IEntity;
 
 
@@ -13,7 +13,7 @@ import com.jgefroh.core.IEntity;
  * Date: 17JUN13
  * @author Joseph Gefroh
  */
-public class InputComponent implements IComponent
+public class InputComponent extends AbstractComponent
 {
 	//////////
 	// DATA
@@ -30,11 +30,9 @@ public class InputComponent implements IComponent
 	//////////
 	/**
 	 * Creates a new instance of this {@code Component}.
-	 * @param owner	the IEntity owner of this component
 	 */
-	public InputComponent(final IEntity owner)
+	public InputComponent()
 	{
-		setOwner(owner);
 		init();
 	}
 	
@@ -47,13 +45,7 @@ public class InputComponent implements IComponent
 
 	//////////
 	// GETTERS
-	//////////
-	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
-	}
-	
+	//////////	
 	/**
 	 * Checks to see if the entity is interested in the input command.
 	 * @param command	the String command of the input
@@ -71,13 +63,7 @@ public class InputComponent implements IComponent
 	
 	//////////
 	// SETTERS
-	//////////
-	@Override
-	public void setOwner(final IEntity owner)
-	{
-		this.owner = owner;
-	}
-	
+	//////////	
 	/**
 	 * Marks this Entity as interested in the given input.
 	 * @param command the input command

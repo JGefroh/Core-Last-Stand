@@ -2,7 +2,7 @@ package com.jgefroh.components;
 
 import java.util.ArrayList;
 
-import com.jgefroh.core.IComponent;
+import com.jgefroh.core.AbstractComponent;
 import com.jgefroh.core.IEntity;
 import com.jgefroh.data.Weapon;
 
@@ -13,7 +13,7 @@ import com.jgefroh.data.Weapon;
  * Date: 17JUN13
  * @author Joseph Gefroh
  */
-public class WeaponComponent implements IComponent
+public class WeaponComponent extends AbstractComponent
 {
 	//TODO: simplify, allow for multiple fire modes
 	//////////
@@ -44,11 +44,9 @@ public class WeaponComponent implements IComponent
 	//////////
 	/**
 	 * Creates a new instance of this {@code Component}.
-	 * @param owner	the IEntity owner of the component
 	 */
-	public WeaponComponent(final IEntity owner)
+	public WeaponComponent()
 	{
-		setOwner(owner);
 		init();
 	}
 	
@@ -62,12 +60,6 @@ public class WeaponComponent implements IComponent
 	//////////
 	// GETTERS
 	//////////
-	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
-	}
-	
 	/**
 	 * Gets the update interval of the component.
 	 * @return	the time, in ms, to wait before attempting an update
@@ -284,13 +276,7 @@ public class WeaponComponent implements IComponent
 	}
 	//////////
 	// SETTERS
-	//////////
-	@Override
-	public void setOwner(final IEntity owner)
-	{
-		this.owner = owner;
-	}
-	
+	//////////	
 	/**
 	 * Set the update interval of the component.
 	 * @param interval	the time, in ms, to wait before attempting an update

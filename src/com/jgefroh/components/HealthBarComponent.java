@@ -1,6 +1,6 @@
 package com.jgefroh.components;
 
-import com.jgefroh.core.IComponent;
+import com.jgefroh.core.AbstractComponent;
 import com.jgefroh.core.IEntity;
 
 /**
@@ -10,7 +10,7 @@ import com.jgefroh.core.IEntity;
  * Date: 17JUN13
  * @author Joseph Gefroh
  */
-public class HealthBarComponent implements IComponent
+public class HealthBarComponent extends AbstractComponent
 {
 	//////////
 	// DATA
@@ -27,11 +27,9 @@ public class HealthBarComponent implements IComponent
 	//////////
 	/**
 	 * Creates a new instance of this {@code Component}.
-	 * @param owner	the IEntity owner of this component
 	 */
-	public HealthBarComponent(final IEntity owner)
+	public HealthBarComponent()
 	{
-		setOwner(owner);
 		init();
 	}
 	
@@ -44,12 +42,6 @@ public class HealthBarComponent implements IComponent
 	//////////
 	// GETTERS
 	//////////
-	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
-	}
-	
 	/**
 	 * Gets the Health Bar of this entity.
 	 * @return	the Health Bar entity
@@ -63,12 +55,6 @@ public class HealthBarComponent implements IComponent
 	//////////
 	// SETTERS
 	//////////
-	@Override
-	public void setOwner(final IEntity owner)
-	{
-		this.owner = owner;
-	}
-
 	
 	/**
 	 * Sets the Health Bar entity for this entity

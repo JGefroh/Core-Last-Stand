@@ -111,16 +111,10 @@ public class GUIInfoPack extends AbstractInfoPack
 		return tc.getHeight();
 	}
 	
-	public boolean hasHoverEffect()
+	public int getID()
 	{
-		return false;//gc.hasHoverEffect();
+		return gc.getID();
 	}
-	
-	public void executeHoverEffect()
-	{
-		//gc.executeHoverEffect();
-	}
-
 	//////////
 	// SETTERS
 	//////////

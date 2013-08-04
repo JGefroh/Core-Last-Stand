@@ -1,6 +1,6 @@
 package com.jgefroh.components;
 
-import com.jgefroh.core.IComponent;
+import com.jgefroh.core.AbstractComponent;
 import com.jgefroh.core.IEntity;
 
 /**
@@ -10,7 +10,7 @@ import com.jgefroh.core.IEntity;
  * Date: 24JUL13
  * @author Joseph Gefroh
  */
-public class GUICharSlotComponent implements IComponent
+public class GUICharSlotComponent extends AbstractComponent
 {
 	//////////
 	// DATA
@@ -35,11 +35,6 @@ public class GUICharSlotComponent implements IComponent
 	//////////
 	// GETTERS
 	//////////
-	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
-	}
 	
 	public int getSlotNum()
 	{
@@ -49,11 +44,6 @@ public class GUICharSlotComponent implements IComponent
 	//////////
 	// SETTERS
 	//////////
-	@Override
-	public void setOwner(final IEntity owner)
-	{
-		this.owner = owner;
-	}
 	
 	public void setSlotNum(final int slotNum)
 	{

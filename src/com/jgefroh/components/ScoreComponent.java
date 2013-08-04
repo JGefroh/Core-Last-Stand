@@ -1,11 +1,7 @@
 package com.jgefroh.components;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import com.jgefroh.core.IComponent;
+import com.jgefroh.core.AbstractComponent;
 import com.jgefroh.core.IEntity;
-import com.jgefroh.data.Animation;
 
 
 
@@ -13,7 +9,7 @@ import com.jgefroh.data.Animation;
  * Contains data to keep track of how much an entity is worth (score)
  * @author Joseph Gefroh
  */
-public class ScoreComponent implements IComponent
+public class ScoreComponent extends AbstractComponent
 {
 	//TODO: Make this less complicated.
 	
@@ -30,11 +26,9 @@ public class ScoreComponent implements IComponent
 	//////////
 	/**
 	 * Create a new animation component.
-	 * @param entity	the owner of this component
 	 */
-	public ScoreComponent(final IEntity entity)
+	public ScoreComponent()
 	{	
-		setOwner(entity);
 		init();
 	}
 
@@ -53,12 +47,6 @@ public class ScoreComponent implements IComponent
 	//////////
 	// GETTERS
 	//////////
-	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
-	}
-	
 	public int getScore()
 	{
 		return this.score;
@@ -67,11 +55,6 @@ public class ScoreComponent implements IComponent
 	//////////
 	// SETTERS
 	//////////
-	@Override
-	public void setOwner(final IEntity owner)
-	{
-		this.owner = owner;
-	}
 	
 	public void setScore(final int score)
 	{

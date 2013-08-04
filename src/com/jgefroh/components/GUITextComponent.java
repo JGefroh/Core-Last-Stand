@@ -2,7 +2,7 @@ package com.jgefroh.components;
 
 import java.util.ArrayList;
 
-import com.jgefroh.core.IComponent;
+import com.jgefroh.core.AbstractComponent;
 import com.jgefroh.core.IEntity;
 
 /**
@@ -12,7 +12,7 @@ import com.jgefroh.core.IEntity;
  * Date: 05JUL13
  * @author Joseph Gefroh
  */
-public class GUITextComponent implements IComponent
+public class GUITextComponent extends AbstractComponent
 {
 	//////////
 	// DATA
@@ -44,12 +44,6 @@ public class GUITextComponent implements IComponent
 	//////////
 	// GETTERS
 	//////////
-	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
-	}
-	
 	public int getNumLines()
 	{
 		return this.numLines;
@@ -86,11 +80,6 @@ public class GUITextComponent implements IComponent
 	//////////
 	// SETTERS
 	//////////
-	@Override
-	public void setOwner(final IEntity owner)
-	{
-		this.owner = owner;
-	}
 	
 	public void setChildren(final ArrayList<String> children)
 	{

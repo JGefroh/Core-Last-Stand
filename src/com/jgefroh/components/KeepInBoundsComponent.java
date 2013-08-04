@@ -1,6 +1,6 @@
 package com.jgefroh.components;
 
-import com.jgefroh.core.IComponent;
+import com.jgefroh.core.AbstractComponent;
 import com.jgefroh.core.IEntity;
 
 /**
@@ -10,7 +10,7 @@ import com.jgefroh.core.IEntity;
  * Date: 05JUL13
  * @author Joseph Gefroh
  */
-public class KeepInBoundsComponent implements IComponent
+public class KeepInBoundsComponent extends AbstractComponent
 {
 	//////////
 	// DATA
@@ -43,12 +43,6 @@ public class KeepInBoundsComponent implements IComponent
 	//////////
 	// GETTERS
 	//////////
-	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
-	}
-
 	/**
 	 * Gets the last X Position of the entity.
 	 * @return	the last X position
@@ -68,13 +62,7 @@ public class KeepInBoundsComponent implements IComponent
 	}
 	//////////
 	// SETTERS
-	//////////
-	@Override
-	public void setOwner(final IEntity owner)
-	{
-		this.owner = owner;
-	}
-	
+	//////////	
 	/**
 	 * Gets the last X Position of the entity.
 	 * @param lastX the last X position

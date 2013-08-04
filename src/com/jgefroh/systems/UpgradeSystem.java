@@ -83,11 +83,23 @@ public class UpgradeSystem implements ISystem
 		upgrades = new HashMap<String, Upgrade>();
 		
 		upgrades.put("1", 
-				new Upgrade("Repair", "Repairs your ship for 50HP.", 100, "CHANGE_HEALTH", 50));
+				new Upgrade("Repair", "Repairs your ship for 50HP. \n \n Costs 100 points.", 100, "CHANGE_HEALTH", 50));
+		
 		upgrades.put("2", 
-				new Upgrade("Hull+", "Increases your maximum HP by 25 HP.", 200, "CHANGE_HEALTH_MAX", 25));
+				new Upgrade("Hull+", "Increases your maximum HP by 25 HP. \n \n Costs 200 points.", 200, "CHANGE_HEALTH_MAX", 25));
+		
 		upgrades.put("3", 
-				new Upgrade("Batteries", "Increases your maximum shield by 10.", 500, "CHANGE_SHIELD_MAX", 10));
+				new Upgrade("Batteries", "Increases your maximum shield by 10. \n \n Costs 500 points.", 500, "CHANGE_SHIELD_MAX", 10));
+
+		upgrades.put("7", 
+				new Upgrade("DEV_HEALTH", "Repairs your ship for 9001 HP. \n \n Costs 0 points.", 0, "CHANGE_HEALTH", 9001));
+		
+		upgrades.put("8", 
+				new Upgrade("DEV_SHIELD", "Increases your maximum shield by 9001. \n \n Costs 0 points.", 0, "CHANGE_SHIELD_MAX", 9001));
+		
+		upgrades.put("9", 
+				new Upgrade("DEV_HEALTH_MAX", "Increases your maximum health by 9001 HP. \n \n Costs 0 points.", 0, "CHANGE_HEALTH_MAX", 9001));
+		
 	}
 	
 	@Override
@@ -148,7 +160,7 @@ public class UpgradeSystem implements ISystem
 		}
 		else if(id.equals("SCORE_UPDATE"))
 		{
-			updateScore(message);
+			processScore(message);
 		}
 		else if(id.equals("PLAYER_CREATED"))
 		{
@@ -187,10 +199,14 @@ public class UpgradeSystem implements ISystem
 			{			
 				core.send("UPGRADE_DESC_UPDATE", upgrade.getDesc());
 			}
+			else
+			{
+				core.send("UPGRADE_DESC_UPDATE", "");
+			}
 		}
 	}
 	
-	private void updateScore(final String[] message)
+	private void processScore(final String[] message)
 	{
 		if(message.length>=1)
 		{

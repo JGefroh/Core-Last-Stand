@@ -1,6 +1,6 @@
 package com.jgefroh.components;
 
-import com.jgefroh.core.IComponent;
+import com.jgefroh.core.AbstractComponent;
 import com.jgefroh.core.IEntity;
 
 /**
@@ -10,7 +10,7 @@ import com.jgefroh.core.IEntity;
  * Date: 17JUN13
  * @author Joseph Gefroh
  */
-public class TransformComponent implements IComponent
+public class TransformComponent extends AbstractComponent
 {
 	//////////
 	// DATA
@@ -50,11 +50,9 @@ public class TransformComponent implements IComponent
 	//////////
 	/**
 	 * Creates a new instance of this {@code Component}.
-	 * @param owner	the IEntity owner of the component
 	 */
-	public TransformComponent(final IEntity owner)
+	public TransformComponent()
 	{
-		setOwner(owner);
 		init();
 	}
 	
@@ -74,11 +72,6 @@ public class TransformComponent implements IComponent
 	//////////
 	// GETTERS
 	//////////
-	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
-	}
 	
 	/**
 	 * Gets the direction the object is facing, in degrees.
@@ -164,12 +157,6 @@ public class TransformComponent implements IComponent
 	//////////
 	// SETTERS
 	//////////
-	@Override
-	public void setOwner(final IEntity owner)
-	{
-		this.owner = owner;
-	}
-	
 	/**
 	 * Sets the direction the object is facing, in degrees
 	 * @param bearing	the direction the object is facing, in degrees

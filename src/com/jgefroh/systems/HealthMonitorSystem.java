@@ -33,7 +33,7 @@ public class HealthMonitorSystem implements ISystem
 	private long last;
 	
 	/**The level of detail in debug messages.*/
-	private Level debugLevel = Level.FINE;
+	private Level debugLevel = Level.OFF;
 	
 	/**Logger for debug purposes.*/
 	private final Logger LOGGER 

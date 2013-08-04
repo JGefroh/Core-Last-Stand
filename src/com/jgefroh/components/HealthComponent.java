@@ -1,6 +1,6 @@
 package com.jgefroh.components;
 
-import com.jgefroh.core.IComponent;
+import com.jgefroh.core.AbstractComponent;
 import com.jgefroh.core.IEntity;
 
 /**
@@ -10,7 +10,7 @@ import com.jgefroh.core.IEntity;
  * Date: 17JUN13
  * @author Joseph Gefroh
  */
-public class HealthComponent implements IComponent
+public class HealthComponent extends AbstractComponent
 {
 	//////////
 	// DATA
@@ -29,11 +29,9 @@ public class HealthComponent implements IComponent
 	//////////
 	/**
 	 * Creates a new instance of this {@code Component}.
-	 * @param owner	the IEntity owner of this component
 	 */
-	public HealthComponent(final IEntity owner)
+	public HealthComponent()
 	{
-		setOwner(owner);
 		init();
 	}
 	
@@ -45,14 +43,7 @@ public class HealthComponent implements IComponent
 	
 	//////////
 	// GETTERS
-	//////////
-	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
-	}
-	
-	
+	//////////	
 	/**
 	 * Gets the current number of health points of the entity.
 	 * @return	the current number of health points of the entity
@@ -74,12 +65,6 @@ public class HealthComponent implements IComponent
 	//////////
 	// SETTERS
 	//////////
-	@Override
-	public void setOwner(final IEntity owner)
-	{
-		this.owner = owner;
-	}
-
 	/**
 	 * Sets the current number of health points of the entity.
 	 * @param curHealth	the number of health points

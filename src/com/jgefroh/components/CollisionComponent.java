@@ -1,6 +1,6 @@
 package com.jgefroh.components;
 
-import com.jgefroh.core.IComponent;
+import com.jgefroh.core.AbstractComponent;
 import com.jgefroh.core.IEntity;
 
 /**
@@ -10,7 +10,7 @@ import com.jgefroh.core.IEntity;
  * Date: 17JUN13
  * @author Joseph Gefroh
  */
-public class CollisionComponent implements IComponent
+public class CollisionComponent extends AbstractComponent
 {	
 	//////////
 	// DATA
@@ -26,11 +26,9 @@ public class CollisionComponent implements IComponent
 	//////////
 	/**
 	 * Creates a new instance of this {@code Component}.
-	 * @param owner	the IEntity owner of this component
 	 */
-	public CollisionComponent(final IEntity owner)
+	public CollisionComponent()
 	{
-		setOwner(owner);
 		init();
 	}
 
@@ -44,12 +42,6 @@ public class CollisionComponent implements IComponent
 	//////////
 	// GETTERS
 	//////////
-	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
-	}
-	
 	/**
 	 * Returns the collision group the entity belongs to.
 	 * @return	the collision group the entity is a part of
@@ -63,12 +55,6 @@ public class CollisionComponent implements IComponent
 	//////////
 	// SETTERS
 	//////////
-	@Override
-	public void setOwner(final IEntity owner)
-	{
-		this.owner = owner;
-	}
-	
 	/**
 	 * Sets the collision group the entity belongs to.
 	 * @param collisionGroup	the collision group the entity belongs to

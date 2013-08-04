@@ -1,6 +1,6 @@
 package com.jgefroh.components;
 
-import com.jgefroh.core.IComponent;
+import com.jgefroh.core.AbstractComponent;
 import com.jgefroh.core.IEntity;
 
 /**
@@ -10,7 +10,7 @@ import com.jgefroh.core.IEntity;
  * Date: 05JUL13
  * @author Joseph Gefroh
  */
-public class GUIBarComponent implements IComponent
+public class GUIBarComponent extends AbstractComponent
 {
 	//////////
 	// DATA
@@ -66,12 +66,6 @@ public class GUIBarComponent implements IComponent
 	//////////
 	// GETTERS
 	//////////
-	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
-	}
-	
 	/**
 	 * Gets the default height of this GUI element.
 	 * @return	the default height
@@ -181,12 +175,6 @@ public class GUIBarComponent implements IComponent
 	//////////
 	// SETTERS
 	//////////
-	@Override
-	public void setOwner(final IEntity owner)
-	{
-		this.owner = owner;
-	}
-	
 	public void setDefXPos(final double defXPos)
 	{
 		this.defXPos = defXPos;

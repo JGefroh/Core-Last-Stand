@@ -65,7 +65,7 @@ public class DamageSystem implements ISystem
 		setDebugLevel(this.debugLevel);
 
 		LOGGER.log(Level.FINE, "Setting system values to default.");
-		core.setInterested(this, "BULLET_HIT");
+		core.setInterested(this, "DAMAGE");
 	}
 	
 	@Override
@@ -117,7 +117,7 @@ public class DamageSystem implements ISystem
 	{
 		LOGGER.log(Level.FINEST, "Received message: " + id);
 
-		if(id.equals("BULLET_HIT"))
+		if(id.equals("DAMAGE"))
 		{
 			calculateDamage(message);
 		}
@@ -134,14 +134,14 @@ public class DamageSystem implements ISystem
 	{
 		if(message.length>=2)
 		{
-			String bulletID = message[0];
+			String sourceID = message[0];
 			String victimID = message[1];
 			
 			HealthInfoPack victimHealth 
 				= core.getInfoPackFrom(victimID, HealthInfoPack.class);
 			
 			DamageInfoPack sourceDamage
-				= core.getInfoPackFrom(bulletID, DamageInfoPack.class);
+				= core.getInfoPackFrom(sourceID, DamageInfoPack.class);
 			
 			if(victimHealth!=null&&sourceDamage!=null)
 			{				
@@ -153,8 +153,6 @@ public class DamageSystem implements ISystem
 								+ "(" + victimHealth.getCurHealth() 
 								+ " hp left).");
 			}
-			
-			core.removeEntity(bulletID);
 		}
 	}
 	

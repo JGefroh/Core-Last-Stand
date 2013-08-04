@@ -1,6 +1,6 @@
 package com.jgefroh.components;
 
-import com.jgefroh.core.IComponent;
+import com.jgefroh.core.AbstractComponent;
 import com.jgefroh.core.IEntity;
 
 /**
@@ -10,7 +10,7 @@ import com.jgefroh.core.IEntity;
  * Date: 21JUN13
  * @author Joseph Gefroh
  */
-public class SlaveComponent implements IComponent
+public class SlaveComponent extends AbstractComponent
 {
 	//////////
 	// DATA
@@ -26,11 +26,9 @@ public class SlaveComponent implements IComponent
 	//////////
 	/**
 	 * Creates a new instance of this {@code Component}.
-	 * @param owner	the IEntity owner of this component
 	 */
-	public SlaveComponent(final IEntity owner)
+	public SlaveComponent()
 	{
-		setOwner(owner);
 		init();
 	}
 	
@@ -51,22 +49,11 @@ public class SlaveComponent implements IComponent
 	//////////
 	// GETTERS
 	//////////
-	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
-	}
 	
 
 	//////////
 	// SETTERS
-	//////////
-	@Override
-	public void setOwner(final IEntity owner)
-	{
-		this.owner = owner;
-	}
-	
+	//////////	
 	/**
 	 * Sets the Entity this Entity is linked to.
 	 * @param master	the Entity that this entity follows

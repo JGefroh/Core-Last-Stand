@@ -1,6 +1,6 @@
 package com.jgefroh.components;
 
-import com.jgefroh.core.IComponent;
+import com.jgefroh.core.AbstractComponent;
 import com.jgefroh.core.IEntity;
 
 /**
@@ -10,7 +10,7 @@ import com.jgefroh.core.IEntity;
  * Date: 21JUN13
  * @author Joseph Gefroh
  */
-public class ShieldComponent implements IComponent
+public class ShieldComponent extends AbstractComponent
 {
 	//////////
 	// DATA
@@ -63,11 +63,9 @@ public class ShieldComponent implements IComponent
 	//////////
 	/**
 	 * Creates a new instance of this {@code Component}.
-	 * @param owner	the IEntity owner of this component
 	 */
-	public ShieldComponent(final IEntity owner)
+	public ShieldComponent()
 	{
-		setOwner(owner);
 		init();
 	}
 	
@@ -81,11 +79,6 @@ public class ShieldComponent implements IComponent
 	//////////
 	// GETTERS
 	//////////
-	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
-	}
 	
 	/**
 	 * Gets the amount of shield the entity currently has.
@@ -205,13 +198,7 @@ public class ShieldComponent implements IComponent
 	}
 	//////////
 	// SETTERS
-	//////////
-	@Override
-	public void setOwner(final IEntity owner)
-	{
-		this.owner = owner;
-	}
-	
+	//////////	
 	/**
 	 * Sets the amount of shield an entity currently has.
 	 * @param shieldCur

@@ -13,7 +13,7 @@
 			},
 			{
 				"id":1,
-				"name":"mohawk_turn",
+				"name":"mohawk",
 				"xmin":16,
 				"xmax":32,
 				"ymin":0,
@@ -21,51 +21,83 @@
 			},
 			{
 				"id":2,
-				"name":"ringo",
-				"xmin":0,
-				"xmax":16,
-				"ymin":16,
-				"ymax":32
-			},
-			{
-				"id":3,
-				"name":"ringo_prox",
-				"xmin":16,
-				"xmax":32,
-				"ymin":16,
-				"ymax":32
-			},
-			{
-				"id":4,
-				"name":"shieldy",
-				"xmin":0,
-				"xmax":16,
-				"ymin":32,
-				"ymax":48
-			},
-			{
-				"id":5,
-				"name":"flakky",
+				"name":"mohawk",
 				"xmin":32,
 				"xmax":48,
 				"ymin":0,
 				"ymax":16
 			},
 			{
-				"id":6,
-				"name":"flakky_turn",
+				"id":3,
+				"name":"mohawk",
 				"xmin":48,
 				"xmax":64,
 				"ymin":0,
 				"ymax":16
 			},
 			{
-				"id":7,
-				"name":"shotgunny",
+				"id":4,
+				"name":"mohawk",
+				"xmin":0,
+				"xmax":16,
+				"ymin":16,
+				"ymax":32
+			},
+			{
+				"id":5,
+				"name":"mohawk",
+				"xmin":16,
+				"xmax":32,
+				"ymin":16,
+				"ymax":32
+			},
+			{
+				"id":6,
+				"name":"mohawk",
 				"xmin":32,
 				"xmax":48,
 				"ymin":16,
 				"ymax":32
+			},
+			{
+				"id":7,
+				"name":"mohawk",
+				"xmin":48,
+				"xmax":64,
+				"ymin":16,
+				"ymax":32
+			},
+			{
+				"id":8,
+				"name":"mohawk",
+				"xmin":0,
+				"xmax":16,
+				"ymin":32,
+				"ymax":48
+			},
+			{
+				"id":9,
+				"name":"mohawk",
+				"xmin":16,
+				"xmax":32,
+				"ymin":32,
+				"ymax":48
+			},
+			{
+				"id":10,
+				"name":"mohawk",
+				"xmin":32,
+				"xmax":48,
+				"ymin":32,
+				"ymax":48
+			},
+			{
+				"id":11,
+				"name":"mohawk",
+				"xmin":48,
+				"xmax":64,
+				"ymin":32,
+				"ymax":48
 			}
 		]
 }

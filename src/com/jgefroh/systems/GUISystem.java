@@ -149,7 +149,7 @@ public class GUISystem implements ISystem
 			//updateText("UPGRADE_DESC", null);
 			//System.out.println("TEXT: " + (double)(System.nanoTime()-checkTime)/1000000 + "ms");
 			//System.out.println("ALL: " + (double)(System.nanoTime()-checkTime)/1000000 + "ms");
-			//checkHover();
+			checkHover();
 			bench.benchmark(System.nanoTime()-startTime, 0);
 		}
 	}
@@ -227,27 +227,31 @@ public class GUISystem implements ISystem
 	{
 		Iterator<GUIInfoPack> packs = core.getInfoPacksOfType(GUIInfoPack.class);
 		
+		core.send("REQUEST_CURSOR_POSITION");
 		while(packs.hasNext())
 		{
 			GUIInfoPack pack = packs.next();
-			
-			if(pack.hasHoverEffect())
-			{
-				double xPos = pack.getXPos();
-				double yPos = pack.getYPos();
-				double width = pack.getWidth();
-				double height = pack.getHeight();
-				
-				if(this.mouseX<=xPos+width
-						&&this.mouseX>=xPos-width
-						&&this.mouseY<=yPos-height
-						&&this.mouseY>=yPos+height)
-				{
-					pack.executeHoverEffect();
-				}
-			}
 
+			double xPos = pack.getXPos();
+			double yPos = pack.getYPos();
+			double width = pack.getWidth()/2;
+			double height = pack.getHeight()/2;
+			
+			if(this.mouseX<=xPos+width
+					&&this.mouseX>=xPos-width
+					&&this.mouseY>=yPos-height
+					&&this.mouseY<=yPos+height)
+			{
+				executeHoverEffect(pack);
+				return;
+			}
 		}
+		core.send("INQUIRE", 0 + "");
+	}
+	
+	private void executeHoverEffect(final GUIInfoPack pack)
+	{
+		core.send("INQUIRE", pack.getID() + "");
 	}
 	private void createGUIElements()
 	{
@@ -278,9 +282,9 @@ public class GUISystem implements ISystem
 		elementIDs.put("TIME_COUNTER_:_0", ecs.createGUICharSlot(1064, 32, 32, 32, ':', 1));
 		elementIDs.put("TIME_COUNTER_:_1", ecs.createGUICharSlot(1164, 32, 32, 32, ':', 1));
 		
-		elementIDs.put("REPAIR_ICON", ecs.createIcon(325, 700, 32, 32, 1, "INQUIRE", "1"));
-		elementIDs.put("REPAIR_MAX_ICON", ecs.createIcon(360, 700, 32, 32, 2, "INQUIRE", "2"));
-		elementIDs.put("SHIELD_MAX_ICON", ecs.createIcon(395, 700, 32, 32, 3, "INQUIRE", "3"));
+		elementIDs.put("REPAIR_ICON", ecs.createGUIIcon(325, 700, 32, 32, 1, "INQUIRE", "1", 1));
+		elementIDs.put("REPAIR_MAX_ICON", ecs.createGUIIcon(360, 700, 32, 32, 2, "INQUIRE", "2", 2));
+		elementIDs.put("SHIELD_MAX_ICON", ecs.createGUIIcon(395, 700, 32, 32, 3, "INQUIRE", "3", 3));
 		
 		elementIDs.put("HK_1", ecs.createGUICharSlot(325, 668, 16, 16, ' ', 1));
 		elementIDs.put("HK_2", ecs.createGUICharSlot(360, 668, 16, 16, ' ', 1));
@@ -423,6 +427,7 @@ public class GUISystem implements ISystem
 				}
 			}
 			curSlot++;
+			charSlot.setVisible(true);
 		}
 	}
 	
@@ -442,7 +447,7 @@ public class GUISystem implements ISystem
 
 		if(newChar=='\0' || newChar==' ')
 		{
-			//pack.setVisible(false);
+			pack.setVisible(false);
 		}
 		else
 		{			
@@ -558,7 +563,6 @@ public class GUISystem implements ISystem
 		
 		while(slots.hasNext())
 		{//Blank out unused slots.
-			System.out.println("HUR");
 			updateCharSlot(slots.next(), '\0');
 		}
 	}

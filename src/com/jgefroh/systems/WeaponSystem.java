@@ -19,7 +19,7 @@ import com.jgefroh.tests.Benchmark;
  */
 public class WeaponSystem implements ISystem
 {
-		//////////
+	//////////
 	// DATA
 	//////////
 	/**A reference to the core engine controlling this system.*/
@@ -189,14 +189,21 @@ public class WeaponSystem implements ISystem
 	 */
 	private void fire(final long now, final WeaponInfoPack pack)
 	{
-		EntityCreationSystem ecs = core.getSystem(EntityCreationSystem.class);
 		for(int shotNum = 0; shotNum < pack.getNumShots(); shotNum++)
 		{
-			ecs.createBullet(pack.getOwner(),
-					pack.getShotType(),
-					pack.getDamage(),
-					pack.getMaxRange(),
-					pack.getRecoilCur());
+			int type = pack.getShotType();
+			String shotType;
+			
+			switch(type)
+			{
+				case 9:	
+					shotType = "EXPLOSIVE";
+					break;
+				default:
+					shotType = "BULLET";
+					break;
+			}
+			core.send("CREATE", shotType, pack.getOwner().getID());
 		}
 	}
 	

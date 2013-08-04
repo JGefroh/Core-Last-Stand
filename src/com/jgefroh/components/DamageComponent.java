@@ -1,6 +1,6 @@
 package com.jgefroh.components;
 
-import com.jgefroh.core.IComponent;
+import com.jgefroh.core.AbstractComponent;
 import com.jgefroh.core.IEntity;
 
 /**
@@ -10,7 +10,7 @@ import com.jgefroh.core.IEntity;
  * Date: 17JUN13
  * @author Joseph Gefroh
  */
-public class DamageComponent implements IComponent
+public class DamageComponent extends AbstractComponent
 {
 	//////////
 	// DATA
@@ -26,29 +26,21 @@ public class DamageComponent implements IComponent
 	//////////
 	/**
 	 * Creates a new instance of this {@code Component}.
-	 * @param owner	the IEntity owner of this component
 	 */
-	public DamageComponent(final IEntity owner)
+	public DamageComponent()
 	{
-		setOwner(owner);
-		init();
 	}
 	
 	@Override
 	public void init()
 	{
+		setDamage(0);
 	}
 
 	
 	//////////
 	// GETTERS
 	//////////
-	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
-	}
-	
 	/**
 	 * Gets the amount of damage done.
 	 * @return	the amount of damage
@@ -61,13 +53,6 @@ public class DamageComponent implements IComponent
 	//////////
 	// SETTERS
 	//////////
-	@Override
-	public void setOwner(final IEntity owner)
-	{
-		this.owner = owner;
-	}
-	
-	
 	/**
 	 * Sets the amount of damage done.
 	 * @param damage	the amount of damage

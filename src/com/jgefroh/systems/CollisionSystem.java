@@ -2,7 +2,6 @@ package com.jgefroh.systems;
 
 
 import java.awt.Rectangle;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.logging.Level;
@@ -12,6 +11,8 @@ import com.jgefroh.core.Core;
 import com.jgefroh.core.ISystem;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.effects.BulletHitEffect;
+import com.jgefroh.effects.ExplosionCreateEffect;
+import com.jgefroh.effects.ExplosionHitEffect;
 import com.jgefroh.effects.IEffect;
 import com.jgefroh.infopacks.CollisionInfoPack;
 import com.jgefroh.tests.Benchmark;
@@ -82,6 +83,8 @@ public class CollisionSystem implements ISystem
 		isRunning = true;
 		effects = new ArrayList<IEffect>();
 		trackEffect(new BulletHitEffect(core));
+		trackEffect(new ExplosionHitEffect(core));
+		trackEffect(new ExplosionCreateEffect(core));
 	}
 	
 	@Override

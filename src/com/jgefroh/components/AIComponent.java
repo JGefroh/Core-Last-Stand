@@ -1,6 +1,6 @@
 package com.jgefroh.components;
 
-import com.jgefroh.core.IComponent;
+import com.jgefroh.core.AbstractComponent;
 import com.jgefroh.core.IEntity;
 
 /**
@@ -10,7 +10,7 @@ import com.jgefroh.core.IEntity;
  * Date: 17JUN13
  * @author Joseph Gefroh
  */
-public class AIComponent implements IComponent
+public class AIComponent extends AbstractComponent
 {
 	//////////
 	// DATA
@@ -37,9 +37,8 @@ public class AIComponent implements IComponent
 	//////////
 	// INIT
 	//////////
-	public AIComponent(final IEntity entity)
+	public AIComponent()
 	{	
-		setOwner(entity);
 		init();
 	}
 
@@ -53,12 +52,6 @@ public class AIComponent implements IComponent
 	//////////
 	// GETTERS
 	//////////
-	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
-	}
-
 	/**
 	 * Gets the type of AI.
 	 * @return	the type of AI
@@ -99,12 +92,6 @@ public class AIComponent implements IComponent
 	//////////
 	// SETTERS
 	//////////
-	@Override
-	public void setOwner(final IEntity owner)
-	{
-		this.owner = owner;
-	}
-	
 	/**
 	 * Sets the probability the AI will attack per turn.
 	 * @param attackChance	the probability where 1 is always attack and 

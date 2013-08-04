@@ -2,7 +2,7 @@ package com.jgefroh.components;
 
 import java.util.HashMap;
 
-import com.jgefroh.core.IComponent;
+import com.jgefroh.core.AbstractComponent;
 import com.jgefroh.core.IEntity;
 import com.jgefroh.data.Animation;
 
@@ -15,7 +15,7 @@ import com.jgefroh.data.Animation;
  * Date: 17JUN13
  * @author Joseph Gefroh
  */
-public class AnimationComponent implements IComponent
+public class AnimationComponent extends AbstractComponent
 {
 	//TODO: Make this less complicated.
 	
@@ -43,11 +43,9 @@ public class AnimationComponent implements IComponent
 	//////////
 	/**
 	 * Creates a new instance of this {@code Component}.
-	 * @param entity	the owner of this component
 	 */
-	public AnimationComponent(final IEntity entity)
+	public AnimationComponent()
 	{	
-		setOwner(entity);
 		init();
 	}
 
@@ -104,12 +102,6 @@ public class AnimationComponent implements IComponent
 	//////////
 	// GETTERS
 	//////////
-	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
-	}
-	
 	/**
 	 * Gets the current frame of the animation.
 	 * @return	the number of the current animation frame
@@ -192,12 +184,6 @@ public class AnimationComponent implements IComponent
 	//////////
 	// SETTERS
 	//////////
-	@Override
-	public void setOwner(final IEntity owner)
-	{
-		this.owner = owner;
-	}
-	
 	/**
 	 * Sets the current frame of the animation.
 	 * @param currentFrame	the current frame number of the animation
