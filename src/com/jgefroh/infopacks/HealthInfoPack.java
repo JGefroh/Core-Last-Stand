@@ -3,6 +3,7 @@ package com.jgefroh.infopacks;
 import com.jgefroh.components.HealthComponent;
 import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
+import com.jgefroh.core.IInfoPack;
 
 public class HealthInfoPack extends AbstractInfoPack
 {
@@ -29,7 +30,6 @@ public class HealthInfoPack extends AbstractInfoPack
 	public HealthInfoPack(final IEntity owner)
 	{
 		this.owner = owner;
-		checkDirty();
 	}
 	
 	
@@ -40,12 +40,6 @@ public class HealthInfoPack extends AbstractInfoPack
 	public IEntity getOwner()
 	{
 		return this.owner;
-	}
-
-	@Override
-	public boolean isDirty()
-	{
-		return this.isDirty;
 	}
 	
 	@Override
@@ -64,6 +58,16 @@ public class HealthInfoPack extends AbstractInfoPack
 		return false;
 	}
 
+	@Override
+	public IInfoPack generate(final IEntity entity)
+	{
+		if(entity.getComponent(HealthComponent.class)!=null)
+		{
+			return new HealthInfoPack(entity);
+		}
+		return null;
+	}
+	
 	/**
 	 * @see HealthComponent#getCurHealth()
 	 */
@@ -80,11 +84,6 @@ public class HealthInfoPack extends AbstractInfoPack
 	//////////
 	// SETTERS
 	//////////
-	@Override
-	public void setDirty(final boolean isDirty)
-	{
-		this.isDirty = isDirty;
-	}
 	
 	/**
 	 * @see HealthComponent#setCurHealth(int)

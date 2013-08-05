@@ -4,6 +4,7 @@ import com.jgefroh.components.TransformComponent;
 import com.jgefroh.components.VelocityComponent;
 import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
+import com.jgefroh.core.IInfoPack;
 import com.jgefroh.data.Vector;
 
 
@@ -57,12 +58,6 @@ public class MovementInfoPack extends AbstractInfoPack
 	}
 	
 	@Override
-	public boolean isDirty()
-	{
-		return this.isDirty;
-	}
-	
-	@Override
 	public boolean checkDirty()
 	{
 		if(owner.hasChanged())
@@ -79,6 +74,16 @@ public class MovementInfoPack extends AbstractInfoPack
 		return false;
 	}
 
+	@Override
+	public IInfoPack generate(final IEntity entity)
+	{
+		if(entity.getComponent(TransformComponent.class)!=null
+				&& entity.getComponent(VelocityComponent.class)!=null)
+		{
+			return new MovementInfoPack(entity);
+		}
+		return null;
+	}
 	/**
 	 * @see TransformComponent#getXPos()
 	 */
@@ -131,11 +136,6 @@ public class MovementInfoPack extends AbstractInfoPack
 	//////////
 	// SETTERS
 	//////////
-	@Override
-	public void setDirty(final boolean isDirty)
-	{
-		this.isDirty = isDirty;
-	}
 	
 	/**
 	 * @see TransformComponent#setXPos(double)

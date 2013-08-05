@@ -5,12 +5,10 @@ import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.jgefroh.core.AbstractSystem;
 import com.jgefroh.core.Core;
-import com.jgefroh.core.ISystem;
 import com.jgefroh.core.LoggerFactory;
-import com.jgefroh.infopacks.AIInfoPack;
 import com.jgefroh.infopacks.KeepInBoundsInfoPack;
-import com.jgefroh.tests.Benchmark;
 
 
 /**
@@ -19,24 +17,14 @@ import com.jgefroh.tests.Benchmark;
  * 
  * @author Joseph Gefroh
  */
-public class KeepInBoundsSystem implements ISystem
+public class KeepInBoundsSystem extends AbstractSystem
 {
 	//////////
 	// DATA
 	//////////
 	/**A reference to the core engine controlling this system.*/
 	private Core core;
-	
-	/**Flag that shows whether the system is running or not.*/
-	@SuppressWarnings("unused")
-	private boolean isRunning;
-	
-	/**The time to wait between executions of the system.*/
-	private long waitTime;
-	
-	/**The time this System was last executed, in ms.*/
-	private long last;
-	
+
 	/**The level of detail in debug messages.*/
 	private Level debugLevel = Level.INFO;
 	
@@ -76,52 +64,12 @@ public class KeepInBoundsSystem implements ISystem
 		core.setInterested(this, "NATIVE_HEIGHT");
 		core.send("REQUEST_NATIVE_WIDTH", "");
 		core.send("REQUEST_NATIVE_HEIGHT", "");
-		isRunning = true;		
-	}
-	
-	@Override
-	public void start()
-	{
-		LOGGER.log(Level.INFO, "System started.");
-		isRunning = true;
 	}
 
 	@Override
 	public void work(final long now)
 	{
 		checkPositions();
-	}
-
-	@Override
-	public void stop()
-	{
-		LOGGER.log(Level.INFO, "System stopped.");
-		isRunning = false;
-	}
-	
-	@Override
-	public long getWait()
-	{
-		return this.waitTime;
-	}
-
-	@Override
-	public long	getLast()
-	{
-		return this.last;
-	}
-	
-	@Override
-	public void setWait(final long waitTime)
-	{
-		this.waitTime = waitTime;
-		LOGGER.log(Level.FINE, "Wait interval set to: " + waitTime + " ms");
-	}
-	
-	@Override
-	public void setLast(final long last)
-	{
-		this.last = last;
 	}
 	
 	@Override

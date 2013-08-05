@@ -4,6 +4,7 @@ import com.jgefroh.components.ExplosionComponent;
 import com.jgefroh.components.TransformComponent;
 import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
+import com.jgefroh.core.IInfoPack;
 
 /**
  * @author Joseph Gefroh
@@ -36,7 +37,6 @@ public class ExplosionInfoPack extends AbstractInfoPack
 	public ExplosionInfoPack(final IEntity owner)
 	{
 		this.owner = owner;
-		checkDirty();
 	}
 	
 	
@@ -47,12 +47,6 @@ public class ExplosionInfoPack extends AbstractInfoPack
 	public IEntity getOwner()
 	{
 		return this.owner;
-	}
-
-	@Override
-	public boolean isDirty()
-	{
-		return this.isDirty;
 	}
 	
 	@Override
@@ -71,7 +65,17 @@ public class ExplosionInfoPack extends AbstractInfoPack
 		setDirty(false);
 		return false;
 	}
-	
+
+	@Override
+	public IInfoPack generate(final IEntity entity)
+	{
+		if(entity.getComponent(ExplosionComponent.class)!=null
+				&&entity.getComponent(TransformComponent.class)!=null)
+		{
+			return new ExplosionInfoPack(entity);
+		}
+		return null;
+	}
 	public double getHeight()
 	{
 		return tc.getHeight();
@@ -124,12 +128,6 @@ public class ExplosionInfoPack extends AbstractInfoPack
 	//////////
 	// SETTERS
 	//////////
-	@Override
-	public void setDirty(final boolean isDirty)
-	{
-		this.isDirty = isDirty;
-	}
-	
 	public void setWidth(final double width)
 	{
 		tc.setWidth(width);

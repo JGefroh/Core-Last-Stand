@@ -4,6 +4,7 @@ import com.jgefroh.components.CollisionComponent;
 import com.jgefroh.components.TransformComponent;
 import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
+import com.jgefroh.core.IInfoPack;
 
 /**
  * Intended to be used by the CollisionSystem.
@@ -18,7 +19,7 @@ public class CollisionInfoPack extends AbstractInfoPack
 {
 	//////////
 	// DATA
-	//////////
+	//////////	
 	/**The entity associated with this InfoPack.*/
 	private IEntity owner;
 	
@@ -27,10 +28,6 @@ public class CollisionInfoPack extends AbstractInfoPack
 	
 	/**A component this InfoPack depends on.*/
 	private CollisionComponent cc;
-	
-	/**Flag that indicates the InfoPack is invalid and unreliable.*/
-	private boolean isDirty;
-	
 	
 	//////////
 	// INIT
@@ -47,17 +44,11 @@ public class CollisionInfoPack extends AbstractInfoPack
 	
 	//////////
 	// GETTERS
-	//////////
+	//////////	
 	@Override
 	public IEntity getOwner()
 	{
 		return this.owner;
-	}
-	
-	@Override
-	public boolean isDirty()
-	{
-		return this.isDirty;
 	}
 	
 	@Override
@@ -75,6 +66,18 @@ public class CollisionInfoPack extends AbstractInfoPack
 		}
 		setDirty(false);
 		return false;
+	}
+	
+	@Override
+	public IInfoPack generate(final IEntity entity)
+	{
+		if(entity!=null
+			&&entity.getComponent(TransformComponent.class)!=null
+			&&entity.getComponent(CollisionComponent.class)!=null)
+		{
+			return new CollisionInfoPack(entity);
+		}
+		return null;
 	}
 	
 	/**
@@ -122,11 +125,6 @@ public class CollisionInfoPack extends AbstractInfoPack
 	//////////
 	// SETTERS
 	//////////
-	@Override
-	public void setDirty(final boolean isDirty)
-	{
-		this.isDirty = isDirty;
-	}
 	
 	/**
 	 * @see TransformComponent#setXPos(int)

@@ -3,6 +3,7 @@ package com.jgefroh.infopacks;
 import com.jgefroh.components.DamageComponent;
 import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
+import com.jgefroh.core.IInfoPack;
 
 /**
  * @author Joseph Gefroh
@@ -32,7 +33,6 @@ public class DamageInfoPack extends AbstractInfoPack
 	public DamageInfoPack(final IEntity owner)
 	{
 		this.owner = owner;
-		checkDirty();
 	}
 	
 	
@@ -43,12 +43,6 @@ public class DamageInfoPack extends AbstractInfoPack
 	public IEntity getOwner()
 	{
 		return this.owner;
-	}
-
-	@Override
-	public boolean isDirty()
-	{
-		return this.isDirty;
 	}
 	
 	@Override
@@ -67,6 +61,16 @@ public class DamageInfoPack extends AbstractInfoPack
 		return false;
 	}
 
+	@Override
+	public IInfoPack generate(final IEntity entity)
+	{
+		if(entity.getComponent(DamageComponent.class)!=null)
+		{
+			return new DamageInfoPack(entity);
+		}
+		return null;
+	}
+	
 	public int getDamage()
 	{
 		return dc.getDamage();
@@ -75,13 +79,7 @@ public class DamageInfoPack extends AbstractInfoPack
 	
 	//////////
 	// SETTERS
-	//////////
-	@Override
-	public void setDirty(final boolean isDirty)
-	{
-		this.isDirty = isDirty;
-	}
-	
+	//////////	
 	public void setDamage(final int damage)
 	{
 		dc.setDamage(damage);

@@ -5,6 +5,7 @@ import com.jgefroh.components.HealthComponent;
 import com.jgefroh.components.TransformComponent;
 import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
+import com.jgefroh.core.IInfoPack;
 
 /**
  * @author Joseph Gefroh
@@ -43,7 +44,6 @@ public class HealthBarInfoPack extends AbstractInfoPack
 	public HealthBarInfoPack(final IEntity owner)
 	{
 		this.owner = owner;
-		checkDirty();
 	}
 	
 	
@@ -54,12 +54,6 @@ public class HealthBarInfoPack extends AbstractInfoPack
 	public IEntity getOwner()
 	{
 		return this.owner;
-	}
-	
-	@Override
-	public boolean isDirty()
-	{
-		return this.isDirty;
 	}
 	
 	@Override
@@ -90,6 +84,24 @@ public class HealthBarInfoPack extends AbstractInfoPack
 		setDirty(false);
 		return false;
 	}
+
+	@Override
+	public IInfoPack generate(final IEntity entity)
+	{
+		if(entity.getComponent(HealthBarComponent.class)!=null
+				&&entity.getComponent(HealthComponent.class)!=null
+				&&entity.getComponent(TransformComponent.class)!=null)
+		{
+			IEntity bar 
+				= entity.getComponent(HealthBarComponent.class).getHealthBar();
+			if(bar!=null
+					&&bar.getComponent(TransformComponent.class)!=null)
+			{
+				return new HealthBarInfoPack(entity);
+			}
+		}
+		return null;
+	}
 	
 	public IEntity getHealthBar()
 	{
@@ -114,12 +126,6 @@ public class HealthBarInfoPack extends AbstractInfoPack
 	//////////
 	// SETTERS
 	//////////
-	@Override
-	public void setDirty(final boolean isDirty)
-	{
-		this.isDirty = isDirty;
-	}
-	
 	public void setHealthBar(final IEntity healthBar)
 	{
 		hbc.setHealthBar(healthBar);

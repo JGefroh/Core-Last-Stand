@@ -3,6 +3,7 @@ package com.jgefroh.infopacks;
 import com.jgefroh.components.DecayComponent;
 import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
+import com.jgefroh.core.IInfoPack;
 
 /**
  * @author Joseph Gefroh
@@ -32,7 +33,6 @@ public class DecayInfoPack extends AbstractInfoPack
 	public DecayInfoPack(final IEntity owner)
 	{
 		this.owner = owner;
-		checkDirty();
 	}
 	
 	
@@ -43,12 +43,6 @@ public class DecayInfoPack extends AbstractInfoPack
 	public IEntity getOwner()
 	{
 		return this.owner;
-	}
-
-	@Override
-	public boolean isDirty()
-	{
-		return this.isDirty;
 	}
 	
 	@Override
@@ -67,6 +61,15 @@ public class DecayInfoPack extends AbstractInfoPack
 		return false;
 	}
 
+	@Override
+	public IInfoPack generate(final IEntity entity)
+	{
+		if(entity.getComponent(DecayComponent.class)!=null)
+		{
+			return new DecayInfoPack(entity);
+		}
+		return null;
+	}
 	public long getLastUpdateTime()
 	{
 		return dc.getLastUpdateTime();
@@ -80,11 +83,6 @@ public class DecayInfoPack extends AbstractInfoPack
 	//////////
 	// SETTERS
 	//////////
-	@Override
-	public void setDirty(final boolean isDirty)
-	{
-		this.isDirty = isDirty;
-	}
 	
 	public void setLastUpdateTime(final long lastUpdateTime)
 	{

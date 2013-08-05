@@ -5,32 +5,22 @@ import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.jgefroh.core.AbstractSystem;
 import com.jgefroh.core.Core;
-import com.jgefroh.core.ISystem;
 import com.jgefroh.core.LoggerFactory;
-import com.jgefroh.infopacks.HealthInfoPack;
 import com.jgefroh.infopacks.ShieldInfoPack;
 
 /**
  * Controls the display of health bars above entities.
  * @author Joseph Gefroh
  */
-public class ShieldSystem implements ISystem
+public class ShieldSystem extends AbstractSystem
 {
 	//////////
 	// DATA
 	//////////
 	/**A reference to the core engine controlling this system.*/
 	private Core core;
-	
-	/**Flag that shows whether the system is running or not.*/
-	private boolean isRunning;
-	
-	/**The time to wait between executions of the system.*/
-	private long waitTime;
-	
-	/**The time this System was last executed, in ms.*/
-	private long last;
 	
 	/**The level of detail in debug messages.*/
 	private Level debugLevel = Level.INFO;
@@ -66,55 +56,13 @@ public class ShieldSystem implements ISystem
 		core.setInterested(this, "REQUEST_SHIELD_ACTIVE");
 		core.setInterested(this, "CHANGE_SHIELD_MAX");
 	}
-	
-	@Override
-	public void start() 
-	{
-		LOGGER.log(Level.INFO, "System started.");
-		isRunning = true;
-	}
 
 	@Override
 	public void work(final long now)
 	{
-		if(isRunning)
-		{
-			updateShields(now);
-		}
+		updateShields(now);
 	}
 
-	@Override
-	public void stop()
-	{	
-		LOGGER.log(Level.INFO, "System stopped.");
-		isRunning = false;
-	}
-	
-	@Override
-	public long getWait()
-	{
-		return this.waitTime;
-	}
-
-	@Override
-	public long	getLast()
-	{
-		return this.last;
-	}
-	
-	@Override
-	public void setWait(final long waitTime)
-	{
-		this.waitTime = waitTime;
-		LOGGER.log(Level.FINE, "Wait interval set to: " + waitTime + " ms");
-	}
-	
-	@Override
-	public void setLast(final long last)
-	{
-		this.last = last;
-	}
-	
 	@Override
 	public void recv(final String id, final String... message)
 	{

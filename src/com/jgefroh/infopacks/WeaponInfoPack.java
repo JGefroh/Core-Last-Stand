@@ -3,6 +3,7 @@ package com.jgefroh.infopacks;
 import com.jgefroh.components.WeaponComponent;
 import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
+import com.jgefroh.core.IInfoPack;
 import com.jgefroh.data.Weapon;
 
 
@@ -60,9 +61,13 @@ public class WeaponInfoPack extends AbstractInfoPack
 	}
 	
 	@Override
-	public boolean isDirty()
+	public IInfoPack generate(final IEntity entity)
 	{
-		return this.isDirty;
+		if(entity.getComponent(WeaponComponent.class)!=null)
+		{
+			return new WeaponInfoPack(entity);
+		}
+		return null;
 	}
 	
 	@Override
@@ -162,11 +167,6 @@ public class WeaponInfoPack extends AbstractInfoPack
 	//////////
 	// SETTERS
 	//////////
-	@Override
-	public void setDirty(final boolean isDirty)
-	{
-		this.isDirty = isDirty;
-	}
 	
 	public void setInterval(final long interval)
 	{

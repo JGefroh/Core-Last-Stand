@@ -7,8 +7,8 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
+import com.jgefroh.core.AbstractSystem;
 import com.jgefroh.core.Core;
-import com.jgefroh.core.ISystem;
 import com.jgefroh.core.LoggerFactory;
 
 
@@ -22,7 +22,7 @@ import com.jgefroh.core.LoggerFactory;
  * @author Joseph Gefroh
  * @version 0.2.0
  */
-public class WindowSystem implements ISystem
+public class WindowSystem extends AbstractSystem
 {
 	//TODO: Fix.
 	
@@ -31,16 +31,6 @@ public class WindowSystem implements ISystem
 	//////////
 	/**A reference to the core engine controlling this system.*/
 	private Core core;
-	
-	/**Flag that shows whether the system is running or not.*/
-	@SuppressWarnings("unused")
-	private boolean isRunning;
-	
-	/**The time to wait between executions of the system.*/
-	private long waitTime;
-	
-	/**The time this System was last executed, in ms.*/
-	private long last;
 	
 	/**The level of detail in debug messages.*/
 	private Level debugLevel = Level.OFF;
@@ -97,18 +87,10 @@ public class WindowSystem implements ISystem
 	@Override
 	public void init()
 	{
-		this.isRunning = true;
 		core.setInterested(this, "REQUEST_WINDOW_WIDTH");
 		core.setInterested(this, "REQUEST_WINDOW_HEIGHT");
 	}
-	
-	@Override
-	public void start() 
-	{
-		LOGGER.log(Level.INFO, "System started.");
-		isRunning = true;
-	}
-	
+
 	@Override
 	public void work(final long now)
 	{
@@ -118,37 +100,6 @@ public class WindowSystem implements ISystem
 			core.send("WINDOW_WIDTH", getWidth() + "");
 			core.send("WINDOW_HEIGHT", getHeight() + "");
 		}
-	}
-
-	@Override
-	public void stop()
-	{	
-		LOGGER.log(Level.INFO, "System stopped.");
-		isRunning = false;
-	}
-	
-	@Override
-	public long getWait()
-	{
-		return this.waitTime;
-	}
-
-	@Override
-	public long	getLast()
-	{
-		return this.last;
-	}
-	
-	@Override
-	public void setWait(final long waitTime)
-	{
-		this.waitTime = waitTime;
-	}
-	
-	@Override
-	public void setLast(final long last)
-	{
-		this.last = last;
 	}
 	
 	/**

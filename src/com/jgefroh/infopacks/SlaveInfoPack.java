@@ -3,6 +3,7 @@ package com.jgefroh.infopacks;
 import com.jgefroh.components.SlaveComponent;
 import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
+import com.jgefroh.core.IInfoPack;
 
 
 /**
@@ -69,9 +70,13 @@ public class SlaveInfoPack extends AbstractInfoPack
 	}
 	
 	@Override
-	public boolean isDirty()
+	public IInfoPack generate(final IEntity entity)
 	{
-		return this.isDirty;
+		if(entity.getComponent(SlaveComponent.class)!=null)
+		{
+			return new SlaveInfoPack(entity);
+		}
+		return null;
 	}
 
 	
@@ -79,12 +84,6 @@ public class SlaveInfoPack extends AbstractInfoPack
 	//////////
 	// SETTERS
 	//////////
-	@Override
-	public void setDirty(final boolean isDirty)
-	{
-		this.isDirty = isDirty;
-	}
-	
 	public void setMaster(final IEntity master)
 	{
 		sc.setMaster(master);

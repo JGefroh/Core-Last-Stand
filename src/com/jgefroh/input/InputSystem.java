@@ -9,9 +9,10 @@ import java.util.logging.Logger;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+
+import com.jgefroh.core.AbstractSystem;
 import com.jgefroh.core.Core;
-import com.jgefroh.core.ISystem;
-import com.jgefroh.core.LoggerFactory; 
+import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.infopacks.InputInfoPack;
 
 
@@ -23,22 +24,13 @@ import com.jgefroh.infopacks.InputInfoPack;
  * according to the binds associated with the inputs.
  * @author Joseph Gefroh
  */
-public class InputSystem implements ISystem, IInputSystem
+public class InputSystem extends AbstractSystem implements IInputSystem
 {
 	//////////
 	// DATA
 	//////////
 	/**A reference to the core engine controlling this system.*/
 	private Core core;
-	
-	/**Flag that shows whether the system is running or not.*/
-	private boolean isRunning;
-	
-	/**The time to wait between executions of the system.*/
-	private long waitTime;
-	
-	/**The time this System was last executed, in ms.*/
-	private long last;
 	
 	/**The level of detail in debug messages.*/
 	private Level debugLevel = Level.FINE;
@@ -120,7 +112,10 @@ public class InputSystem implements ISystem, IInputSystem
 		kbs.bind(Keyboard.KEY_7, "BUY_7", InputSystem.PRESS);
 		kbs.bind(Keyboard.KEY_8, "BUY_8", InputSystem.PRESS);
 		kbs.bind(Keyboard.KEY_9, "BUY_9", InputSystem.PRESS);
-
+		
+		mbs.bind(0, "MOUSE0+", InputSystem.PRESS);
+		mbs.bind(0, "MOUSE0-", InputSystem.RELEASE);
+		
 		setBindSystem(IInputSystem.KEYBOARD, kbs);
 		setBindSystem(IInputSystem.MOUSE, mbs);	
 	}
@@ -167,52 +162,14 @@ public class InputSystem implements ISystem, IInputSystem
 	}
 	
 	@Override
-	public void start()
-	{
-		LOGGER.log(Level.INFO, "System started.");
-		isRunning = true;
-	}
-	
-	@Override
 	public void work(final long now)
 	{
-		if(isRunning)
+		if(isRunning())
 		{
 			pollInputDevices();
 		}
 	}
 
-	@Override
-	public void stop()
-	{
-		LOGGER.log(Level.INFO, "System stopped.");
-		isRunning = false;
-	}
-	
-	@Override
-	public long getWait()
-	{
-		return this.waitTime;
-	}
-
-	@Override
-	public long	getLast()
-	{
-		return this.last;
-	}
-	
-	@Override
-	public void setWait(final long waitTime)
-	{
-		this.waitTime = waitTime;
-	}
-	
-	@Override
-	public void setLast(final long last)
-	{
-		this.last = last;
-	}
-	
 	@Override
 	public void recv(final String id, final String... message)
 	{		

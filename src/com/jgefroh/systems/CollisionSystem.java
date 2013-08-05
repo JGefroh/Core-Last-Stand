@@ -7,8 +7,8 @@ import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.jgefroh.core.AbstractSystem;
 import com.jgefroh.core.Core;
-import com.jgefroh.core.ISystem;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.effects.BulletHitEffect;
 import com.jgefroh.effects.ExplosionCreateEffect;
@@ -21,7 +21,7 @@ import com.jgefroh.tests.Benchmark;
  * This system handles collision checking for entities.
  * @author Joseph Gefroh
  */
-public class CollisionSystem implements ISystem
+public class CollisionSystem extends AbstractSystem
 {
 	//TODO: Handle rotated quad collision
 	//////////
@@ -29,15 +29,6 @@ public class CollisionSystem implements ISystem
 	//////////
 	/**A reference to the core engine controlling this system.*/
 	private Core core;
-	
-	/**Flag that shows whether the system is running or not.*/
-	private boolean isRunning;
-	
-	/**The time to wait between executions of the system.*/
-	private long waitTime;
-	
-	/**The time this System was last executed, in ms.*/
-	private long last;
 	
 	/**The level of detail in debug messages.*/
 	private Level debugLevel = Level.INFO;
@@ -66,7 +57,6 @@ public class CollisionSystem implements ISystem
 	{
 		this.core = core;
 		setDebugLevel(this.debugLevel);
-
 		init();
 	}
 	
@@ -77,70 +67,22 @@ public class CollisionSystem implements ISystem
 	@Override
 	public void init()
 	{
-
 		LOGGER.log(Level.FINE, "Setting system values to default.");
 		collisionTable = new boolean[9][9];	
-		isRunning = true;
 		effects = new ArrayList<IEffect>();
 		trackEffect(new BulletHitEffect(core));
 		trackEffect(new ExplosionHitEffect(core));
 		trackEffect(new ExplosionCreateEffect(core));
 	}
-	
-	@Override
-	public void start()
-	{
-		LOGGER.log(Level.INFO, "System started.");
-		isRunning = true;
-	}
 
 	@Override
 	public void work(final long now)
 	{
-		if(isRunning)
-		{
-			long startTime = System.nanoTime();
-			int numEntities = checkAll();
-			bench.benchmark(System.nanoTime()-startTime, numEntities);
-		}
-	}
-	
-	@Override
-	public void stop()
-	{
-		LOGGER.log(Level.INFO, "System stopped.");
-		isRunning = false;
-	}
-	
-	@Override
-	public long getWait()
-	{
-		return this.waitTime;
+		long startTime = System.nanoTime();
+		int numEntities = checkAll();
+		bench.benchmark(System.nanoTime()-startTime, numEntities);
 	}
 
-	@Override
-	public long	getLast()
-	{
-		return this.last;
-	}
-	
-	@Override
-	public void setWait(final long waitTime)
-	{
-		this.waitTime = waitTime;
-	}
-	
-	@Override
-	public void setLast(final long last)
-	{
-		this.last = last;
-	}
-	
-	@Override
-	public void recv(final String id, final String... message)
-	{
-		LOGGER.log(Level.FINEST, "Received message: " + id);
-	}
 	//////////
 	// SYSTEM METHODS
 	//////////
@@ -159,7 +101,7 @@ public class CollisionSystem implements ISystem
 			numEntities++;
 			CollisionInfoPack cipA = checkThese.next();
 			
-			if(cipA.isDirty()==false)
+			if(cipA.checkDirty()==false)
 			{
 				Iterator<CollisionInfoPack> checkAgainst =
 						core.getInfoPacksOfType(CollisionInfoPack.class);
@@ -168,7 +110,7 @@ public class CollisionSystem implements ISystem
 				{
 					CollisionInfoPack cipB = checkAgainst.next();
 					
-					if(cipB.isDirty()==false)
+					if(cipB.checkDirty()==false)
 					{
 						
 						if(checkCollidesWith(cipA.getGroup(), cipB.getGroup()) 

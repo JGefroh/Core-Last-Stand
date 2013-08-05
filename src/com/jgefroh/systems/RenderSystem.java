@@ -10,8 +10,8 @@ import java.util.logging.Logger;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
+import com.jgefroh.core.AbstractSystem;
 import com.jgefroh.core.Core;
-import com.jgefroh.core.ISystem;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.data.Sprite;
 import com.jgefroh.data.Texture;
@@ -26,22 +26,13 @@ import com.jgefroh.tests.Benchmark;
  * Date: 12JUN13
  * @author Joseph Gefroh
  */
-public class RenderSystem implements ISystem
+public class RenderSystem extends AbstractSystem
 {
 	//////////
 	// DATA
 	//////////
 	/**A reference to the core engine controlling this system.*/
 	private Core core;
-	
-	/**Flag that shows whether the system is running or not.*/
-	private boolean isRunning;
-	
-	/**The time to wait between executions of the system.*/
-	private long waitTime;
-	
-	/**The time this System was last executed, in ms.*/
-	private long last;
 	
 	/**The level of detail in debug messages.*/
 	private Level debugLevel = Level.INFO;
@@ -111,7 +102,7 @@ public class RenderSystem implements ISystem
 		initOpenGL();
 		textures = new HashMap<Integer, Texture>();
 		idMan = new HashMap<String, Integer>();
-		isRunning = true;
+		idMan.put(null, -1);
 		core.setInterested(this, "WINDOW_RESIZED");
 		core.setInterested(this, "WINDOW_WIDTH");
 		core.setInterested(this, "WINDOW_HEIGHT");
@@ -126,55 +117,19 @@ public class RenderSystem implements ISystem
 	@Override
 	public void start() 
 	{
-		LOGGER.log(Level.INFO, "System started.");
 		core.send("REQUEST_WINDOW_WIDTH", "");
 		core.send("REQUEST_WINDOW_HEIGHT", "");
-		isRunning = true;
+		super.start();
 	}
 
 	@Override
 	public void work(final long now)
 	{
-		if(isRunning)
-		{	
-			long startTime = System.nanoTime();
-			int numEntities = render();
-			bench.benchmark(System.nanoTime()-startTime, numEntities);
-		}
+		long startTime = System.nanoTime();
+		int numEntities = render();
+		bench.benchmark(System.nanoTime()-startTime, numEntities);
 	}
 
-	@Override
-	public void stop()
-	{
-		LOGGER.log(Level.INFO, "System stopped.");
-		isRunning = false;
-	}
-	
-	@Override
-	public long getWait()
-	{
-		return this.waitTime;
-	}
-
-	@Override
-	public long	getLast()
-	{
-		return this.last;
-	}
-	
-	@Override
-	public void setWait(final long waitTime)
-	{
-		this.waitTime = waitTime;
-		LOGGER.log(Level.FINE, "Wait interval set to: " + waitTime + " ms");
-	}
-	
-	@Override
-	public void setLast(final long last)
-	{
-		this.last = last;
-	}
-	
 	@Override
 	public void recv(final String id, final String... message)
 	{
@@ -204,6 +159,7 @@ public class RenderSystem implements ISystem
 		{
 			core.send("NATIVE_HEIGHT", NATIVE_HEIGHT + "");
 		}
+
 	}
 	
 	//////////

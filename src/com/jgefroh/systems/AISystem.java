@@ -1,12 +1,11 @@
 package com.jgefroh.systems;
 
 import java.util.Iterator;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.jgefroh.core.AbstractSystem;
 import com.jgefroh.core.Core;
-import com.jgefroh.core.ISystem;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.infopacks.AIInfoPack;
 import com.jgefroh.tests.Benchmark;
@@ -17,22 +16,13 @@ import com.jgefroh.tests.Benchmark;
  * Date: 16JUNE13
  * @author Joseph Gefroh
  */
-public class AISystem implements ISystem
+public class AISystem extends AbstractSystem
 {	
 	//////////
 	// DATA
 	//////////
 	/**A reference to the core engine controlling this system.*/
 	private Core core;
-	
-	/**The time to wait between executions of the system.*/
-	private long waitTime;
-	
-	/**The time this System was last executed, in ms.*/
-	private long last;
-	
-	/**Flag that shows whether the system is running or not.*/
-	private boolean isRunning;
 	
 	/**The level of detail in debug messages.*/
 	private Level debugLevel = Level.INFO;
@@ -67,58 +57,15 @@ public class AISystem implements ISystem
 		LOGGER.log(Level.FINE, "Setting system values to default.");
 		core.setInterested(this, "IN_RANGE_OF_TARGET");
 		core.setInterested(this, "IS_WITHIN_BOUNDS");
-		this.isRunning = true;
 
-	}
-	
-	@Override
-	public void start()
-	{
-		isRunning = true;
-		LOGGER.log(Level.INFO, "System started.");
 	}
 
 	@Override
 	public void work(final long now)
 	{
-		if(this.isRunning)
-		{
-			long startTime = System.nanoTime();
-			int numEntities = attack();
-			bench.benchmark(System.nanoTime()-startTime, numEntities);
-		}
-	}
-	
-	@Override
-	public void stop()
-	{
-		isRunning = false;
-		LOGGER.log(Level.INFO, "System stopped.");
-	}
-	
-	@Override
-	public long getWait()
-	{
-		return this.waitTime;
-	}
-	
-	@Override
-	public long	getLast()
-	{
-		return this.last;
-	}
-	
-	@Override
-	public void setWait(final long waitTime)
-	{
-		this.waitTime = waitTime;
-		LOGGER.log(Level.FINE, "Wait interval set to: " + waitTime + " ms");
-	}
-	
-	@Override
-	public void setLast(final long last)
-	{
-		this.last = last;
+		long startTime = System.nanoTime();
+		int numEntities = attack();
+		bench.benchmark(System.nanoTime()-startTime, numEntities);
 	}
 	
 	@Override

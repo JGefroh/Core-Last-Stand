@@ -4,6 +4,7 @@ import com.jgefroh.components.ShieldComponent;
 import com.jgefroh.components.TransformComponent;
 import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
+import com.jgefroh.core.IInfoPack;
 
 
 /**
@@ -62,11 +63,16 @@ public class ShieldInfoPack extends AbstractInfoPack
 		setDirty(false);
 		return false;
 	}
-	
+
 	@Override
-	public boolean isDirty()
+	public IInfoPack generate(final IEntity entity)
 	{
-		return this.isDirty;
+		if(entity.getComponent(TransformComponent.class)!=null
+				&& entity.getComponent(ShieldComponent.class)!=null)
+		{
+			return new ShieldInfoPack(entity);
+		}
+		return null;
 	}
 	
 	@Override
@@ -151,11 +157,6 @@ public class ShieldInfoPack extends AbstractInfoPack
 	//////////
 	// SETTERS
 	//////////
-	@Override
-	public void setDirty(final boolean isDirty)
-	{
-		this.isDirty = isDirty;
-	}
 	
 	public void setActive(final boolean isShieldActive)
 	{

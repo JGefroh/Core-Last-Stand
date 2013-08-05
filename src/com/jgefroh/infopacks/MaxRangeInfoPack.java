@@ -4,6 +4,7 @@ import com.jgefroh.components.MaxRangeComponent;
 import com.jgefroh.components.TransformComponent;
 import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
+import com.jgefroh.core.IInfoPack;
 
 
 /**
@@ -50,12 +51,6 @@ public class MaxRangeInfoPack extends AbstractInfoPack
 	}
 	
 	@Override
-	public boolean isDirty()
-	{
-		return this.isDirty;
-	}
-	
-	@Override
 	public boolean checkDirty()
 	{
 		if(owner.hasChanged())
@@ -72,6 +67,16 @@ public class MaxRangeInfoPack extends AbstractInfoPack
 		return false;
 	}
 
+	@Override
+	public IInfoPack generate(final IEntity entity)
+	{
+		if(entity.getComponent(TransformComponent.class)!=null
+				&&entity.getComponent(MaxRangeComponent.class)!=null)
+		{
+			return new MaxRangeInfoPack(entity);
+		}
+		return null;
+	}
 	/**
 	 * @see TransformComponent#getXPos()
 	 */
@@ -110,11 +115,6 @@ public class MaxRangeInfoPack extends AbstractInfoPack
 	//////////
 	// SETTERS
 	//////////
-	@Override
-	public void setDirty(final boolean isDirty)
-	{
-		this.isDirty = isDirty;
-	}
 	
 	public void setLastXPos(final double lastXPos)
 	{

@@ -1,9 +1,12 @@
 package com.jgefroh.infopacks;
 
+import com.jgefroh.components.AIComponent;
 import com.jgefroh.components.AnimationComponent;
 import com.jgefroh.components.RenderComponent;
+import com.jgefroh.components.TransformComponent;
 import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
+import com.jgefroh.core.IInfoPack;
 
 
 /**
@@ -50,6 +53,12 @@ public class AnimationInfoPack extends AbstractInfoPack
 	// GETTERS
 	//////////
 	@Override
+	public IEntity getOwner()
+	{
+		return this.owner;
+	}
+	
+	@Override
 	public boolean checkDirty()
 	{
 		if(owner.hasChanged())
@@ -65,17 +74,17 @@ public class AnimationInfoPack extends AbstractInfoPack
 		setDirty(false);
 		return false;
 	}
-	
+
 	@Override
-	public IEntity getOwner()
+	public IInfoPack generate(final IEntity entity)
 	{
-		return this.owner;
-	}
-	
-	@Override
-	public boolean isDirty()
-	{
-		return this.isDirty;
+		if(entity!=null
+				&&entity.getComponent(AnimationComponent.class)!=null
+				&&entity.getComponent(RenderComponent.class)!=null)
+		{			
+			return new AnimationInfoPack(entity);
+		}
+		return null;
 	}
 	
 	/**
@@ -124,12 +133,6 @@ public class AnimationInfoPack extends AbstractInfoPack
 	//////////
 	// SETTERS
 	//////////
-	@Override
-	public void setDirty(final boolean isDirty)
-	{
-		this.isDirty = isDirty;
-	}
-	
 	/**
 	 * @see RenderComponent#setSpriteID(int)
 	 */

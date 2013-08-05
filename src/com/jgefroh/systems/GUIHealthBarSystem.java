@@ -5,8 +5,8 @@ import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.jgefroh.core.AbstractSystem;
 import com.jgefroh.core.Core;
-import com.jgefroh.core.ISystem;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.infopacks.HealthBarInfoPack;
 
@@ -14,22 +14,13 @@ import com.jgefroh.infopacks.HealthBarInfoPack;
  * Controls the display of health bars above entities.
  * @author Joseph Gefroh
  */
-public class GUIHealthBarSystem implements ISystem
+public class GUIHealthBarSystem extends AbstractSystem
 {
 	//////////
 	// DATA
 	//////////
 	/**A reference to the core engine controlling this system.*/
 	private Core core;
-	
-	/**Flag that shows whether the system is running or not.*/
-	private boolean isRunning;
-	
-	/**The time to wait between executions of the system.*/
-	private long waitTime;
-	
-	/**The time this System was last executed, in ms.*/
-	private long last;
 	
 	/**The level of detail in debug messages.*/
 	private Level debugLevel = Level.INFO;
@@ -63,53 +54,11 @@ public class GUIHealthBarSystem implements ISystem
 	{
 		core.setInterested(this, "DESTROYING_ENTITY");
 	}
-	
-	@Override
-	public void start() 
-	{
-		LOGGER.log(Level.INFO, "System started.");
-		isRunning = true;
-	}
 
 	@Override
 	public void work(final long now)
 	{
-		if(isRunning)
-		{
-			updateHealthBars();
-		}
-	}
-
-	@Override
-	public void stop()
-	{	
-		LOGGER.log(Level.INFO, "System stopped.");
-		isRunning = false;
-	}
-	
-	@Override
-	public long getWait()
-	{
-		return this.waitTime;
-	}
-
-	@Override
-	public long	getLast()
-	{
-		return this.last;
-	}
-	
-	@Override
-	public void setWait(final long waitTime)
-	{
-		this.waitTime = waitTime;
-		LOGGER.log(Level.FINE, "Wait interval set to: " + waitTime + " ms");
-	}
-	
-	@Override
-	public void setLast(final long last)
-	{
-		this.last = last;
+		updateHealthBars();
 	}
 	
 	@Override

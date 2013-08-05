@@ -5,6 +5,7 @@ import com.jgefroh.components.TransformComponent;
 import com.jgefroh.components.VelocityComponent;
 import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
+import com.jgefroh.core.IInfoPack;
 import com.jgefroh.data.Vector;
 
 public class ForceInfoPack extends AbstractInfoPack
@@ -50,11 +51,6 @@ public class ForceInfoPack extends AbstractInfoPack
 		return this.owner;
 	}
 
-	@Override
-	public boolean isDirty()
-	{
-		return this.isDirty;
-	}
 	
 	@Override
 	public boolean checkDirty()
@@ -74,6 +70,17 @@ public class ForceInfoPack extends AbstractInfoPack
 		return false;
 	}
 
+	@Override
+	public IInfoPack generate(final IEntity entity)
+	{
+		if(entity.getComponent(VelocityComponent.class)!=null
+				&&entity.getComponent(ForceGeneratorComponent.class)!=null
+				&&entity.getComponent(TransformComponent.class)!=null)
+		{
+			return new ForceInfoPack(entity);
+		}
+		return null;
+	}
 	public Vector getGeneratedVector()
 	{
 		return fgc.getVector();
@@ -116,11 +123,6 @@ public class ForceInfoPack extends AbstractInfoPack
 	//////////
 	// SETTERS
 	//////////
-	@Override
-	public void setDirty(final boolean isDirty)
-	{
-		this.isDirty = isDirty;
-	}
 	public void setGeneratedForce(final Vector vector)
 	{
 		fgc.setVector(vector);

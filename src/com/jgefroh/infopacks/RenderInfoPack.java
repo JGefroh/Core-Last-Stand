@@ -4,6 +4,7 @@ import com.jgefroh.components.RenderComponent;
 import com.jgefroh.components.TransformComponent;
 import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
+import com.jgefroh.core.IInfoPack;
 
 
 /**
@@ -65,9 +66,15 @@ public class RenderInfoPack extends AbstractInfoPack
 	}
 	
 	@Override
-	public boolean isDirty()
+	public IInfoPack generate(final IEntity entity)
 	{
-		return this.isDirty;
+		if(entity.getComponent(RenderComponent.class)!=null
+				&&entity.getComponent(TransformComponent.class)!=null)
+		{
+
+			return new RenderInfoPack(entity);
+		}
+		return null;
 	}
 	
 	@Override
@@ -181,12 +188,6 @@ public class RenderInfoPack extends AbstractInfoPack
 	//////////
 	// SETTERS
 	//////////
-	@Override
-	public void setDirty(final boolean isDirty)
-	{
-		this.isDirty = isDirty;
-	}
-	
 	/**
 	 * @see RenderComponent#setTextureID(int)
 	 */

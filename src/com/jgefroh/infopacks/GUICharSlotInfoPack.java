@@ -5,6 +5,7 @@ import com.jgefroh.components.RenderComponent;
 import com.jgefroh.components.TransformComponent;
 import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
+import com.jgefroh.core.IInfoPack;
 
 
 public class GUICharSlotInfoPack extends AbstractInfoPack
@@ -58,11 +59,17 @@ public class GUICharSlotInfoPack extends AbstractInfoPack
 		setDirty(false);
 		return false;
 	}
-	
+
 	@Override
-	public boolean isDirty()
+	public IInfoPack generate(final IEntity entity)
 	{
-		return this.isDirty;
+		if(entity.getComponent(GUICharSlotComponent.class)!=null
+				&&entity.getComponent(RenderComponent.class)!=null
+				&&entity.getComponent(TransformComponent.class)!=null)
+		{
+			return new GUICharSlotInfoPack(entity);
+		}
+		return null;
 	}
 	
 	@Override
@@ -119,11 +126,6 @@ public class GUICharSlotInfoPack extends AbstractInfoPack
 	//////////
 	// SETTERS
 	//////////
-	@Override
-	public void setDirty(final boolean isDirty)
-	{
-		this.isDirty = isDirty;
-	}
 	
 	public void setXPos(final double xPos)
 	{

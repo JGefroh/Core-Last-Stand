@@ -3,6 +3,7 @@ package com.jgefroh.infopacks;
 import com.jgefroh.components.ScoreComponent;
 import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
+import com.jgefroh.core.IInfoPack;
 
 
 /**
@@ -56,9 +57,13 @@ public class ScoreInfoPack extends AbstractInfoPack
 	}
 	
 	@Override
-	public boolean isDirty()
+	public IInfoPack generate(final IEntity entity)
 	{
-		return this.isDirty;
+		if(entity.getComponent(ScoreComponent.class)!=null)
+		{
+			return new ScoreInfoPack(entity);
+		}
+		return null;
 	}
 	
 	@Override
@@ -74,10 +79,5 @@ public class ScoreInfoPack extends AbstractInfoPack
 	//////////
 	// SETTERS
 	//////////
-	@Override
-	public void setDirty(final boolean isDirty)
-	{
-		this.isDirty = isDirty;
-	}
 	
 }

@@ -50,6 +50,12 @@ public class AIInfoPack extends AbstractInfoPack
 	// GETTERS
 	//////////
 	@Override
+	public IEntity getOwner()
+	{
+		return this.owner;
+	}
+	
+	@Override
 	public boolean checkDirty()
 	{
 		if(owner.hasChanged())
@@ -65,22 +71,22 @@ public class AIInfoPack extends AbstractInfoPack
 		setDirty(false);
 		return false;
 	}
-	
+
 	@Override
-	public IEntity getOwner()
+	public AIInfoPack generate(final IEntity entity)
 	{
-		return this.owner;
+		if(entity!=null
+				&&entity.getComponent(AIComponent.class)!=null
+				&&entity.getComponent(TransformComponent.class)!=null)
+		{			
+			return new AIInfoPack(entity);
+		}
+		return null;
 	}
 
 	public double getAttackChance()
 	{
 		return ac.getAttackChance();
-	}
-	
-	@Override
-	public boolean isDirty()
-	{
-		return this.isDirty;
 	}
 	
 	public String getAIType()
@@ -101,13 +107,7 @@ public class AIInfoPack extends AbstractInfoPack
 	
 	//////////
 	// SETTERS
-	//////////
-	@Override
-	public void setDirty(final boolean isDirty)
-	{
-		this.isDirty = isDirty;
-	}
-	
+	//////////	
 	public void setAttackChance(final double attackChance)
 	{
 		ac.setAttackChance(attackChance);
@@ -127,6 +127,6 @@ public class AIInfoPack extends AbstractInfoPack
 	{
 		ac.setActive(isActive);
 	}
-
+	
 
 }

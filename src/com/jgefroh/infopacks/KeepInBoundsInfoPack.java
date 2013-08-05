@@ -4,6 +4,7 @@ import com.jgefroh.components.KeepInBoundsComponent;
 import com.jgefroh.components.TransformComponent;
 import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
+import com.jgefroh.core.IInfoPack;
 
 
 public class KeepInBoundsInfoPack extends AbstractInfoPack
@@ -54,11 +55,16 @@ public class KeepInBoundsInfoPack extends AbstractInfoPack
 		setDirty(false);
 		return false;
 	}
-	
+
 	@Override
-	public boolean isDirty()
+	public IInfoPack generate(final IEntity entity)
 	{
-		return this.isDirty;
+		if(entity.getComponent(KeepInBoundsComponent.class)!=null
+				&&entity.getComponent(TransformComponent.class)!=null)
+		{
+			return new KeepInBoundsInfoPack(entity);
+		}
+		return null;
 	}
 	
 	@Override
@@ -119,11 +125,6 @@ public class KeepInBoundsInfoPack extends AbstractInfoPack
 	//////////
 	// SETTERS
 	//////////
-	@Override
-	public void setDirty(final boolean isDirty)
-	{
-		this.isDirty = isDirty;
-	}
 	
 	public void setLastX(final double lastX)
 	{

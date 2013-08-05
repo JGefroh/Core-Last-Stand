@@ -18,8 +18,8 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
+import com.jgefroh.core.AbstractSystem;
 import com.jgefroh.core.Core;
-import com.jgefroh.core.ISystem;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.data.Sprite;
 import com.jgefroh.data.Texture;
@@ -32,7 +32,7 @@ import com.jgefroh.data.Texture;
  * @author Joseph Gefroh
  *
  */
-public class ResourceLoader implements ISystem
+public class ResourceLoader extends AbstractSystem
 {
 	//TODO: Finish.
 	//////////
@@ -40,15 +40,6 @@ public class ResourceLoader implements ISystem
 	//////////
 	/**A reference to the core engine controlling this system.*/
 	private Core core;
-	
-	/**Flag that shows whether the system is running or not.*/
-	private boolean isRunning;
-	
-	/**The time to wait between executions of the system.*/
-	private long waitTime;
-	
-	/**The time this System was last executed, in ms.*/
-	private long last;
 	
 	/**The level of detail in debug messages.*/
 	private Level debugLevel = Level.INFO;
@@ -77,62 +68,7 @@ public class ResourceLoader implements ISystem
 	//////////
 	// ISYSTEM INTERFACE
 	//////////
-	@Override
-	public void init()
-	{
-		isRunning = true;
-	}
-	
-	@Override
-	public void start() 
-	{
-		LOGGER.log(Level.INFO, "System started.");
-		isRunning = true;
-	}
 
-	@Override
-	public void work(final long now)
-	{
-
-	}
-
-	@Override
-	public void stop()
-	{
-		LOGGER.log(Level.INFO, "System stopped.");
-		isRunning = false;
-	}
-	
-	@Override
-	public long getWait()
-	{
-		return this.waitTime;
-	}
-
-	@Override
-	public long	getLast()
-	{
-		return this.last;
-	}
-	
-	@Override
-	public void setWait(final long waitTime)
-	{
-		this.waitTime = waitTime;
-	}
-	
-	@Override
-	public void setLast(final long last)
-	{
-		this.last = last;
-	}
-	
-	@Override
-	public void recv(final String id, final String... message)
-	{
-		LOGGER.log(Level.FINEST, "Received message: " + id);
-
-	}
 	
 	//////////
 	// SYSTEM METHODS

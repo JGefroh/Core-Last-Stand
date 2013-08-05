@@ -4,6 +4,7 @@ import com.jgefroh.components.TargetTrackComponent;
 import com.jgefroh.components.TransformComponent;
 import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
+import com.jgefroh.core.IInfoPack;
 
 
 /**
@@ -69,9 +70,14 @@ public class TargetTrackInfoPack extends AbstractInfoPack
 	}
 	
 	@Override
-	public boolean isDirty()
+	public IInfoPack generate(final IEntity entity)
 	{
-		return this.isDirty;
+		if(entity.getComponent(TransformComponent.class)!=null
+				&& entity.getComponent(TargetTrackComponent.class)!=null)
+		{
+			return new TargetTrackInfoPack(entity);
+		}
+		return null;
 	}
 
 	/**
@@ -122,11 +128,6 @@ public class TargetTrackInfoPack extends AbstractInfoPack
 	//////////
 	// SETTERS
 	//////////
-	@Override
-	public void setDirty(final boolean isDirty)
-	{
-		this.isDirty = isDirty;
-	}
 	
 	public void setBearing(final double bearing)
 	{

@@ -3,6 +3,7 @@ package com.jgefroh.infopacks;
 import com.jgefroh.components.InputComponent;
 import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
+import com.jgefroh.core.IInfoPack;
 
 /**
  * Intended to be used by the InputSystem.
@@ -50,12 +51,6 @@ public class InputInfoPack extends AbstractInfoPack
 	}
 	
 	@Override
-	public boolean isDirty()
-	{
-		return this.isDirty;
-	}
-	
-	@Override
 	public boolean checkDirty()
 	{
 		if(owner.hasChanged())
@@ -70,7 +65,17 @@ public class InputInfoPack extends AbstractInfoPack
 		setDirty(false);
 		return false;
 	}
-	
+
+	@Override
+	public IInfoPack generate(final IEntity entity)
+	{
+		if(entity.getComponent(InputComponent.class)!=null)
+		{
+			return new InputInfoPack(entity);
+		}
+		return null;
+	}
+
 	/**
 	 * @see InputComponent#checkInterested(String)
 	 */
@@ -83,9 +88,4 @@ public class InputInfoPack extends AbstractInfoPack
 	//////////
 	// SETTERS
 	//////////
-	@Override
-	public void setDirty(final boolean isDirty)
-	{
-		this.isDirty = isDirty;
-	}
 }

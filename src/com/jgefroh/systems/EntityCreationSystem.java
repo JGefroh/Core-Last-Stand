@@ -31,10 +31,10 @@ import com.jgefroh.components.TargetTrackComponent;
 import com.jgefroh.components.TransformComponent;
 import com.jgefroh.components.VelocityComponent;
 import com.jgefroh.components.WeaponComponent;
+import com.jgefroh.core.AbstractSystem;
 import com.jgefroh.core.Core;
 import com.jgefroh.core.Entity;
 import com.jgefroh.core.IEntity;
-import com.jgefroh.core.ISystem;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.data.Vector;
 import com.jgefroh.data.Weapon;
@@ -48,22 +48,13 @@ import com.jgefroh.systems.WeaponSystem.FireMode;
  * and the entities created from that (like loading a level).
  * @author Joseph Gefroh
  */
-public class EntityCreationSystem implements ISystem
+public class EntityCreationSystem extends AbstractSystem
 {
 	//////////
 	// DATA
 	//////////
 	/**A reference to the core engine controlling this system.*/
 	private Core core;
-	
-	/**Flag that shows whether the system is running or not.*/
-	private boolean isRunning;
-	
-	/**The time to wait between executions of the system.*/
-	private long waitTime;
-	
-	/**The time this System was last executed, in ms.*/
-	private long last;
 	
 	/**The level of detail in debug messages.*/
 	private Level debugLevel = Level.INFO;
@@ -102,50 +93,6 @@ public class EntityCreationSystem implements ISystem
 		entityPool = new HashMap<String, ArrayList<IEntity>>();
 		core.setInterested(this, "BEARING_TO_MOUSE");
 		core.setInterested(this, "CREATE");
-	}
-	
-	@Override
-	public void start() 
-	{
-		LOGGER.log(Level.INFO, "System started.");
-		isRunning = true;
-	}
-	
-	@Override
-	public void work(final long now)
-	{
-
-	}
-
-	@Override
-	public void stop()
-	{	
-		LOGGER.log(Level.INFO, "System stopped.");
-		isRunning = false;
-	}
-	
-	@Override
-	public long getWait()
-	{
-		return this.waitTime;
-	}
-
-	@Override
-	public long	getLast()
-	{
-		return this.last;
-	}
-	
-	@Override
-	public void setWait(final long waitTime)
-	{
-		this.waitTime = waitTime;
-	}
-	
-	@Override
-	public void setLast(final long last)
-	{
-		this.last = last;
 	}
 	
 	@Override
@@ -592,11 +539,11 @@ public class EntityCreationSystem implements ISystem
 		
 		dec.setTimeUntilDecay(1000);
 				
-		ec.setHeightMax(512);
-		ec.setHeightInc(32);
-		ec.setWidthMax(512);
-		ec.setWidthInc(32);
-		ec.setUpdateInterval(50);
+		ec.setHeightMax(128);
+		ec.setHeightInc(4);
+		ec.setWidthMax(128);
+		ec.setWidthInc(4);
+		ec.setUpdateInterval(24);
 		ec.setPulse(100);
 		
 		cc.setCollisionGroup(2);
@@ -655,11 +602,11 @@ public class EntityCreationSystem implements ISystem
 
 		Vector v = new Vector();
 		v.setAngle(otc.getBearing()+recoil1-recoil2);
-		v.setMagnitude(15);
+		v.setMagnitude(7.5);
 		v.calcComponents();
 		vc.setTotalMovementVector(v);
 		vc.setContinuous(true);
-		vc.setInterval(24);
+		vc.setInterval(12);
 
 		mc.setMaxRange(owc.getMaxRange());
 		mc.setLastXPos(tc.getXPos());
@@ -696,9 +643,9 @@ public class EntityCreationSystem implements ISystem
 				fgc.setContinuous(true);	//WHAT?
 				fgc.setRelative(true);	//HUH?
 				Vector vector = new Vector();
-				vector.setMagnitude(5);	//Does this affect speed?
+				vector.setMagnitude(2.5);	//Does this affect speed?
 				fgc.setVector(vector);	
-				v.setMaxMagnitude(5);	//OR DOES THIS?
+				v.setMaxMagnitude(2.5);	//OR DOES THIS?
 
 				bullet.add(ttc);
 				bullet.add(fgc);
@@ -1024,7 +971,6 @@ public class EntityCreationSystem implements ISystem
 										final int ySpacing,
 										final char defaultChar)
 	{
-		System.out.println("MAKING TEXT AREA");
 		IEntity entity = new Entity();
 		entity.setName("ICON");
 		

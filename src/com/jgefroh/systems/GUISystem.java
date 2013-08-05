@@ -1,14 +1,13 @@
 package com.jgefroh.systems;
 
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.jgefroh.core.AbstractSystem;
 import com.jgefroh.core.Core;
-import com.jgefroh.core.ISystem;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.infopacks.GUIBarInfoPack;
 import com.jgefroh.infopacks.GUICharSlotInfoPack;
@@ -21,23 +20,14 @@ import com.jgefroh.tests.Benchmark;
  * Controls the display of the GUI during normal gameplay.
  * @author Joseph Gefroh
  */
-public class GUISystem implements ISystem
+public class GUISystem extends AbstractSystem
 {
 	//////////
 	// DATA
 	//////////
 	/**A reference to the core engine controlling this system.*/
 	private Core core;
-	
-	/**Flag that shows whether the system is running or not.*/
-	private boolean isRunning;
-	
-	/**The time to wait between executions of the system.*/
-	private long waitTime;
-	
-	/**The time this System was last executed, in ms.*/
-	private long last;
-	
+
 	/**The level of detail in debug messages.*/
 	private Level debugLevel = Level.INFO;
 	
@@ -49,7 +39,7 @@ public class GUISystem implements ISystem
 
 	int mouseX;
 	int mouseY;
-	
+	boolean isPressed;
 	private HashMap<String, String> elementIDs;
 
 	private HashMap<String, String> dataValues;
@@ -87,105 +77,66 @@ public class GUISystem implements ISystem
 		core.setInterested(this, "UPGRADE_DESC_UPDATE");
 		core.setInterested(this, "INPUT_CURSOR_POSITION");
 		core.setInterested(this, "RESET_GAME");
-	}
-	
-	@Override
-	public void start() 
-	{
-		LOGGER.log(Level.INFO, "System started.");
-		isRunning = true;
+		core.setInterested(this, "MOUSE0+");
+		core.setInterested(this, "MOUSE0-");
 	}
 
 	@Override
 	public void work(final long now)
 	{
-		if(isRunning)
-		{
-			long startTime = System.nanoTime();
-			
+		long startTime = System.nanoTime();
+		
 
-			//Update the data the GUI elements rely on.
-			long checkTime = System.nanoTime();
-			core.send("REQUEST_SCORE");
-			core.send("REQUEST_HEALTH", dataValues.get("PLAYER_ID"));
-			core.send("REQUEST_SHIELD", dataValues.get("PLAYER_ID"));
-		//	System.out.println("REQUEST: " + (double)(System.nanoTime()-checkTime)/1000000 + "ms");
-			
-			checkTime = System.nanoTime();
-			//Update the GUI elements.
-			updateBar("SHIELD_BAR", dataValues.get("SHIELD_CUR"), dataValues.get("SHIELD_MAX"));
-			updateBar("HEALTH_BAR", dataValues.get("HEALTH_CUR"), dataValues.get("HEALTH_MAX"));
-			//System.out.println("BARS: " + (double)(System.nanoTime()-checkTime)/1000000 + "ms");
-			
-			checkTime = System.nanoTime();
-			updateCounter("SHIELD_CUR_COUNTER", dataValues.get("SHIELD_CUR"), false);
-			updateCounter("SHIELD_MAX_COUNTER", dataValues.get("SHIELD_MAX"), true);				
-			updateCounter("HEALTH_CUR_COUNTER", dataValues.get("HEALTH_CUR"), false);
-			updateCounter("HEALTH_MAX_COUNTER", dataValues.get("HEALTH_MAX"), true);							
-			updateCounter("SCORE_COUNTER", dataValues.get("SCORE_CUR"), false);
-			//System.out.println("COUNTERS: " + (double)(System.nanoTime()-checkTime)/1000000 + "ms");
-			
-			checkTime = System.nanoTime();
-			updateCounter("TIMER_MS_COUNTER", core.now() + "", false);
-			updateCounter("TIMER_S_COUNTER", (core.now()/1000)%60 + "", false);
-			updateCounter("TIMER_M_COUNTER", (core.now()/(1000*60))%60+ "", false);
-			//System.out.println("TIMER: " + (double)(System.nanoTime()-checkTime)/1000000 + "ms");
-			
-			checkTime = System.nanoTime();
-			updateCharSlot(elementIDs.get("SHIELD_COUNTER_/"), '/');
-			updateCharSlot(elementIDs.get("HEALTH_COUNTER_/"), '/');
-			updateCharSlot(elementIDs.get("TIME_COUNTER_:_0"), ':');
-			updateCharSlot(elementIDs.get("TIME_COUNTER_:_1"),':');
-			//System.out.println("SEPARATORS: " + (double)(System.nanoTime()-checkTime)/1000000 + "ms");
-			
-			checkTime = System.nanoTime();
-			updateCharSlot(elementIDs.get("HK_1"), '1');
-			updateCharSlot(elementIDs.get("HK_2"), '2');
-			updateCharSlot(elementIDs.get("HK_3"), '3');	
-			//System.out.println("HOTKEYS: " + (double)(System.nanoTime()-checkTime)/1000000 + "ms");
-			
-			checkTime = System.nanoTime();
-			updateText("UPGRADE_DESC", dataValues.get("UPGRADE_DESC"));
-			//updateText("UPGRADE_DESC", null);
-			//System.out.println("TEXT: " + (double)(System.nanoTime()-checkTime)/1000000 + "ms");
-			//System.out.println("ALL: " + (double)(System.nanoTime()-checkTime)/1000000 + "ms");
-			checkHover();
-			bench.benchmark(System.nanoTime()-startTime, 0);
-		}
+		//Update the data the GUI elements rely on.
+		long checkTime = System.nanoTime();
+		core.send("REQUEST_SCORE");
+		core.send("REQUEST_HEALTH", dataValues.get("PLAYER_ID"));
+		core.send("REQUEST_SHIELD", dataValues.get("PLAYER_ID"));
+	//	System.out.println("REQUEST: " + (double)(System.nanoTime()-checkTime)/1000000 + "ms");
+		
+		checkTime = System.nanoTime();
+		//Update the GUI elements.
+		updateBar("SHIELD_BAR", dataValues.get("SHIELD_CUR"), dataValues.get("SHIELD_MAX"));
+		updateBar("HEALTH_BAR", dataValues.get("HEALTH_CUR"), dataValues.get("HEALTH_MAX"));
+		//System.out.println("BARS: " + (double)(System.nanoTime()-checkTime)/1000000 + "ms");
+		
+		checkTime = System.nanoTime();
+		updateCounter("SHIELD_CUR_COUNTER", dataValues.get("SHIELD_CUR"), false);
+		updateCounter("SHIELD_MAX_COUNTER", dataValues.get("SHIELD_MAX"), true);				
+		updateCounter("HEALTH_CUR_COUNTER", dataValues.get("HEALTH_CUR"), false);
+		updateCounter("HEALTH_MAX_COUNTER", dataValues.get("HEALTH_MAX"), true);							
+		updateCounter("SCORE_COUNTER", dataValues.get("SCORE_CUR"), false);
+		//System.out.println("COUNTERS: " + (double)(System.nanoTime()-checkTime)/1000000 + "ms");
+		
+		checkTime = System.nanoTime();
+		updateCounter("TIMER_MS_COUNTER", core.now() + "", false);
+		updateCounter("TIMER_S_COUNTER", (core.now()/1000)%60 + "", false);
+		updateCounter("TIMER_M_COUNTER", (core.now()/(1000*60))%60+ "", false);
+		//System.out.println("TIMER: " + (double)(System.nanoTime()-checkTime)/1000000 + "ms");
+		
+		checkTime = System.nanoTime();
+		updateCharSlot(elementIDs.get("SHIELD_COUNTER_/"), '/');
+		updateCharSlot(elementIDs.get("HEALTH_COUNTER_/"), '/');
+		updateCharSlot(elementIDs.get("TIME_COUNTER_:_0"), ':');
+		updateCharSlot(elementIDs.get("TIME_COUNTER_:_1"),':');
+		//System.out.println("SEPARATORS: " + (double)(System.nanoTime()-checkTime)/1000000 + "ms");
+		
+		checkTime = System.nanoTime();
+		updateCharSlot(elementIDs.get("HK_1"), '1');
+		updateCharSlot(elementIDs.get("HK_2"), '2');
+		updateCharSlot(elementIDs.get("HK_3"), '3');	
+		//System.out.println("HOTKEYS: " + (double)(System.nanoTime()-checkTime)/1000000 + "ms");
+		
+		checkTime = System.nanoTime();
+		updateText("UPGRADE_DESC", dataValues.get("UPGRADE_DESC"));
+		//updateText("UPGRADE_DESC", null);
+		//System.out.println("TEXT: " + (double)(System.nanoTime()-checkTime)/1000000 + "ms");
+		//System.out.println("ALL: " + (double)(System.nanoTime()-checkTime)/1000000 + "ms");
+		checkHover();
+		
+		bench.benchmark(System.nanoTime()-startTime, 0);
 	}
 
-	@Override
-	public void stop()
-	{	
-		LOGGER.log(Level.INFO, "System stopped.");
-		isRunning = false;
-	}
-	
-	@Override
-	public long getWait()
-	{
-		return this.waitTime;
-	}
-
-	@Override
-	public long	getLast()
-	{
-		return this.last;
-	}
-	
-	@Override
-	public void setWait(final long waitTime)
-	{
-		this.waitTime = waitTime;
-		LOGGER.log(Level.FINE, "Wait interval set to: " + waitTime + " ms");
-	}
-	
-	@Override
-	public void setLast(final long last)
-	{
-		this.last = last;
-	}
-	
 	@Override
 	public void recv(final String id, final String... message)
 	{
@@ -221,6 +172,14 @@ public class GUISystem implements ISystem
 		{
 			createGUIElements();
 		}
+		else if(id.equals("MOUSE0-"))
+		{
+			isPressed=false;
+		}
+		else if(id.equals("MOUSE0+"))
+		{
+			isPressed=true;
+		}
 	}
 
 	private void checkHover()
@@ -243,6 +202,11 @@ public class GUISystem implements ISystem
 					&&this.mouseY<=yPos+height)
 			{
 				executeHoverEffect(pack);
+				if(isPressed)
+				{
+					executeOnSubmitEffect(pack);
+					isPressed = false;
+				}
 				return;
 			}
 		}
@@ -252,6 +216,11 @@ public class GUISystem implements ISystem
 	private void executeHoverEffect(final GUIInfoPack pack)
 	{
 		core.send("INQUIRE", pack.getID() + "");
+	}
+	
+	private void executeOnSubmitEffect(final GUIInfoPack pack)
+	{
+		core.send("BUY_" + pack.getID());
 	}
 	private void createGUIElements()
 	{
@@ -291,6 +260,8 @@ public class GUISystem implements ISystem
 		elementIDs.put("HK_3", ecs.createGUICharSlot(395, 668, 16, 16, ' ', 1));
 		
 		elementIDs.put("UPGRADE_DESC", ecs.createGUITextArea(450, 684, 3, 50, 10, 10, 10, ' '));
+		
+		elementIDs.put("FPS_COUNTER", ecs.createGUICounter(1300, 700, 16, 16, 4, ' '));
 	}
 	
 	/**
@@ -647,6 +618,7 @@ public class GUISystem implements ISystem
 			dataValues.put("UPGRADE_DESC", message[0]);
 		}
 	}
+
 	/**
 	 * Sets the debug level of this {@code System}.
 	 * @param level	the Level to set
