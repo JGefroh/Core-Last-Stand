@@ -15,7 +15,6 @@ import com.jgefroh.data.Weapon;
  */
 public class WeaponComponent extends AbstractComponent
 {
-	//TODO: simplify, allow for multiple fire modes
 	//////////
 	// DATA
 	//////////

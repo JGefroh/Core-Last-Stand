@@ -1,7 +1,6 @@
 package com.jgefroh.components;
 
 import com.jgefroh.core.AbstractComponent;
-import com.jgefroh.core.IEntity;
 
 /**
  * Contains data that allows objects to collide.
@@ -14,10 +13,7 @@ public class CollisionComponent extends AbstractComponent
 {	
 	//////////
 	// DATA
-	//////////
-	/**The owner of this component.*/
-	private IEntity owner;
-	
+	//////////	
 	/**Used to determine what collides with what.*/
 	private int collisionGroup;
 

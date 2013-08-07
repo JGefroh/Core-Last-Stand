@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.jgefroh.components.AIComponent;
+import com.jgefroh.components.AbilityComponent;
 import com.jgefroh.components.CollisionComponent;
 import com.jgefroh.components.DamageComponent;
 import com.jgefroh.components.DecayComponent;
@@ -122,6 +123,10 @@ public class EntityCreationSystem extends AbstractSystem
 			{
 				createExplosion(core.getEntityWithID(forThis));
 			}
+			else if(makeThis.equals("BOMBLET"))
+			{
+				createBomblet(core.getEntityWithID(forThis), Double.parseDouble(message[2]));
+			}
 		}
 	}
 	public void addToPool(final IEntity entity)
@@ -186,6 +191,7 @@ public class EntityCreationSystem extends AbstractSystem
 			ic.setInterested("SWITCH_WEAPON_8");
 			ic.setInterested("SWITCH_WEAPON_9");
 			ic.setInterested("SWITCH_WEAPON_0");
+			ic.setInterested("+SPECIAL");
 			player.add(ic);
 		
 		CollisionComponent cc = new CollisionComponent();
@@ -204,7 +210,7 @@ public class EntityCreationSystem extends AbstractSystem
 			weapon.setConsecutiveShotDelay(300);
 			weapon.setFireMode(FireMode.AUTO.ordinal());
 			weapon.setName("gun1");
-			weapon.setDamage(10);
+			weapon.setDamage(5);
 			weapon.setMaxRange(1500);
 			weapon.setBurstSize(3);
 			weapon.setBurstDelay(500);
@@ -260,9 +266,20 @@ public class EntityCreationSystem extends AbstractSystem
 			weapon.setShotType(4);
 			wc.addWeapon(weapon);
 
+			weapon = new Weapon();
+			weapon.setConsecutiveShotDelay(500);
+			weapon.setFireMode(FireMode.SEMI.ordinal());
+			weapon.setName("special_boomboom");
+			weapon.setDamage(25);
+			weapon.setMaxRange(1500);
+			weapon.setBurstSize(0);
+			weapon.setBurstDelay(500);
+			weapon.setNumShots(12);
+			weapon.setRecoilCur(360);
+			weapon.setShotType(4);
+			wc.addWeapon(weapon);
 			
-			
-			wc.setCurrentWeapon("boom_cannon");
+			wc.setCurrentWeapon("gun1");
 			
 			
 			player.add(wc);
@@ -291,6 +308,9 @@ public class EntityCreationSystem extends AbstractSystem
 			
 		KeepInBoundsComponent kibc = new KeepInBoundsComponent();
 			player.add(kibc);
+			
+		AbilityComponent abc = new AbilityComponent();
+			player.add(abc);
 		core.add(player);
 		
 		core.send("PLAYER_CREATED", player.getID());
@@ -550,6 +570,77 @@ public class EntityCreationSystem extends AbstractSystem
 		entity.setChanged(true);
 	}
 	
+
+	public void createBomblet(final IEntity owner, final double originAngle)
+	{
+		if(owner==null)
+		{
+			return;
+		}
+		
+		TransformComponent otc = owner.getComponent(TransformComponent.class);
+		
+		if(otc==null)
+		{
+			return;
+		}
+		
+		IEntity bullet = new Entity("EXPLOSIVE");
+		TransformComponent tc = new TransformComponent();
+		RenderComponent rc = new RenderComponent();
+		VelocityComponent vc = new VelocityComponent();
+		CollisionComponent cc = new CollisionComponent();
+		MaxRangeComponent mc = new MaxRangeComponent();
+		DamageComponent dc = new DamageComponent();
+		OutOfBoundsComponent oobc = new OutOfBoundsComponent();
+		
+		bullet.add(tc);
+		bullet.add(rc);
+		bullet.add(vc);
+		bullet.add(cc);
+		bullet.add(mc);
+		bullet.add(dc);
+		bullet.add(oobc);
+
+		double angle = otc.getBearing();
+		double rotatedX = Math.sin(angle);
+		double rotatedY = Math.cos(angle);
+		
+		tc.setXPos(otc.getXPos()+rotatedX);
+		tc.setYPos(otc.getYPos()+rotatedY);
+		tc.setWidth(10);
+		tc.setHeight(10);
+		tc.setBearing(otc.getBearing());
+		
+		rc.setTexturePath("res/bullet.png");
+		rc.setSpriteID(3);
+
+		Vector v = new Vector();
+		v.setAngle(originAngle);
+		v.setMagnitude(7.5);
+		v.calcComponents();
+		vc.setTotalMovementVector(v);
+		vc.setContinuous(true);
+		vc.setInterval(12);
+
+		mc.setMaxRange(1500);
+		mc.setLastXPos(tc.getXPos());
+		mc.setLastYPos(tc.getYPos());
+		
+		dc.setDamage(25);
+		
+		oobc.setChecking(true);
+		
+		if(owner.getName().equalsIgnoreCase("PLAYER"))
+		{
+			cc.setCollisionGroup(2);
+		}
+		else
+		{
+			cc.setCollisionGroup(3);
+		}
+		core.add(bullet);
+	}
 	public void createBullet(final IEntity owner)
 	{
 		if(owner==null)

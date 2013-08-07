@@ -4,6 +4,7 @@ import org.lwjgl.opengl.Display;
 
 import com.jgefroh.core.Core;
 import com.jgefroh.infopacks.AIInfoPack;
+import com.jgefroh.infopacks.AbilityInfoPack;
 import com.jgefroh.infopacks.AnimationInfoPack;
 import com.jgefroh.infopacks.CollisionInfoPack;
 import com.jgefroh.infopacks.DamageInfoPack;
@@ -31,6 +32,7 @@ import com.jgefroh.infopacks.TargetTrackInfoPack;
 import com.jgefroh.infopacks.WeaponInfoPack;
 import com.jgefroh.input.InputSystem;
 import com.jgefroh.systems.AISystem;
+import com.jgefroh.systems.AbilitySystem;
 import com.jgefroh.systems.CollisionSystem;
 import com.jgefroh.systems.DamageSystem;
 import com.jgefroh.systems.DecaySystem;
@@ -53,7 +55,6 @@ import com.jgefroh.systems.TransformSystem;
 import com.jgefroh.systems.UpgradeSystem;
 import com.jgefroh.systems.WeaponSystem;
 import com.jgefroh.systems.WindowSystem;
-import com.jgefroh.tests.Benchmark;
 
 
 /**
@@ -133,10 +134,8 @@ public class Main
 		core.addSystem(new UpgradeSystem(core));
 		core.addSystem(new DecaySystem(core));
 		core.addSystem(new ExplosionSystem(core));
+		core.addSystem(new AbilitySystem(core));
 		rl = new ResourceLoader(core);
-		
-		
-
 	}
 	
 	private void initFactories()
@@ -167,6 +166,7 @@ public class Main
 		core.addFactory(new ScoreInfoPack(null));
 		core.addFactory(new DecayInfoPack(null));
 		core.addFactory(new ExplosionInfoPack(null));	
+		core.addFactory(new AbilityInfoPack(null));	
 	}
 	
 	/**

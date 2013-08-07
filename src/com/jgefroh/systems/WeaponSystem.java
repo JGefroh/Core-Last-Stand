@@ -56,6 +56,7 @@ public class WeaponSystem extends AbstractSystem
 	public void init()
 	{
 		core.setInterested(this, "REQUEST_FIRE");
+		core.setInterested(this, "REQUEST_FIRE_SPECIAL");
 	}
 
 	@Override
@@ -73,6 +74,10 @@ public class WeaponSystem extends AbstractSystem
 		{
 			requestFire(message);
 		}
+		else if(id.equals("REQUEST_FIRE_SPECIAL"))
+		{
+			requestFireSpecial(message);
+		} 
 	}
 	
 	//////////
@@ -164,6 +169,19 @@ public class WeaponSystem extends AbstractSystem
 			if(wip!=null)
 			{	
 				wip.setFireRequested(Boolean.parseBoolean(message[1]));
+			}
+		}
+	}
+	
+	private void requestFireSpecial(final String[] message)
+	{
+		if(message.length>1)
+		{
+			WeaponInfoPack wip = 
+					core.getInfoPackFrom(message[0], WeaponInfoPack.class);
+
+			if(wip!=null)
+			{	
 			}
 		}
 	}

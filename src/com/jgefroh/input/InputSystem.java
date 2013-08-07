@@ -85,6 +85,8 @@ public class InputSystem extends AbstractSystem implements IInputSystem
 		BindMap mbs = new BindMap();
 		kbs.bind(Keyboard.KEY_SPACE, "+FIRE1", InputSystem.PRESS);
 		kbs.bind(Keyboard.KEY_SPACE, "-FIRE1", InputSystem.RELEASE);
+		kbs.bind(Keyboard.KEY_Q, "+SPECIAL", InputSystem.PRESS);
+		kbs.bind(Keyboard.KEY_Q, "-SPECIAL", InputSystem.RELEASE);
 		kbs.bind(Keyboard.KEY_LCONTROL, "+SHIELD", InputSystem.PRESS);
 		kbs.bind(Keyboard.KEY_LCONTROL, "-SHIELD", InputSystem.RELEASE);
 		kbs.bind(Keyboard.KEY_W, "MOVE_UP", InputSystem.HOLD);
@@ -144,10 +146,13 @@ public class InputSystem extends AbstractSystem implements IInputSystem
 		core.setInterested(this,"MOVE_RIGHT");
 		core.setInterested(this,"+FIRE1");
 		core.setInterested(this,"-FIRE1");
+		core.setInterested(this,"+FIRE2");
+		core.setInterested(this,"-FIRE2");
 		core.setInterested(this,"-SHIELD");
 		core.setInterested(this,"+SHIELD");
 		core.setInterested(this, "NATIVE_WIDTH");
 		core.setInterested(this, "NATIVE_HEIGHT");
+		core.setInterested(this, "+SPECIAL");
 		this.windowWidth = 1366;
 		this.windowHeight = 768;
 		this.nativeWidth = 1366;
@@ -210,6 +215,14 @@ public class InputSystem extends AbstractSystem implements IInputSystem
 		else if(id.equals("-FIRE1"))
 		{
 			core.send("REQUEST_FIRE", message[0], false + "");
+		}
+		else if(id.equals("+SPECIAL"))
+		{
+			core.send("USE_ABILITY", message[0], true + "");
+		}
+		else if(id.equals("-SPECIAL"))
+		{
+			core.send("USE_ABILITY", message[0], false + "");
 		}
 		else if(id.equals("+SHIELD"))
 		{
