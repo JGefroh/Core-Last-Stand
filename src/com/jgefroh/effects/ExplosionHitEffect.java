@@ -2,6 +2,7 @@ package com.jgefroh.effects;
 
 import com.jgefroh.core.Core;
 import com.jgefroh.core.IEntity;
+import com.jgefroh.messages.Message;
 
 
 /**
@@ -31,11 +32,11 @@ public class ExplosionHitEffect implements IEffect
 		//Explosion contacts are handled by the ExplosionSystem.
 		if(source.getName().equals("EXPLOSION"))
 		{
-			core.send("EXPLOSION_CONTACT", source.getID(), target.getID());
+			core.send(Message.EXPLOSION_CONTACT, source.getID(), target.getID());
 		}
 		else
 		{
-			core.send("EXPLOSION_CONTACT", target.getID(), source.getID());
+			core.send(Message.EXPLOSION_CONTACT, target.getID(), source.getID());
 		}
 	}
 }

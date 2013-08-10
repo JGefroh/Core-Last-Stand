@@ -9,6 +9,7 @@ import com.jgefroh.core.AbstractSystem;
 import com.jgefroh.core.Core;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.infopacks.HealthInfoPack;
+import com.jgefroh.messages.Message;
 
 /**
  * This system goes through all entities with health and removes dead entities.
@@ -52,9 +53,9 @@ public class HealthMonitorSystem extends AbstractSystem
 	@Override
 	public void init()
 	{
-		core.setInterested(this, "REQUEST_HEALTH");
-		core.setInterested(this, "CHANGE_HEALTH");
-		core.setInterested(this, "CHANGE_HEALTH_MAX");
+		core.setInterested(this, Message.REQUEST_HEALTH);
+		core.setInterested(this, Message.CHANGE_HEALTH);
+		core.setInterested(this, Message.CHANGE_HEALTH_MAX);
 	}
 
 
@@ -68,19 +69,21 @@ public class HealthMonitorSystem extends AbstractSystem
 	public void recv(final String id, final String... message)
 	{
 		LOGGER.log(Level.FINEST, "Received message: " + id);
-		if(id.equals("REQUEST_HEALTH"))
+		
+		Message msgID = Message.valueOf(id);
+		
+		switch(msgID)
 		{
-			requestHealth(message);
+			case REQUEST_HEALTH:
+				requestHealth(message);
+				break;
+			case CHANGE_HEALTH:
+				changeHealth(message);
+				break;
+			case CHANGE_HEALTH_MAX:
+				changeHealthMax(message);
+				break;
 		}
-		else if(id.equals("CHANGE_HEALTH"))
-		{
-			changeHealth(message);
-		}
-		else if(id.equals("CHANGE_HEALTH_MAX"))
-		{
-			changeHealthMax(message);
-		}
-
 	}
 	
 	//////////
@@ -100,14 +103,14 @@ public class HealthMonitorSystem extends AbstractSystem
 			{
 				if(each.getCurHealth()<=0)
 				{
-					core.send("DESTROYING_ENTITY", each.getOwner().getID(), "NO_HEALTH");
+					core.send(Message.DESTROYING_ENTITY, each.getOwner().getID(), "NO_HEALTH");
 					LOGGER.log(Level.FINE, 
 							each.getOwner().getName() + "(" + each.getOwner().getID()
 									+ ") destroyed.");
 					if(each.getOwner().getName().equalsIgnoreCase("PLAYER"))
 					{
 						core.removeAllEntities();
-						core.send("RESET_GAME");
+						core.send(Message.RESET_GAME);
 						core.getSystem(EntityCreationSystem.class).createPlayer(32, 384);
 					}
 					core.removeEntity(each.getOwner());
@@ -130,7 +133,7 @@ public class HealthMonitorSystem extends AbstractSystem
 			
 			if(pack!=null)
 			{
-				core.send("HEALTH_UPDATE", pack.getOwner().getID(), 
+				core.send(Message.HEALTH_UPDATE, pack.getOwner().getID(), 
 							pack.getCurHealth() + "",
 							pack.getMaxHealth() + "");
 			}

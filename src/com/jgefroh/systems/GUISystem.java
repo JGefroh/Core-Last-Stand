@@ -14,6 +14,7 @@ import com.jgefroh.infopacks.GUICharSlotInfoPack;
 import com.jgefroh.infopacks.GUICounterInfoPack;
 import com.jgefroh.infopacks.GUIInfoPack;
 import com.jgefroh.infopacks.GUITextInfoPack;
+import com.jgefroh.messages.Message;
 import com.jgefroh.tests.Benchmark;
 
 /**
@@ -70,15 +71,15 @@ public class GUISystem extends AbstractSystem
 
 		createGUIElements();
 
-		core.setInterested(this, "PLAYER_CREATED");
-		core.setInterested(this, "HEALTH_UPDATE");
-		core.setInterested(this, "SHIELD_UPDATE");
-		core.setInterested(this, "SCORE_UPDATE");
-		core.setInterested(this, "UPGRADE_DESC_UPDATE");
-		core.setInterested(this, "INPUT_CURSOR_POSITION");
-		core.setInterested(this, "RESET_GAME");
-		core.setInterested(this, "MOUSE0+");
-		core.setInterested(this, "MOUSE0-");
+		core.setInterested(this, Message.PLAYER_CREATED);
+		core.setInterested(this, Message.HEALTH_UPDATE);
+		core.setInterested(this, Message.SHIELD_UPDATE);
+		core.setInterested(this, Message.SCORE_UPDATE);
+		core.setInterested(this, Message.UPGRADE_DESC_UPDATE);
+		core.setInterested(this, Message.INPUT_CURSOR_POSITION);
+		core.setInterested(this, Message.RESET_GAME);
+		core.setInterested(this, Message.MOUSE0_PRESSED);
+		core.setInterested(this, Message.MOUSE0_RELEASED);
 	}
 
 	@Override
@@ -89,9 +90,9 @@ public class GUISystem extends AbstractSystem
 
 		//Update the data the GUI elements rely on.
 		long checkTime = System.nanoTime();
-		core.send("REQUEST_SCORE");
-		core.send("REQUEST_HEALTH", dataValues.get("PLAYER_ID"));
-		core.send("REQUEST_SHIELD", dataValues.get("PLAYER_ID"));
+		core.send(Message.REQUEST_SCORE);
+		core.send(Message.REQUEST_HEALTH, dataValues.get("PLAYER_ID"));
+		core.send(Message.REQUEST_SHIELD, dataValues.get("PLAYER_ID"));
 	//	System.out.println("REQUEST: " + (double)(System.nanoTime()-checkTime)/1000000 + "ms");
 		
 		checkTime = System.nanoTime();
@@ -142,43 +143,39 @@ public class GUISystem extends AbstractSystem
 	{
 		LOGGER.log(Level.FINEST, "Received message: " + id);
 
-		if(id.equals("HEALTH_UPDATE"))
+		Message msgID = Message.valueOf(id);
+
+		switch(msgID)
 		{
-			processHealthUpdate(message);
-		}
-		else if(id.equals("SHIELD_UPDATE"))
-		{
-			processShieldUpdate(message);
-		}
-		else if(id.equals("SCORE_UPDATE"))
-		{
-			processScoreUpdate(message);
-		}
-		else if(id.equals("PLAYER_CREATED"))
-		{
-			dataValues.put("PLAYER_ID", message[0]);
-			dataValues.remove("PLAYER_HEALTH_BAR");
-			dataValues.remove("PLAYER_SHIELD_BAR");
-		}
-		else if(id.equals("UPGRADE_DESC_UPDATE"))
-		{
-			processDescUpdate(message);
-		}
-		else if(id.equals("INPUT_CURSOR_POSITION"))
-		{
-			updateCursorPos(message);
-		}
-		else if(id.equals("RESET_GAME"))
-		{
-			createGUIElements();
-		}
-		else if(id.equals("MOUSE0-"))
-		{
-			isPressed=false;
-		}
-		else if(id.equals("MOUSE0+"))
-		{
-			isPressed=true;
+			case HEALTH_UPDATE:
+				processHealthUpdate(message);
+				break;
+			case SHIELD_UPDATE:
+				processShieldUpdate(message);
+				break;
+			case SCORE_UPDATE:
+				processScoreUpdate(message);
+				break;
+			case PLAYER_CREATED:
+				dataValues.put("PLAYER_ID", message[0]);
+				dataValues.remove("PLAYER_HEALTH_BAR");
+				dataValues.remove("PLAYER_SHIELD_BAR");
+				break;
+			case INPUT_CURSOR_POSITION:
+				updateCursorPos(message);
+				break;
+			case UPGRADE_DESC_UPDATE:
+				processDescUpdate(message);
+				break;
+			case RESET_GAME:
+				createGUIElements();
+				break;
+			case MOUSE0_PRESSED:
+				isPressed = true;
+				break;
+			case MOUSE0_RELEASED:
+				isPressed = false;
+				break;	
 		}
 	}
 
@@ -186,7 +183,7 @@ public class GUISystem extends AbstractSystem
 	{
 		Iterator<GUIInfoPack> packs = core.getInfoPacksOfType(GUIInfoPack.class);
 		
-		core.send("REQUEST_CURSOR_POSITION");
+		core.send(Message.REQUEST_CURSOR_POSITION);
 		while(packs.hasNext())
 		{
 			GUIInfoPack pack = packs.next();
@@ -210,17 +207,17 @@ public class GUISystem extends AbstractSystem
 				return;
 			}
 		}
-		core.send("INQUIRE", 0 + "");
+		core.send(Message.INQUIRE, 0 + "");
 	}
 	
 	private void executeHoverEffect(final GUIInfoPack pack)
 	{
-		core.send("INQUIRE", pack.getID() + "");
+		core.send(Message.INQUIRE, pack.getID() + "");
 	}
 	
 	private void executeOnSubmitEffect(final GUIInfoPack pack)
 	{
-		core.send("BUY_" + pack.getID());
+		core.send(Message.BUY, pack.getID() + "");
 	}
 	private void createGUIElements()
 	{

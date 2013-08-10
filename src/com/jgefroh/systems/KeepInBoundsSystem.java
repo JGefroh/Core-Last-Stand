@@ -9,6 +9,7 @@ import com.jgefroh.core.AbstractSystem;
 import com.jgefroh.core.Core;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.infopacks.KeepInBoundsInfoPack;
+import com.jgefroh.messages.Message;
 
 
 /**
@@ -60,10 +61,10 @@ public class KeepInBoundsSystem extends AbstractSystem
 	public void init()
 	{
 		LOGGER.log(Level.FINE, "Setting system values to default.");
-		core.setInterested(this, "NATIVE_WIDTH");
-		core.setInterested(this, "NATIVE_HEIGHT");
-		core.send("REQUEST_NATIVE_WIDTH", "");
-		core.send("REQUEST_NATIVE_HEIGHT", "");
+		core.setInterested(this, Message.NATIVE_WIDTH);
+		core.setInterested(this, Message.NATIVE_HEIGHT);
+		core.send(Message.REQUEST_NATIVE_WIDTH, "");
+		core.send(Message.REQUEST_NATIVE_HEIGHT,"");
 	}
 
 	@Override
@@ -76,13 +77,16 @@ public class KeepInBoundsSystem extends AbstractSystem
 	public void recv(final String id, final String... message)
 	{
 		LOGGER.log(Level.FINEST, "Received message: " + id);
-		if(id.equals("NATIVE_WIDTH"))
+		
+		Message msgID = Message.valueOf(id);
+		switch(msgID)
 		{
-			setNativeWidth(message);
-		}
-		else if(id.equals("NATIVE_HEIGHT"))
-		{
-			setNativeHeight(message);
+			case NATIVE_WIDTH:
+				setNativeWidth(message);
+				break;
+			case NATIVE_HEIGHT:
+				setNativeHeight(message);
+				break;
 		}
 	}
 	/////////

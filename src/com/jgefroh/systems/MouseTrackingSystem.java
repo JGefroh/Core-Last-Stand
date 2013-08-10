@@ -9,6 +9,7 @@ import com.jgefroh.core.AbstractSystem;
 import com.jgefroh.core.Core;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.infopacks.MouseTrackInfoPack;
+import com.jgefroh.messages.Message;
 
 
 /**
@@ -57,7 +58,7 @@ public class MouseTrackingSystem extends AbstractSystem
 	@Override
 	public void init()
 	{
-		core.setInterested(this, "INPUT_CURSOR_POSITION");
+		core.setInterested(this, Message.INPUT_CURSOR_POSITION);
 	}
 
 	@Override
@@ -70,6 +71,14 @@ public class MouseTrackingSystem extends AbstractSystem
 	public void recv(final String id, final String... message)
 	{
 		LOGGER.log(Level.FINEST, "Received message: " + id);
+		Message msgID = Message.valueOf(id);
+
+		switch(msgID)
+		{
+			case INPUT_CURSOR_POSITION:
+				updateCursorPosition(message);
+				break;
+		}
 		if(id.equals("INPUT_CURSOR_POSITION"))
 		{
 			updateCursorPosition(message);
@@ -84,7 +93,8 @@ public class MouseTrackingSystem extends AbstractSystem
 	 */
 	public void turnTowardsMouse(final long now)
 	{
-		core.send("REQUEST_CURSOR_POSITION");
+		core.send(Message.REQUEST_CURSOR_POSITION);
+		
 		Iterator<MouseTrackInfoPack> packs 
 			= core.getInfoPacksOfType(MouseTrackInfoPack.class);
 		while(packs.hasNext())

@@ -9,6 +9,7 @@ import com.jgefroh.core.AbstractSystem;
 import com.jgefroh.core.Core;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.infopacks.OutOfBoundsInfoPack;
+import com.jgefroh.messages.Message;
 
 
 /**
@@ -59,10 +60,10 @@ public class OutOfBoundsSystem extends AbstractSystem
 	public void init()
 	{
 		LOGGER.log(Level.FINE, "Setting system values to default.");
-		core.setInterested(this, "NATIVE_WIDTH");
-		core.setInterested(this, "NATIVE_HEIGHT");
-		core.send("REQUEST_NATIVE_WIDTH", "");
-		core.send("REQUEST_NATIVE_HEIGHT", "");
+		core.setInterested(this, Message.NATIVE_WIDTH);
+		core.setInterested(this, Message.NATIVE_HEIGHT);
+		core.send(Message.REQUEST_NATIVE_WIDTH, "");
+		core.send(Message.REQUEST_NATIVE_HEIGHT, "");
 	}
 
 	@Override
@@ -103,7 +104,7 @@ public class OutOfBoundsSystem extends AbstractSystem
 					|| pack.getYPos()+pack.getHeight()/2<0
 					|| pack.getYPos()-pack.getHeight ()/2>nativeHeight))
 			{
-				core.send("DESTROYING_ENTITY", pack.getOwner().getID(), "OUT_OF_BOUNDS");
+				core.send(Message.DESTROYING_ENTITY, pack.getOwner().getID(), "OUT_OF_BOUNDS");
 				LOGGER.log(Level.FINEST, 
 					"Entity " + pack.getOwner().getID() + " out of bounds.");
 				core.removeEntity(pack.getOwner());
@@ -114,7 +115,7 @@ public class OutOfBoundsSystem extends AbstractSystem
 				if(isChecking==true)
 				{					
 					pack.setChecking(isChecking);
-					core.send("IS_WITHIN_BOUNDS", 
+					core.send(Message.IS_WITHIN_BOUNDS, 
 							pack.getOwner().getID(), 
 							true + "");
 					LOGGER.log(Level.FINEST, 

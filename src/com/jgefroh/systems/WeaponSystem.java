@@ -9,6 +9,7 @@ import com.jgefroh.core.AbstractSystem;
 import com.jgefroh.core.Core;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.infopacks.WeaponInfoPack;
+import com.jgefroh.messages.Message;
 
 
 /**
@@ -30,8 +31,8 @@ public class WeaponSystem extends AbstractSystem
 	private final Logger LOGGER 
 		= LoggerFactory.getLogger(this.getClass(), Level.ALL);
 	
-	public static enum FireMode {SEMI, AUTO, BURST}
-	
+	public static enum FireMode 	{SEMI, AUTO, BURST}
+
 
 	//////////
 	// INIT
@@ -54,9 +55,10 @@ public class WeaponSystem extends AbstractSystem
 	//////////
 	@Override
 	public void init()
-	{
-		core.setInterested(this, "REQUEST_FIRE");
-		core.setInterested(this, "REQUEST_FIRE_SPECIAL");
+	{	
+		core.setInterested(this, Message.CREATE);
+		core.setInterested(this, Message.REQUEST_FIRE);
+		core.setInterested(this, Message.REQUEST_SPECIAL);
 	}
 
 	@Override
@@ -70,14 +72,13 @@ public class WeaponSystem extends AbstractSystem
 	{
 		LOGGER.log(Level.FINEST, "Received message: " + id);
 		
-		if(id.equals("REQUEST_FIRE"))
+		Message msgID = Message.valueOf(id);
+		switch(msgID)
 		{
-			requestFire(message);
+			case REQUEST_FIRE:
+				requestFire(message);
+				break;
 		}
-		else if(id.equals("REQUEST_FIRE_SPECIAL"))
-		{
-			requestFireSpecial(message);
-		} 
 	}
 	
 	//////////
@@ -124,7 +125,6 @@ public class WeaponSystem extends AbstractSystem
 						}
 					}
 				}
-
 			}
 		}
 	}
@@ -150,7 +150,8 @@ public class WeaponSystem extends AbstractSystem
 					shotType = "BULLET";
 					break;
 			}
-			core.send("CREATE", shotType, pack.getOwner().getID());
+			core.send(Message.CREATE, shotType, pack.getOwner().getID());
+
 		}
 	}
 	
@@ -169,19 +170,6 @@ public class WeaponSystem extends AbstractSystem
 			if(wip!=null)
 			{	
 				wip.setFireRequested(Boolean.parseBoolean(message[1]));
-			}
-		}
-	}
-	
-	private void requestFireSpecial(final String[] message)
-	{
-		if(message.length>1)
-		{
-			WeaponInfoPack wip = 
-					core.getInfoPackFrom(message[0], WeaponInfoPack.class);
-
-			if(wip!=null)
-			{	
 			}
 		}
 	}

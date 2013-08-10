@@ -9,6 +9,7 @@ import com.jgefroh.core.AbstractSystem;
 import com.jgefroh.core.Core;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.infopacks.HealthBarInfoPack;
+import com.jgefroh.messages.Message;
 
 /**
  * Controls the display of health bars above entities.
@@ -52,7 +53,7 @@ public class GUIHealthBarSystem extends AbstractSystem
 	@Override
 	public void init()
 	{
-		core.setInterested(this, "DESTROYING_ENTITY");
+		core.setInterested(this, Message.DESTROYING_ENTITY);
 	}
 
 	@Override
@@ -65,10 +66,13 @@ public class GUIHealthBarSystem extends AbstractSystem
 	public void recv(final String id, final String... message)
 	{
 		LOGGER.log(Level.FINEST, "Received message: " + id);
-		
-		if(id.equals("DESTROYING_ENTITY"))
+		Message msgID = Message.valueOf(id);
+
+		switch(msgID)
 		{
-			destroyHealthBar(message);
+			case DESTROYING_ENTITY:
+				destroyHealthBar(message);
+				break;
 		}
 	}
 	

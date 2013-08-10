@@ -2,6 +2,7 @@ package com.jgefroh.effects;
 
 import com.jgefroh.core.Core;
 import com.jgefroh.core.IEntity;
+import com.jgefroh.messages.Message;
 
 
 /**
@@ -31,12 +32,12 @@ public class BulletHitEffect implements IEffect
 		//Bullet damage is handled by the DamageSystem.
 		if(source.getName().equals("BULLET"))
 		{
-			core.send("DAMAGE", source.getID(), target.getID());
+			core.send(Message.DAMAGE, source.getID(), target.getID());
 			core.removeEntity(source);
 		}
 		else
 		{
-			core.send("DAMAGE", target.getID(), source.getID());
+			core.send(Message.DAMAGE, target.getID(), source.getID());
 			core.removeEntity(target);
 		}
 	}

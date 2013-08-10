@@ -8,6 +8,7 @@ import com.jgefroh.core.AbstractSystem;
 import com.jgefroh.core.Core;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.infopacks.AIInfoPack;
+import com.jgefroh.messages.Message;
 import com.jgefroh.tests.Benchmark;
 
 
@@ -55,8 +56,8 @@ public class AISystem extends AbstractSystem
 	public void init()
 	{		
 		LOGGER.log(Level.FINE, "Setting system values to default.");
-		core.setInterested(this, "IN_RANGE_OF_TARGET");
-		core.setInterested(this, "IS_WITHIN_BOUNDS");
+		core.setInterested(this, Message.IN_RANGE_OF_TARGET);
+		core.setInterested(this, Message.IS_WITHIN_BOUNDS);
 
 	}
 
@@ -73,13 +74,15 @@ public class AISystem extends AbstractSystem
 	{
 		LOGGER.log(Level.FINEST, "Received message: " + id);
 		
-		if(id.equals("IN_RANGE_OF_TARGET"))
+		Message msgID = Message.valueOf(id);
+		switch(msgID)
 		{
-			setInRange(message);
-		}
-		else if(id.equals("IS_WITHIN_BOUNDS"))
-		{
-			setActive(message);
+			case IN_RANGE_OF_TARGET:
+				setInRange(message);
+				break;
+			case IS_WITHIN_BOUNDS:
+				setActive(message);
+				break;
 		}
 	}
 	
@@ -114,7 +117,7 @@ public class AISystem extends AbstractSystem
 	 */
 	private void rollForAttack(final AIInfoPack each)
 	{		
-		core.send("REQUEST_FIRE", each.getOwner().getID(), true + "");
+		core.send(Message.REQUEST_FIRE, each.getOwner().getID(), true + "");
 	}
 	
 	/**

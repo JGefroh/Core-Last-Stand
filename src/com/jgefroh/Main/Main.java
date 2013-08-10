@@ -1,8 +1,11 @@
 package com.jgefroh.main;
 
+import java.util.logging.Level;
+
 import org.lwjgl.opengl.Display;
 
 import com.jgefroh.core.Core;
+import com.jgefroh.core.Entity;
 import com.jgefroh.infopacks.AIInfoPack;
 import com.jgefroh.infopacks.AbilityInfoPack;
 import com.jgefroh.infopacks.AnimationInfoPack;
@@ -71,10 +74,8 @@ public class Main
 	
 	public static void main(String[] args)
 	{
-		System.out.println("Starting Last Stand");
 		Main ts = new Main();
 		ts.loop();
-		System.out.println("END");
 		System.exit(0);
 	}
 	
@@ -87,6 +88,7 @@ public class Main
 	private void init()
 	{
 		core = new Core();
+		core.setDebugLevel(Level.OFF);
 		initFactories();
 		initSystems();
 		loadTexture();

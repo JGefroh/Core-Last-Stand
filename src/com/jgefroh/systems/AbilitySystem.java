@@ -8,6 +8,7 @@ import com.jgefroh.core.AbstractSystem;
 import com.jgefroh.core.Core;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.infopacks.AbilityInfoPack;
+import com.jgefroh.messages.Message;
 
 /**
  * @author Joseph Gefroh
@@ -26,7 +27,6 @@ public class AbilitySystem extends AbstractSystem
 	/**Logger for debug purposes.*/
 	private final Logger LOGGER 
 		= LoggerFactory.getLogger(this.getClass(), Level.ALL);
-	
 	
 	//////////
 	// INIT
@@ -50,7 +50,7 @@ public class AbilitySystem extends AbstractSystem
 	@Override
 	public void init()
 	{
-		core.setInterested(this, "USE_ABILITY");
+		core.setInterested(this, Message.USE_ABILITY);
 	}
 
 	@Override
@@ -62,10 +62,14 @@ public class AbilitySystem extends AbstractSystem
 	public void recv(final String id, final String... message)
 	{
 		LOGGER.log(Level.FINEST, "Received message: " + id);
+
+		Message msgID = Message.valueOf(id);
 		
-		if(id.equals("USE_ABILITY"))
+		switch(msgID)
 		{
-			processAbility(message);
+			case USE_ABILITY:
+				processAbility(message);
+				break;
 		}
 	}
 	
@@ -74,7 +78,7 @@ public class AbilitySystem extends AbstractSystem
 	//////////
 	
 	private void processAbility(final String[] message)
-	{
+	{	
 		if(message.length>=1)
 		{
 			AbilityInfoPack pack = core.getInfoPackFrom(message[0], AbilityInfoPack.class);
@@ -87,26 +91,22 @@ public class AbilitySystem extends AbstractSystem
 	
 	private void useAbility(final AbilityInfoPack pack)
 	{
-		System.out.println("USING ABILITY");
-		if(true)
-		{
-			core.send("CREATE", "BOMBLET", pack.getOwner().getID(), 0 + "");
-			core.send("CREATE", "BOMBLET", pack.getOwner().getID(), 1*22.5 + "");
-			core.send("CREATE", "BOMBLET", pack.getOwner().getID(), 2*22.5 + "");
-			core.send("CREATE", "BOMBLET", pack.getOwner().getID(), 3*22.5 + "");
-			core.send("CREATE", "BOMBLET", pack.getOwner().getID(), 4*22.5 + "");
-			core.send("CREATE", "BOMBLET", pack.getOwner().getID(), 5*22.5 + "");
-			core.send("CREATE", "BOMBLET", pack.getOwner().getID(), 6*22.5 + "");
-			core.send("CREATE", "BOMBLET", pack.getOwner().getID(), 7*22.5 + "");
-			core.send("CREATE", "BOMBLET", pack.getOwner().getID(), 8*22.5 + "");
-			core.send("CREATE", "BOMBLET", pack.getOwner().getID(), 9*22.5 + "");
-			core.send("CREATE", "BOMBLET", pack.getOwner().getID(), 10*22.5 + "");
-			core.send("CREATE", "BOMBLET", pack.getOwner().getID(), 11*22.5 + "");
-			core.send("CREATE", "BOMBLET", pack.getOwner().getID(), 12*22.5 + "");
-			core.send("CREATE", "BOMBLET", pack.getOwner().getID(), 13*22.5 + "");
-			core.send("CREATE", "BOMBLET", pack.getOwner().getID(), 14*22.5 + "");
-			core.send("CREATE", "BOMBLET", pack.getOwner().getID(), 15*22.5 + "");
-		}
+		core.send(Message.CREATE, "BOMBLET", pack.getOwner().getID(), 0 + "");
+		core.send(Message.CREATE, "BOMBLET", pack.getOwner().getID(), 1*22.5 + "");
+		core.send(Message.CREATE, "BOMBLET", pack.getOwner().getID(), 2*22.5 + "");
+		core.send(Message.CREATE, "BOMBLET", pack.getOwner().getID(), 3*22.5 + "");
+		core.send(Message.CREATE, "BOMBLET", pack.getOwner().getID(), 4*22.5 + "");
+		core.send(Message.CREATE, "BOMBLET", pack.getOwner().getID(), 5*22.5 + "");
+		core.send(Message.CREATE, "BOMBLET", pack.getOwner().getID(), 6*22.5 + "");
+		core.send(Message.CREATE, "BOMBLET", pack.getOwner().getID(), 7*22.5 + "");
+		core.send(Message.CREATE, "BOMBLET", pack.getOwner().getID(), 8*22.5 + "");
+		core.send(Message.CREATE, "BOMBLET", pack.getOwner().getID(), 9*22.5 + "");
+		core.send(Message.CREATE, "BOMBLET", pack.getOwner().getID(), 10*22.5 + "");
+		core.send(Message.CREATE, "BOMBLET", pack.getOwner().getID(), 11*22.5 + "");
+		core.send(Message.CREATE, "BOMBLET", pack.getOwner().getID(), 12*22.5 + "");
+		core.send(Message.CREATE, "BOMBLET", pack.getOwner().getID(), 13*22.5 + "");
+		core.send(Message.CREATE, "BOMBLET", pack.getOwner().getID(), 14*22.5 + "");
+		core.send(Message.CREATE, "BOMBLET", pack.getOwner().getID(), 15*22.5 + "");
 	}
 	/**
 	 * Sets the debug level of this {@code System}.

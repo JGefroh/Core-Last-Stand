@@ -8,6 +8,7 @@ import com.jgefroh.core.AbstractSystem;
 import com.jgefroh.core.Core;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.infopacks.ScoreInfoPack;
+import com.jgefroh.messages.Message;
 
 
 /**
@@ -31,6 +32,7 @@ public class ScoreSystem extends AbstractSystem
 	/**The amount of points you have.*/
 	private int score = 1000;
 	
+	
 	//////////
 	// INIT
 	//////////
@@ -52,34 +54,35 @@ public class ScoreSystem extends AbstractSystem
 	@Override
 	public void init()
 	{
-		LOGGER.log(Level.FINE, "Setting system values to default.");
-		core.setInterested(this, "REQUEST_SCORE");
-		core.setInterested(this, "DESTROYING_ENTITY");
-		core.setInterested(this, "RESET_GAME");
-		core.setInterested(this, "ADJUST_SCORE");
+		LOGGER.log(Level.FINE, "Setting system values to default.");		
+		core.setInterested(this, Message.REQUEST_SCORE);
+		core.setInterested(this, Message.DESTROYING_ENTITY);
+		core.setInterested(this, Message.RESET_GAME);
+		core.setInterested(this, Message.ADJUST_SCORE);
 	}
 
 	@Override
 	public void recv(final String id, final String... message)
 	{
 		LOGGER.log(Level.FINEST, "Received message: " + id);
-		if(id.equals("REQUEST_SCORE"))
-		{
-			core.send("SCORE_UPDATE", score + "");
-		}
-		else if(id.equals("DESTROYING_ENTITY"))
-		{
-			changeScore(message);
-		}
-		else if(id.equals("ADJUST_SCORE"))
-		{
-			adjustScore(message);
-		}
-		else if(id.equals("RESET_GAME"))
-		{
-			this.score = 1000;
-		}
+		
+		Message msgID = Message.valueOf(id);
 
+		switch(msgID)
+		{
+			case REQUEST_SCORE:
+				core.send(Message.SCORE_UPDATE, score + "");
+				break;
+			case DESTROYING_ENTITY:
+				changeScore(message);
+				break;
+			case RESET_GAME:
+				this.score = 1000;
+				break;
+			case ADJUST_SCORE:
+				adjustScore(message);
+				break;
+		}
 	}
 	
 	private void adjustScore(final String[] message)

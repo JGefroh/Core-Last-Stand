@@ -8,6 +8,7 @@ import com.jgefroh.core.AbstractSystem;
 import com.jgefroh.core.Core;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.infopacks.ExplosionInfoPack;
+import com.jgefroh.messages.Message;
 
 
 
@@ -54,8 +55,8 @@ public class ExplosionSystem extends AbstractSystem
 	@Override
 	public void init()
 	{
-		core.setInterested(this, "DETONATE");
-		core.setInterested(this, "EXPLOSION_CONTACT");
+		core.setInterested(this, Message.DETONATE);
+		core.setInterested(this, Message.EXPLOSION_CONTACT);
 	}
 
 	
@@ -70,13 +71,17 @@ public class ExplosionSystem extends AbstractSystem
 	public void recv(final String id, final String... message)
 	{
 		LOGGER.log(Level.FINEST, "Received message: " + id);
-		if(id.equals("DETONATE"))
+
+		Message msgID = Message.valueOf(id);
+
+		switch(msgID)
 		{
-			processDetonate(message);
-		}
-		else if(id.equals("EXPLOSION_CONTACT"))
-		{
-			processContact(message);
+			case DETONATE:
+				processDetonate(message);
+				break;
+			case EXPLOSION_CONTACT:
+				processContact(message);
+				break;
 		}
 	}
 	//////////
@@ -124,7 +129,7 @@ public class ExplosionSystem extends AbstractSystem
 	{
 		if(message.length>=2)
 		{
-			core.send("CREATE", "EXPLOSION", message[0]);
+			core.send(Message.CREATE, "EXPLOSION", message[0]);
 		}
 	}
 	
@@ -148,7 +153,7 @@ public class ExplosionSystem extends AbstractSystem
 				
 				if(numHits==0)
 				{//If the entity has not already been damaged by this explosion...
-					core.send("DAMAGE", sourceID, victimID);
+					core.send(Message.DAMAGE, sourceID, victimID);
 					pack.setNumHits(victimID, numHits+1);
 				}
 			}

@@ -39,6 +39,7 @@ import com.jgefroh.core.IEntity;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.data.Vector;
 import com.jgefroh.data.Weapon;
+import com.jgefroh.messages.Message;
 import com.jgefroh.systems.WeaponSystem.FireMode;
 
 
@@ -92,17 +93,21 @@ public class EntityCreationSystem extends AbstractSystem
 		setDebugLevel(this.debugLevel);
 
 		entityPool = new HashMap<String, ArrayList<IEntity>>();
-		core.setInterested(this, "BEARING_TO_MOUSE");
-		core.setInterested(this, "CREATE");
+		core.setInterested(this, Message.BEARING_TO_MOUSE);
+		core.setInterested(this, Message.CREATE);
 	}
 	
 	@Override
 	public void recv(final String id, final String... message)
 	{
 		LOGGER.log(Level.FINEST, "Received message: " + id);
-		if(id.equals("CREATE"))
+		Message msgID = Message.valueOf(id);
+		
+		switch(msgID)
 		{
-			create(message);
+			case CREATE:
+				create(message);
+				break;
 		}
 	}
 	//////////
@@ -173,25 +178,15 @@ public class EntityCreationSystem extends AbstractSystem
 			player.add(vc);
 			
 		InputComponent ic = new InputComponent();
-			ic.setInterested("MOVE_UP");	
-			ic.setInterested("MOVE_DOWN");	
-			ic.setInterested("MOVE_LEFT");	
-			ic.setInterested("MOVE_RIGHT");	
-			ic.setInterested("+FIRE1");	
-			ic.setInterested("-FIRE1");	
-			ic.setInterested("+SHIELD");
-			ic.setInterested("-SHIELD");
-			ic.setInterested("SWITCH_WEAPON_1");
-			ic.setInterested("SWITCH_WEAPON_2");
-			ic.setInterested("SWITCH_WEAPON_3");
-			ic.setInterested("SWITCH_WEAPON_4");
-			ic.setInterested("SWITCH_WEAPON_5");
-			ic.setInterested("SWITCH_WEAPON_6");
-			ic.setInterested("SWITCH_WEAPON_7");
-			ic.setInterested("SWITCH_WEAPON_8");
-			ic.setInterested("SWITCH_WEAPON_9");
-			ic.setInterested("SWITCH_WEAPON_0");
-			ic.setInterested("+SPECIAL");
+			ic.setInterested(Message.MOVE_UP.name());	
+			ic.setInterested(Message.MOVE_DOWN.name());	
+			ic.setInterested(Message.MOVE_LEFT.name());	
+			ic.setInterested(Message.MOVE_RIGHT.name());	
+			ic.setInterested(Message.FIRE1_PRESSED.name());	
+			ic.setInterested(Message.FIRE1_RELEASED.name());	
+			ic.setInterested(Message.SHIELD_PRESSED.name());
+			ic.setInterested(Message.SHIELD_RELEASED.name());
+			ic.setInterested(Message.SPECIAL_RELEASED.name());
 			player.add(ic);
 		
 		CollisionComponent cc = new CollisionComponent();
@@ -313,7 +308,7 @@ public class EntityCreationSystem extends AbstractSystem
 			player.add(abc);
 		core.add(player);
 		
-		core.send("PLAYER_CREATED", player.getID());
+		core.send(Message.PLAYER_CREATED, player.getID());
 	}
 	
 	public void createEnemy(final int xPos, final int yPos, final String type)

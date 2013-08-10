@@ -7,6 +7,7 @@ import com.jgefroh.core.AbstractSystem;
 import com.jgefroh.core.Core;
 import com.jgefroh.core.IEntity;
 import com.jgefroh.core.LoggerFactory;
+import com.jgefroh.messages.Message;
 
 
 
@@ -51,16 +52,20 @@ public class EntityDestructionSystem extends AbstractSystem
 	@Override
 	public void init()
 	{
-		core.setInterested(this, "BEARING_TO_MOUSE");
+		core.setInterested(this, Message.BEARING_TO_MOUSE);
 	}
 
 	@Override
 	public void recv(final String id, final String... message)
 	{
 		LOGGER.log(Level.FINEST, "Received message: " + id);
-		if(id.equals("REQUEST_DESTROY"))
+		Message msgID = Message.valueOf(id);
+
+		switch(msgID)
 		{
-			processDestroyRequest(message);
+			case REQUEST_DESTROY:
+				processDestroyRequest(message);
+				break;
 		}
 	}
 	//////////

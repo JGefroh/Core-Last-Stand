@@ -9,6 +9,7 @@ import com.jgefroh.core.AbstractSystem;
 import com.jgefroh.core.Core;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.infopacks.AnimationInfoPack;
+import com.jgefroh.messages.Message;
 import com.jgefroh.tests.Benchmark;
 
 
@@ -61,7 +62,7 @@ public class AnimationSystem extends AbstractSystem
 	public void init()
 	{
 		LOGGER.log(Level.FINE, "Setting system values to default.");
-		core.setInterested(this, "ADVANCE_FRAME");
+		core.setInterested(this, Message.ADVANCE_FRAME);
 	}
 	
 	@Override
@@ -76,10 +77,13 @@ public class AnimationSystem extends AbstractSystem
 	public void recv(final String id, final String... message)
 	{
 		LOGGER.log(Level.FINEST, "Received message: " + id);
-
-		if(id.equals("ADVANCE_FRAME"))
+		Message msgID = Message.valueOf(id);
+		
+		switch(msgID)
 		{
-			nextFrame(core.getInfoPackFrom(message[0], AnimationInfoPack.class));
+			case ADVANCE_FRAME:
+				nextFrame(core.getInfoPackFrom(message[0], AnimationInfoPack.class));
+				break;
 		}
 	}
 	

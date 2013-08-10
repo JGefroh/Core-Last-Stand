@@ -14,6 +14,7 @@ import com.jgefroh.core.AbstractSystem;
 import com.jgefroh.core.Core;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.infopacks.InputInfoPack;
+import com.jgefroh.messages.Message;
 
 
 
@@ -83,40 +84,28 @@ public class InputSystem extends AbstractSystem implements IInputSystem
 		//TODO: Move somewhere else.
 		BindMap kbs = new BindMap();
 		BindMap mbs = new BindMap();
-		kbs.bind(Keyboard.KEY_SPACE, "+FIRE1", InputSystem.PRESS);
-		kbs.bind(Keyboard.KEY_SPACE, "-FIRE1", InputSystem.RELEASE);
-		kbs.bind(Keyboard.KEY_Q, "+SPECIAL", InputSystem.PRESS);
-		kbs.bind(Keyboard.KEY_Q, "-SPECIAL", InputSystem.RELEASE);
-		kbs.bind(Keyboard.KEY_LCONTROL, "+SHIELD", InputSystem.PRESS);
-		kbs.bind(Keyboard.KEY_LCONTROL, "-SHIELD", InputSystem.RELEASE);
-		kbs.bind(Keyboard.KEY_W, "MOVE_UP", InputSystem.HOLD);
-		kbs.bind(Keyboard.KEY_A, "MOVE_LEFT", InputSystem.HOLD);
-		kbs.bind(Keyboard.KEY_S, "MOVE_DOWN", InputSystem.HOLD);
-		kbs.bind(Keyboard.KEY_D, "MOVE_RIGHT", InputSystem.HOLD);
-		kbs.bind(Keyboard.KEY_1, "SWITCH_WEAPON_1", InputSystem.PRESS);
-		kbs.bind(Keyboard.KEY_2, "SWITCH_WEAPON_2", InputSystem.PRESS);
-		kbs.bind(Keyboard.KEY_3, "SWITCH_WEAPON_3", InputSystem.PRESS);
-		kbs.bind(Keyboard.KEY_4, "SWITCH_WEAPON_4", InputSystem.PRESS);
-		kbs.bind(Keyboard.KEY_5, "SWITCH_WEAPON_5", InputSystem.PRESS);
-		kbs.bind(Keyboard.KEY_6, "SWITCH_WEAPON_6", InputSystem.PRESS);
-		kbs.bind(Keyboard.KEY_7, "SWITCH_WEAPON_7", InputSystem.PRESS);
-		kbs.bind(Keyboard.KEY_8, "SWITCH_WEAPON_8", InputSystem.PRESS);
-		kbs.bind(Keyboard.KEY_9, "SWITCH_WEAPON_9", InputSystem.PRESS);
-		kbs.bind(Keyboard.KEY_0, "SWITCH_WEAPON_0", InputSystem.PRESS);
-		kbs.bind(Keyboard.KEY_NUMPAD0, "TOGGLE_WIREFRAME", InputSystem.RELEASE);
-		kbs.bind(Keyboard.KEY_NUMPAD9, "BOOM", InputSystem.RELEASE);
-		kbs.bind(Keyboard.KEY_1, "BUY_1", InputSystem.PRESS);
-		kbs.bind(Keyboard.KEY_2, "BUY_2", InputSystem.PRESS);
-		kbs.bind(Keyboard.KEY_3, "BUY_3", InputSystem.PRESS);
-		kbs.bind(Keyboard.KEY_4, "BUY_4", InputSystem.PRESS);
-		kbs.bind(Keyboard.KEY_5, "BUY_5", InputSystem.PRESS);
-		kbs.bind(Keyboard.KEY_6, "BUY_6", InputSystem.PRESS);
-		kbs.bind(Keyboard.KEY_7, "BUY_7", InputSystem.PRESS);
-		kbs.bind(Keyboard.KEY_8, "BUY_8", InputSystem.PRESS);
-		kbs.bind(Keyboard.KEY_9, "BUY_9", InputSystem.PRESS);
-		
-		mbs.bind(0, "MOUSE0+", InputSystem.PRESS);
-		mbs.bind(0, "MOUSE0-", InputSystem.RELEASE);
+		kbs.bind(Keyboard.KEY_SPACE, Message.FIRE1_PRESSED.name(), InputSystem.PRESS);
+		kbs.bind(Keyboard.KEY_SPACE, Message.FIRE1_RELEASED.name(), InputSystem.RELEASE);
+		kbs.bind(Keyboard.KEY_Q, Message.SPECIAL_RELEASED.name(), InputSystem.RELEASE);
+		kbs.bind(Keyboard.KEY_LCONTROL, Message.SHIELD_PRESSED.name(), InputSystem.PRESS);
+		kbs.bind(Keyboard.KEY_LCONTROL, Message.SHIELD_RELEASED.name(), InputSystem.RELEASE);
+		kbs.bind(Keyboard.KEY_W, Message.MOVE_UP.name(), InputSystem.HOLD);
+		kbs.bind(Keyboard.KEY_A, Message.MOVE_LEFT.name(), InputSystem.HOLD);
+		kbs.bind(Keyboard.KEY_S, Message.MOVE_DOWN.name(), InputSystem.HOLD);
+		kbs.bind(Keyboard.KEY_D, Message.MOVE_RIGHT.name(), InputSystem.HOLD);
+		kbs.bind(Keyboard.KEY_NUMPAD0, Message.TOGGLE_WIREFRAME.name(), InputSystem.RELEASE);
+		kbs.bind(Keyboard.KEY_0, Message.BUY_0.name(), InputSystem.PRESS);
+		kbs.bind(Keyboard.KEY_1, Message.BUY_1.name(), InputSystem.PRESS);
+		kbs.bind(Keyboard.KEY_2, Message.BUY_2.name(), InputSystem.PRESS);
+		kbs.bind(Keyboard.KEY_3, Message.BUY_3.name(), InputSystem.PRESS);
+		kbs.bind(Keyboard.KEY_4, Message.BUY_4.name(), InputSystem.PRESS);
+		kbs.bind(Keyboard.KEY_5, Message.BUY_5.name(), InputSystem.PRESS);
+		kbs.bind(Keyboard.KEY_6, Message.BUY_6.name(), InputSystem.PRESS);
+		kbs.bind(Keyboard.KEY_7, Message.BUY_7.name(), InputSystem.PRESS);
+		kbs.bind(Keyboard.KEY_8, Message.BUY_8.name(), InputSystem.PRESS);
+		kbs.bind(Keyboard.KEY_9, Message.BUY_9.name(), InputSystem.PRESS);
+		mbs.bind(0, Message.MOUSE0_PRESSED.name(), InputSystem.PRESS);
+		mbs.bind(0, Message.MOUSE0_RELEASED.name(), InputSystem.RELEASE);
 		
 		setBindSystem(IInputSystem.KEYBOARD, kbs);
 		setBindSystem(IInputSystem.MOUSE, mbs);	
@@ -137,22 +126,22 @@ public class InputSystem extends AbstractSystem implements IInputSystem
 		devices.add(mouse);
 		initBinds();
 		
-		core.setInterested(this,"REQUEST_CURSOR_POSITION");
-		core.setInterested(this,"WINDOW_WIDTH");
-		core.setInterested(this,"WINDOW_HEIGHT");
-		core.setInterested(this,"MOVE_UP");
-		core.setInterested(this,"MOVE_DOWN");
-		core.setInterested(this,"MOVE_LEFT");
-		core.setInterested(this,"MOVE_RIGHT");
-		core.setInterested(this,"+FIRE1");
-		core.setInterested(this,"-FIRE1");
-		core.setInterested(this,"+FIRE2");
-		core.setInterested(this,"-FIRE2");
-		core.setInterested(this,"-SHIELD");
-		core.setInterested(this,"+SHIELD");
-		core.setInterested(this, "NATIVE_WIDTH");
-		core.setInterested(this, "NATIVE_HEIGHT");
-		core.setInterested(this, "+SPECIAL");
+		core.setInterested(this, Message.REQUEST_CURSOR_POSITION);
+		core.setInterested(this, Message.WINDOW_WIDTH);
+		core.setInterested(this, Message.WINDOW_HEIGHT);
+		core.setInterested(this, Message.MOVE_UP);
+		core.setInterested(this, Message.MOVE_DOWN);
+		core.setInterested(this, Message.MOVE_LEFT);
+		core.setInterested(this, Message.MOVE_RIGHT);
+		core.setInterested(this, Message.FIRE1_PRESSED);
+		core.setInterested(this, Message.FIRE1_RELEASED);
+		core.setInterested(this, Message.FIRE2_PRESSED);
+		core.setInterested(this, Message.FIRE2_RELEASED);
+		core.setInterested(this, Message.SHIELD_PRESSED);
+		core.setInterested(this, Message.SHIELD_RELEASED);
+		core.setInterested(this, Message.NATIVE_WIDTH);
+		core.setInterested(this, Message.NATIVE_HEIGHT);
+		core.setInterested(this, Message.SPECIAL_RELEASED);
 		this.windowWidth = 1366;
 		this.windowHeight = 768;
 		this.nativeWidth = 1366;
@@ -160,10 +149,10 @@ public class InputSystem extends AbstractSystem implements IInputSystem
 		this.widthRatio = 1;
 		this.heightRatio = 1;
 		
-		core.send("REQUEST_NATIVE_WIDTH", "");
-		core.send("REQUEST_NATIVE_HEIGHT", "");
-		core.send("REQUEST_WINDOW_WIDTH", "");
-		core.send("REQUEST_WINDOW_HEIGHT", "");
+		core.send(Message.REQUEST_NATIVE_WIDTH, "");
+		core.send(Message.REQUEST_NATIVE_HEIGHT, "");
+		core.send(Message.REQUEST_WINDOW_WIDTH, "");
+		core.send(Message.REQUEST_WINDOW_HEIGHT, "");
 	}
 	
 	@Override
@@ -180,57 +169,46 @@ public class InputSystem extends AbstractSystem implements IInputSystem
 	{		
 		LOGGER.log(Level.FINEST, "Received message: " + id);
 
-		if(id.equals("REQUEST_CURSOR_POSITION"))
+		Message msgID = Message.valueOf(id);
+		
+		switch(msgID)
 		{
-			core.send("INPUT_CURSOR_POSITION", getMouseX() +"", getMouseY()+"");
-		}
-		else if(id.equals("WINDOW_WIDTH"))
-		{
-			updateWidthRatio(message);
-		}
-		else if(id.equals("WINDOW_HEIGHT"))
-		{
-			updateHeightRatio(message);
-		}
-		else if(id.equals("MOVE_UP"))
-		{//This is stupid.
-			core.send("GENERATE_FORCE", message[0], 5 +"", 270+"");	
-		}
-		else if(id.equals("MOVE_DOWN"))
-		{
-			core.send("GENERATE_FORCE", message[0], 5 +"", 90+"");
-		}
-		else if(id.equals("MOVE_LEFT"))
-		{
-			core.send("GENERATE_FORCE", message[0], 5 +"", 180+"");
-		}
-		else if(id.equals("MOVE_RIGHT"))
-		{
-			core.send("GENERATE_FORCE", message[0], 5 +"", 0+"");
-		}
-		else if(id.equals("+FIRE1"))
-		{
-			core.send("REQUEST_FIRE", message[0], true + "");
-		}
-		else if(id.equals("-FIRE1"))
-		{
-			core.send("REQUEST_FIRE", message[0], false + "");
-		}
-		else if(id.equals("+SPECIAL"))
-		{
-			core.send("USE_ABILITY", message[0], true + "");
-		}
-		else if(id.equals("-SPECIAL"))
-		{
-			core.send("USE_ABILITY", message[0], false + "");
-		}
-		else if(id.equals("+SHIELD"))
-		{
-			core.send("REQUEST_SHIELD_ACTIVE", message[0], true + "");
-		}
-		else if(id.equals("-SHIELD"))
-		{
-			core.send("REQUEST_SHIELD_ACTIVE", message[0], false + "");
+			case REQUEST_CURSOR_POSITION:
+				core.send(Message.INPUT_CURSOR_POSITION, getMouseX() +"", getMouseY()+"");
+				break;
+			case WINDOW_WIDTH:
+				updateWidthRatio(message);
+				break;
+			case WINDOW_HEIGHT:
+				updateHeightRatio(message);
+				break;
+			case MOVE_UP:
+				core.send(Message.GENERATE_FORCE, message[0], 5 +"", 270+"");	
+				break;
+			case MOVE_LEFT:
+				core.send(Message.GENERATE_FORCE, message[0], 5 +"", 180+"");	
+				break;
+			case MOVE_RIGHT:
+				core.send(Message.GENERATE_FORCE, message[0], 5 +"", 0+"");	
+				break;
+			case MOVE_DOWN:
+				core.send(Message.GENERATE_FORCE, message[0], 5 +"", 90+"");	
+				break;
+			case FIRE1_PRESSED:
+				core.send(Message.REQUEST_FIRE, message[0], true + "");
+				break;
+			case FIRE1_RELEASED:
+				core.send(Message.REQUEST_FIRE, message[0], false + "");
+				break;
+			case SPECIAL_RELEASED:
+				core.send(Message.USE_ABILITY, message[0], true + "");
+				break;
+			case SHIELD_PRESSED:
+				core.send(Message.REQUEST_SHIELD_ACTIVE, message[0], true + "");
+				break;
+			case SHIELD_RELEASED:
+				core.send(Message.REQUEST_SHIELD_ACTIVE, message[0], false + "");
+				break;			
 		}
 	}
 	//////////
@@ -283,11 +261,12 @@ public class InputSystem extends AbstractSystem implements IInputSystem
 				InputInfoPack each = packs.next();
 				if(each.isInterested(command))
 				{
-					core.send(command, each.getOwner().getID());
+					core.send(Message.valueOf(command), each.getOwner().getID());
 				}
 			}
+			core.send(Message.valueOf(command), "");
 		}
-		core.send(command, "");
+		
 	}
 	
 	

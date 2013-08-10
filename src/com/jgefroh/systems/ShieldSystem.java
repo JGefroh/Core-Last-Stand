@@ -9,6 +9,7 @@ import com.jgefroh.core.AbstractSystem;
 import com.jgefroh.core.Core;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.infopacks.ShieldInfoPack;
+import com.jgefroh.messages.Message;
 
 /**
  * Controls the display of health bars above entities.
@@ -52,9 +53,9 @@ public class ShieldSystem extends AbstractSystem
 	@Override
 	public void init()
 	{
-		core.setInterested(this, "REQUEST_SHIELD");
-		core.setInterested(this, "REQUEST_SHIELD_ACTIVE");
-		core.setInterested(this, "CHANGE_SHIELD_MAX");
+		core.setInterested(this, Message.REQUEST_SHIELD);
+		core.setInterested(this, Message.REQUEST_SHIELD_ACTIVE);
+		core.setInterested(this, Message.CHANGE_SHIELD_MAX);
 	}
 
 	@Override
@@ -67,7 +68,20 @@ public class ShieldSystem extends AbstractSystem
 	public void recv(final String id, final String... message)
 	{
 		LOGGER.log(Level.FINEST, "Received message: " + id);
-		
+		Message msgID = Message.valueOf(id);
+
+		switch(msgID)
+		{
+		case REQUEST_SHIELD_ACTIVE:
+			setActive(message);
+			break;
+		case REQUEST_SHIELD:
+			requestShield(message);
+			break;
+		case CHANGE_SHIELD_MAX:
+			adjustShieldMax(message);
+			break;
+		}
 		if(id.equals("REQUEST_SHIELD_ACTIVE"))
 		{
 			setActive(message);
@@ -150,7 +164,7 @@ public class ShieldSystem extends AbstractSystem
 	 * @param pack	the ShieldInfoPack of the entity
 	 */
 	private void createShield(final ShieldInfoPack pack)
-	{
+	{//TODO: CHANGE
 		EntityCreationSystem ecs = core.getSystem(EntityCreationSystem.class);
 		pack.setShield(ecs.createShield(pack.getOwner()));
 	}
@@ -267,7 +281,7 @@ public class ShieldSystem extends AbstractSystem
 			
 			if(pack!=null)
 			{
-				core.send("SHIELD_UPDATE", pack.getOwner().getID(), 
+				core.send(Message.SHIELD_UPDATE, pack.getOwner().getID(), 
 							pack.getShieldCur() + "",
 							pack.getShieldMax() + "");
 			}

@@ -16,6 +16,7 @@ import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.data.Sprite;
 import com.jgefroh.data.Texture;
 import com.jgefroh.infopacks.RenderInfoPack;
+import com.jgefroh.messages.Message;
 import com.jgefroh.tests.Benchmark;
 
 
@@ -103,22 +104,22 @@ public class RenderSystem extends AbstractSystem
 		textures = new HashMap<Integer, Texture>();
 		idMan = new HashMap<String, Integer>();
 		idMan.put(null, -1);
-		core.setInterested(this, "WINDOW_RESIZED");
-		core.setInterested(this, "WINDOW_WIDTH");
-		core.setInterested(this, "WINDOW_HEIGHT");
-		core.setInterested(this, "REQUEST_NATIVE_WIDTH");
-		core.setInterested(this, "REQUEST_NATIVE_HEIGHT");
-		core.setInterested(this, "TOGGLE_WIREFRAME");
+		core.setInterested(this, Message.WINDOW_RESIZED);
+		core.setInterested(this, Message.WINDOW_WIDTH);
+		core.setInterested(this, Message.WINDOW_HEIGHT);
+		core.setInterested(this, Message.REQUEST_NATIVE_WIDTH);
+		core.setInterested(this, Message.REQUEST_NATIVE_HEIGHT);
+		core.setInterested(this, Message.TOGGLE_WIREFRAME);
 		
-		core.send("NATIVE_WIDTH", NATIVE_WIDTH + "");
-		core.send("NATIVE_HEIGHT", NATIVE_HEIGHT+ ""); 
+		core.send(Message.NATIVE_WIDTH, NATIVE_WIDTH + "");
+		core.send(Message.NATIVE_HEIGHT, NATIVE_HEIGHT+ ""); 
 	}
 	
 	@Override
 	public void start() 
 	{
-		core.send("REQUEST_WINDOW_WIDTH", "");
-		core.send("REQUEST_WINDOW_HEIGHT", "");
+		core.send(Message.REQUEST_WINDOW_WIDTH, "");
+		core.send(Message.REQUEST_WINDOW_HEIGHT, "");
 		super.start();
 	}
 
@@ -135,31 +136,28 @@ public class RenderSystem extends AbstractSystem
 	{
 		LOGGER.log(Level.FINEST, "Received message: " + id);
 
-		if(id.equals("WINDOW_RESIZED"))
-		{
-			resizeDrawableArea(Display.getWidth(), Display.getHeight());
+		Message msgID = Message.valueOf(id);
+		switch(msgID)
+		{			
+			case WINDOW_RESIZED:
+				resizeDrawableArea(Display.getWidth(), Display.getHeight());
+				break;
+			case WINDOW_WIDTH:
+				resizeDrawableArea(Display.getWidth(), Display.getHeight());
+				break;
+			case WINDOW_HEIGHT:
+				resizeDrawableArea(Display.getWidth(), Display.getHeight());
+				break;
+			case TOGGLE_WIREFRAME:
+				toggleWireframeMode();
+				break;
+			case REQUEST_NATIVE_WIDTH:
+				core.send(Message.NATIVE_WIDTH, NATIVE_WIDTH + "");
+				break;
+			case REQUEST_NATIVE_HEIGHT:
+				core.send(Message.NATIVE_HEIGHT, NATIVE_HEIGHT + "");
+				break;
 		}
-		else if(id.equals("WINDOW_WIDTH"))
-		{
-			resizeDrawableArea(Display.getWidth(), Display.getHeight());
-		}
-		else if(id.equals("WINDOW_HEIGHT"))
-		{
-			resizeDrawableArea(Display.getWidth(), Display.getHeight());
-		}
-		else if(id.equals("TOGGLE_WIREFRAME"))
-		{
-			toggleWireframeMode();
-		}
-		else if(id.equals("REQUEST_NATIVE_WIDTH"))
-		{
-			core.send("NATIVE_WIDTH", NATIVE_WIDTH + "");
-		}
-		else if(id.equals("REQUEST_NATIVE_HEIGHT"))
-		{
-			core.send("NATIVE_HEIGHT", NATIVE_HEIGHT + "");
-		}
-
 	}
 	
 	//////////

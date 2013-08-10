@@ -10,6 +10,7 @@ import com.jgefroh.core.Core;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.infopacks.TargetInfoPack;
 import com.jgefroh.infopacks.TargetTrackInfoPack;
+import com.jgefroh.messages.Message;
 import com.jgefroh.tests.Benchmark;
 
 
@@ -222,12 +223,12 @@ public class TargetTrackSystem extends AbstractSystem
 			
 			if(dist<=each.getTargetRange())
 			{
-				core.send("IN_RANGE_OF_TARGET", each.getOwner().getID(), true + "");
+				core.send(Message.IN_RANGE_OF_TARGET, each.getOwner().getID(), true + "");
 				return true;
 			}
 			else
 			{
-				core.send("IN_RANGE_OF_TARGET", each.getOwner().getID(), false + "");
+				core.send(Message.IN_RANGE_OF_TARGET, each.getOwner().getID(), false + "");
 				return false;
 			}
 		}

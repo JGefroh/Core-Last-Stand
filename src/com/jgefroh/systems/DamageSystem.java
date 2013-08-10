@@ -9,6 +9,7 @@ import com.jgefroh.core.Core;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.infopacks.DamageInfoPack;
 import com.jgefroh.infopacks.HealthInfoPack;
+import com.jgefroh.messages.Message;
 
 
 /**
@@ -55,17 +56,20 @@ public class DamageSystem extends AbstractSystem
 		setDebugLevel(this.debugLevel);
 
 		LOGGER.log(Level.FINE, "Setting system values to default.");
-		core.setInterested(this, "DAMAGE");
+		core.setInterested(this, Message.DAMAGE);
 	}
 	
 	@Override
 	public void recv(final String id, final String... message)
 	{
 		LOGGER.log(Level.FINEST, "Received message: " + id);
+		Message msgID = Message.valueOf(id);
 
-		if(id.equals("DAMAGE"))
+		switch(msgID)
 		{
-			calculateDamage(message);
+			case DAMAGE:
+				calculateDamage(message);
+				break;
 		}
 	}
 	/////////

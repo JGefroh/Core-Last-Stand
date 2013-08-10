@@ -10,6 +10,7 @@ import org.lwjgl.opengl.DisplayMode;
 import com.jgefroh.core.AbstractSystem;
 import com.jgefroh.core.Core;
 import com.jgefroh.core.LoggerFactory;
+import com.jgefroh.messages.Message;
 
 
 
@@ -87,8 +88,8 @@ public class WindowSystem extends AbstractSystem
 	@Override
 	public void init()
 	{
-		core.setInterested(this, "REQUEST_WINDOW_WIDTH");
-		core.setInterested(this, "REQUEST_WINDOW_HEIGHT");
+		core.setInterested(this, Message.REQUEST_WINDOW_WIDTH);
+		core.setInterested(this, Message.REQUEST_WINDOW_HEIGHT);
 	}
 
 	@Override
@@ -96,9 +97,9 @@ public class WindowSystem extends AbstractSystem
 	{
 		if(Display.wasResized())
 		{
-			core.send("WINDOW_RESIZED", "");
-			core.send("WINDOW_WIDTH", getWidth() + "");
-			core.send("WINDOW_HEIGHT", getHeight() + "");
+			core.send(Message.WINDOW_RESIZED, "");
+			core.send(Message.WINDOW_WIDTH, getWidth() + "");
+			core.send(Message.WINDOW_HEIGHT, getHeight() + "");
 		}
 	}
 	
@@ -111,13 +112,17 @@ public class WindowSystem extends AbstractSystem
 	public void recv(final String id, final String... message)
 	{
 		LOGGER.log(Level.FINER, "Received message: " + id);
-		if(id.equals("REQUEST_WINDOW_WIDTH"))
+		
+		Message msgID = Message.valueOf(id);
+		
+		switch(msgID)
 		{
-			core.send("WINDOW_WIDTH", Display.getWidth() + "");
-		}
-		else if(id.equals("REQUEST_WINDOW_HEIGHT"))
-		{
-			core.send("WINDOW_HEIGHT", Display.getHeight() + "");
+			case REQUEST_WINDOW_WIDTH:
+				core.send(Message.WINDOW_WIDTH, Display.getWidth() + "");
+				break;
+			case REQUEST_WINDOW_HEIGHT:
+				core.send(Message.WINDOW_HEIGHT, Display.getHeight() + "");
+				break;
 		}
 	}
 	
@@ -242,8 +247,8 @@ public class WindowSystem extends AbstractSystem
 		try
 		{
 			Display.setDisplayMode(displayMode);
-			core.send("WINDOW_WIDTH", Display.getWidth() + "");
-			core.send("WINDOW_HEIGHT", Display.getHeight() + "");
+			core.send(Message.WINDOW_WIDTH, Display.getWidth() + "");
+			core.send(Message.WINDOW_HEIGHT, Display.getHeight() + "");
 		}
 		catch (LWJGLException e)
 		{

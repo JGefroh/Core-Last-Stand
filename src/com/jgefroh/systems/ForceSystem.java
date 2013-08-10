@@ -10,6 +10,7 @@ import com.jgefroh.core.Core;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.data.Vector;
 import com.jgefroh.infopacks.ForceInfoPack;
+import com.jgefroh.messages.Message;
 
 
 /**
@@ -54,7 +55,7 @@ public class ForceSystem extends AbstractSystem
 	public void init()
 	{
 		setDebugLevel(this.debugLevel);
-		core.setInterested(this, "GENERATE_FORCE");
+		core.setInterested(this, Message.GENERATE_FORCE);
 	}
 
 	@Override
@@ -74,9 +75,14 @@ public class ForceSystem extends AbstractSystem
 	public void recv(final String id, final String... message)
 	{
 		LOGGER.log(Level.FINEST, "Received message: " + id);
-		if(id.equals("GENERATE_FORCE"))
+		
+		Message msgID = Message.valueOf(id);
+
+		switch(msgID)
 		{
-			generate(message);
+			case GENERATE_FORCE:
+				generate(message);
+				break;
 		}
 	}
 	//////////

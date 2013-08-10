@@ -2,6 +2,7 @@ package com.jgefroh.effects;
 
 import com.jgefroh.core.Core;
 import com.jgefroh.core.IEntity;
+import com.jgefroh.messages.Message;
 
 
 /**
@@ -31,11 +32,11 @@ public class ExplosionCreateEffect implements IEffect
 		//Detonate is handled by the ExplosionSystem.
 		if(source.getName().equals("EXPLOSIVE"))
 		{
-			core.send("DETONATE", source.getID(), target.getID());
+			core.send(Message.DETONATE, source.getID(), target.getID());
 		}
 		else
 		{
-			core.send("DETONATE", target.getID(), source.getID());
+			core.send(Message.DETONATE, target.getID(), source.getID());
 		}
 	}
 }
