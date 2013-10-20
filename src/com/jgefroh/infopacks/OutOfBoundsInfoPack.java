@@ -4,126 +4,107 @@ import com.jgefroh.components.OutOfBoundsComponent;
 import com.jgefroh.components.TransformComponent;
 import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
-import com.jgefroh.core.IInfoPack;
 
-
-public class OutOfBoundsInfoPack extends AbstractInfoPack
-{
-	//////////
-	// DATA
-	//////////
-	/**The entity associated with this InfoPack.*/
-	private IEntity owner;
+/**
+ * @author Joseph Gefroh
+ */
+public class OutOfBoundsInfoPack extends AbstractInfoPack {
+	
+	//////////////////////////////////////////////////
+	// Fields
+	//////////////////////////////////////////////////
 	
 	/**A component this InfoPack depends on.*/
 	private TransformComponent tc;
 	
 	/**A component this InfoPack depends on.*/
 	private OutOfBoundsComponent oc;
+
 	
-	/**Flag that indicates the InfoPack is invalid and unreliable.*/
-	private boolean isDirty;
-	//////////
-	// INIT
-	//////////
+	//////////////////////////////////////////////////
+	// Initialize
+	//////////////////////////////////////////////////
+	
 	/**
 	 * Create a new instance of this InfoPack.
-	 * @param owner	the entity associated with this InfoPack
 	 */
-	public OutOfBoundsInfoPack(final IEntity owner)
-	{
-		this.owner = owner;
+	public OutOfBoundsInfoPack() {
 	}
 	
 	
-	//////////
-	// GETTERS
-	//////////
+	//////////////////////////////////////////////////
+	// IInfoPack
+	//////////////////////////////////////////////////
+
 	@Override
-	public boolean checkDirty()
-	{
-		if(owner.hasChanged())
-		{
-			tc = owner.getComponent(TransformComponent.class);
-			oc = owner.getComponent(OutOfBoundsComponent.class);			
-			if(tc==null||oc==null)
-			{
-				setDirty(true);
-				return true;
-			}
+	public boolean checkComponents(final IEntity entity) {
+		if (entity == null) {
+			return false;
 		}
-		setDirty(false);
-		return false;
-	}
-	
-	@Override
-	public IInfoPack generate(final IEntity entity)
-	{
-		if(entity.getComponent(OutOfBoundsComponent.class)!=null
-				&&entity.getComponent(TransformComponent.class)!=null)
-		{
-			return new OutOfBoundsInfoPack(entity);
+		
+		if (entity.getComponent(TransformComponent.class) == null
+				|| entity.getComponent(OutOfBoundsComponent.class) == null) {
+			return false;
 		}
-		return null;
+		
+		return true;
 	}
-	
+
+
+
 	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
+	public boolean setEntity(final IEntity entity) {
+		this.tc = entity.getComponent(TransformComponent.class);
+		this.oc = entity.getComponent(OutOfBoundsComponent.class);
+		
+		if (tc == null || oc == null) {
+			tc = null;
+			oc = null;
+			entity.setChanged(true);
+			return false;		
+		}
+		
+		super.setCurrent(entity);
+		return true;
 	}
+
 	
-	/**
-	 * @see TransformComponent#getXPos() 
-	 */
-	public double getXPos()
-	{
+	//////////////////////////////////////////////////
+	// Adapter - Getters
+	//////////////////////////////////////////////////
+	
+	public double getXPos() {
 		return tc.getXPos();
 	}	
 	
-	/**
-	 * @see TransformComponent#getYPos() 
-	 */
-	public double getYPos()
-	{
+	public double getYPos() {
 		return tc.getYPos();
 	}
 	
-	/**
-	 * @see TransformComponent#getZPos() 
-	 */
-	public double getZPos()
-	{
+	public double getZPos() {
 		return tc.getZPos();
 	}
 	
-	/**
-	 * @see TransformComponent#getWidth() 
-	 */
-	public double getWidth()
-	{
+	public double getWidth() {
 		return tc.getWidth();
 	}
 	
-	/**
-	 * @see TransformComponent#getHeight() 
-	 */
-	public double getHeight()
-	{
+	public double getHeight() {
 		return tc.getHeight();
 	}
 
-	public boolean isChecking()
-	{
+	public boolean isChecking() {
 		return oc.isChecking();
 	}
-	//////////
-	// SETTERS
-	//////////
 	
-	public void setChecking(final boolean isChecking)
-	{
+	
+	//////////////////////////////////////////////////
+	// Adapter - Setters
+	//////////////////////////////////////////////////
+
+	public void setChecking(final boolean isChecking) {
 		oc.setChecking(isChecking);
 	}
+
 
 }

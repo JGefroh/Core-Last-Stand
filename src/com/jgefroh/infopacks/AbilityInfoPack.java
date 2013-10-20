@@ -3,74 +3,60 @@ package com.jgefroh.infopacks;
 import com.jgefroh.components.AbilityComponent;
 import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
-import com.jgefroh.core.IInfoPack;
 
 /**
  * @author Joseph Gefroh
  */
-public class AbilityInfoPack extends AbstractInfoPack
-{
-	//////////
-	// DATA
-	//////////	
-	/**The entity associated with this InfoPack.*/
-	private IEntity owner;
+public class AbilityInfoPack extends AbstractInfoPack {
+	
+	//////////////////////////////////////////////////
+	// Fields
+	//////////////////////////////////////////////////
 	
 	/**A component this InfoPack depends on.*/
 	private AbilityComponent ac;
 	
-	//////////
-	// INIT
-	//////////
+	
+	//////////////////////////////////////////////////
+	// Initialize
+	//////////////////////////////////////////////////
+	
 	/**
 	 * Create a new instance of this InfoPack.
-	 * @param owner	the entity associated with this InfoPack
 	 */
-	public AbilityInfoPack(final IEntity owner)
-	{
-		this.owner = owner;
+	public AbilityInfoPack() {
 	}
 	
 	
-	//////////
-	// GETTERS
-	//////////	
+	//////////////////////////////////////////////////
+	// IInfoPack
+	//////////////////////////////////////////////////
+
 	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
-	}
-	
-	@Override
-	public boolean checkDirty()
-	{
-		if(owner.hasChanged())
-		{
-			ac = owner.getComponent(AbilityComponent.class);
-			if(ac==null)
-			{
-				setDirty(true);
-				return true;
-			}
+	public boolean checkComponents(final IEntity entity) {
+		if (entity == null) {
+			return false;
 		}
-		setDirty(false);
-		return false;
-	}
-	
-	@Override
-	public IInfoPack generate(final IEntity entity)
-	{
-		if(entity!=null
-			&&entity.getComponent(AbilityComponent.class)!=null)
-		{
-			return new AbilityInfoPack(entity);
+		
+		if (entity.getComponent(AbilityComponent.class) == null) {
+			return false;
 		}
-		return null;
+		return true;
 	}
-	
-	
-	
-	//////////
-	// SETTERS
-	//////////	
+
+
+
+	@Override
+	public boolean setEntity(final IEntity entity) {
+		this.ac = entity.getComponent(AbilityComponent.class);
+		
+		if (ac == null) {
+			ac = null;
+			entity.setChanged(true);
+			return false;		
+		}
+		
+		super.setCurrent(entity);
+		return true;
+	}
 }

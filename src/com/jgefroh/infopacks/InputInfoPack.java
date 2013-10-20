@@ -3,89 +3,68 @@ package com.jgefroh.infopacks;
 import com.jgefroh.components.InputComponent;
 import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
-import com.jgefroh.core.IInfoPack;
 
 /**
- * Intended to be used by the InputSystem.
- * 
- * Controls access to the following components:
- * InputComponent
- * 
  * @author Joseph Gefroh
  */
-public class InputInfoPack extends AbstractInfoPack
-{
-	//////////
-	// DATA
-	//////////
-	/**The entity associated with this InfoPack.*/
-	private IEntity owner;
+public class InputInfoPack extends AbstractInfoPack {
+	
+	//////////////////////////////////////////////////
+	// Fields
+	//////////////////////////////////////////////////
 	
 	/**A component this InfoPack depends on.*/
 	private InputComponent ic;
 	
-	/**Flag that indicates the InfoPack is invalid and unreliable.*/
-	private boolean isDirty;
 	
+	//////////////////////////////////////////////////
+	// Initialize
+	//////////////////////////////////////////////////
 	
-	//////////
-	// INIT
-	//////////
 	/**
-	 * Create a new instance of this InfoPack.
-	 * @param owner	the entity associated with this InfoPack
+	 * Creates a new instance of this InfoPack.
 	 */
-	public InputInfoPack(final IEntity owner)
-	{
-		this.owner = owner;
+	public InputInfoPack() {
 	}
 	
 	
-	//////////
-	// GETTERS
-	//////////
+	//////////////////////////////////////////////////
+	// IInfoPack
+	//////////////////////////////////////////////////
+
 	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
-	}
-	
-	@Override
-	public boolean checkDirty()
-	{
-		if(owner.hasChanged())
-		{
-			ic = owner.getComponent(InputComponent.class);	
-			if(ic==null)
-			{
-				setDirty(true);
-				return true;
-			}
+	public boolean checkComponents(final IEntity entity) {
+		if (entity == null) {
+			return false;
 		}
-		setDirty(false);
-		return false;
+		
+		if (entity.getComponent(InputComponent.class) == null) {
+			return false;
+		}
+		
+		return true;
 	}
 
 	@Override
-	public IInfoPack generate(final IEntity entity)
-	{
-		if(entity.getComponent(InputComponent.class)!=null)
-		{
-			return new InputInfoPack(entity);
+	public boolean setEntity(final IEntity entity) {
+		this.ic = entity.getComponent(InputComponent.class);
+		
+		if (ic == null) {
+			entity.setChanged(true);
+			return false;		
 		}
-		return null;
+		
+		super.setCurrent(entity);
+		return true;
 	}
 
-	/**
-	 * @see InputComponent#checkInterested(String)
-	 */
-	public boolean isInterested(final String command)
-	{
+	
+	//////////////////////////////////////////////////
+	// Adapter - Getters
+	//////////////////////////////////////////////////
+
+	public boolean isInterested(final String command) {
 		return ic.checkInterested(command);
 	}
 
-	
-	//////////
-	// SETTERS
-	//////////
 }

@@ -3,89 +3,68 @@ package com.jgefroh.infopacks;
 import com.jgefroh.components.SlaveComponent;
 import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
-import com.jgefroh.core.IInfoPack;
 
 
 /**
- *
- * 
  * @author Joseph Gefroh
  */
-public class SlaveInfoPack extends AbstractInfoPack
-{
-	//////////
-	// DATA
-	//////////
-	/**The entity associated with this InfoPack.*/
-	private IEntity owner;
+public class SlaveInfoPack extends AbstractInfoPack {
+	
+	//////////////////////////////////////////////////
+	// Fields
+	//////////////////////////////////////////////////
 	
 	/**A component this InfoPack depends on.*/
 	private SlaveComponent sc;
 	
-	/**Flag that indicates the InfoPack is invalid and unreliable.*/
-	private boolean isDirty;	
+
+	//////////////////////////////////////////////////
+	// Initialize
+	//////////////////////////////////////////////////
 	
-	
-	//////////
-	// INIT
-	//////////
 	/**
-	 * Create a new instance of this InfoPack.
-	 * @param owner	the entity associated with this InfoPack
+	 * Creates a new instance of this InfoPack.
 	 */
-	public SlaveInfoPack(final IEntity owner)
-	{
-		this.owner = owner;
+	public SlaveInfoPack() {
 	}
 	
 	
-	//////////
-	// GETTERS
-	//////////
+	//////////////////////////////////////////////////
+	// IInfoPack
+	//////////////////////////////////////////////////
+
 	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
-	}
-	
-	public IEntity getMaster()
-	{
-		return this.getMaster();
-	}
-	
-	@Override
-	public boolean checkDirty()
-	{
-		if(owner.hasChanged())
-		{
-			sc = owner.getComponent(SlaveComponent.class);
-			if(sc==null)
-			{
-				setDirty(true);
-				return true;
-			}
+	public boolean checkComponents(final IEntity entity) {
+		if (entity == null) {
+			return false;
 		}
-		setDirty(false);
-		return false;
-	}
-	
-	@Override
-	public IInfoPack generate(final IEntity entity)
-	{
-		if(entity.getComponent(SlaveComponent.class)!=null)
-		{
-			return new SlaveInfoPack(entity);
+		
+		if (entity.getComponent(SlaveComponent.class) == null) {
+			return false;
 		}
-		return null;
+		
+		return true;
 	}
 
+	@Override
+	public boolean setEntity(final IEntity entity) {
+		this.sc = entity.getComponent(SlaveComponent.class);
+		
+		if (sc == null) {
+			entity.setChanged(true);
+			return false;		
+		}
+		
+		super.setCurrent(entity);
+		return true;
+	}
+
+
+	//////////////////////////////////////////////////
+	// Adapter - setters
+	//////////////////////////////////////////////////
 	
-	
-	//////////
-	// SETTERS
-	//////////
-	public void setMaster(final IEntity master)
-	{
+	public void setMaster(final IEntity master) {
 		sc.setMaster(master);
 	}
 	

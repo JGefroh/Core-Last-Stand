@@ -4,203 +4,145 @@ import com.jgefroh.components.RenderComponent;
 import com.jgefroh.components.TransformComponent;
 import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
-import com.jgefroh.core.IInfoPack;
 
 
 /**
- * Intended to be used by the RenderSystem.
- * 
- * Controls access to the following components:
- * TransformComponent
- * RenderComponent
- * 
  * @author Joseph Gefroh
  */
-public class RenderInfoPack extends AbstractInfoPack
-{
-	//////////
-	// DATA
-	//////////
-	/**The entity associated with this InfoPack.*/
-	private IEntity owner;
+public class RenderInfoPack extends AbstractInfoPack {
+	
+	//////////////////////////////////////////////////
+	// Fields
+	//////////////////////////////////////////////////
 	
 	/**A component this InfoPack depends on.*/
 	private TransformComponent tc;
 	
 	/**A component this InfoPack depends on.*/
 	private RenderComponent rc;
-	
-	/**Flag that indicates the InfoPack is invalid and unreliable.*/
-	private boolean isDirty;
-	//////////
-	// INIT
-	//////////
-	/**
-	 * Create a new instance of this InfoPack.
-	 * @param owner	the entity associated with this InfoPack
-	 */
-	public RenderInfoPack(final IEntity owner)
-	{
-		this.owner = owner;
-	}
-	
-	
-	//////////
-	// GETTERS
-	//////////
-	@Override
-	public boolean checkDirty()
-	{
-		if(owner.hasChanged())
-		{
-			tc = owner.getComponent(TransformComponent.class);
-			rc = owner.getComponent(RenderComponent.class);			
-			if(tc==null||rc==null)
-			{
-				setDirty(true);
-				return true;
-			}
-		}
-		setDirty(false);
-		return false;
-	}
-	
-	@Override
-	public IInfoPack generate(final IEntity entity)
-	{
-		if(entity.getComponent(RenderComponent.class)!=null
-				&&entity.getComponent(TransformComponent.class)!=null)
-		{
 
-			return new RenderInfoPack(entity);
-		}
-		return null;
+	
+	//////////////////////////////////////////////////
+	// Initialize
+	//////////////////////////////////////////////////
+	
+	/**
+	 * Creates a new instance of this InfoPack.
+	 */
+	public RenderInfoPack() {
 	}
 	
+
+	//////////////////////////////////////////////////
+	// IInfoPack
+	//////////////////////////////////////////////////
+
 	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
+	public boolean checkComponents(final IEntity entity) {
+		if (entity == null) {
+			return false;
+		}
+		
+		if (entity.getComponent(TransformComponent.class) == null
+				|| entity.getComponent(RenderComponent.class) == null) {
+			return false;
+		}
+		
+		return true;
 	}
+
+	@Override
+	public boolean setEntity(final IEntity entity) {
+		this.tc = entity.getComponent(TransformComponent.class);
+		this.rc = entity.getComponent(RenderComponent.class);
+		
+		if (tc == null
+				|| rc == null) {
+			tc = null;
+			rc = null;
+			entity.setChanged(true);
+			return false;		
+		}
+		
+		super.setCurrent(entity);
+		return true;
+	}
+
+
+	//////////////////////////////////////////////////
+	// Adapter - Getters
+	//////////////////////////////////////////////////
 	
-	/**
-	 * @see TransformComponent#getXPos() 
-	 */
-	public double getXPos()
-	{
+	public double getXPos() {
 		return tc.getXPos();
-	}	
-	
-	/**
-	 * @see TransformComponent#getYPos() 
-	 */
-	public double getYPos()
-	{
+	}
+
+	public double getYPos() {
 		return tc.getYPos();
 	}
-	
-	/**
-	 * @see TransformComponent#getZPos() 
-	 */
-	public double getZPos()
-	{
+
+	public double getZPos() {
 		return tc.getZPos();
 	}
-	
-	/**
-	 * @see TransformComponent#getWidth() 
-	 */
-	public double getWidth()
-	{
+
+	public double getWidth() {
 		return tc.getWidth();
 	}
-	
-	/**
-	 * @see TransformComponent#getHeight() 
-	 */
-	public double getHeight()
-	{
+
+	public double getHeight() {
 		return tc.getHeight();
 	}
-	
-	/**
-	 * @see RenderComponent#isVisible() 
-	 */
-	public boolean isVisible()
-	{
+
+	public boolean isVisible() {
 		return rc.isVisible();
 	}
-	
-	/**
-	 * @see RenderComponent#getSpriteID() 
-	 */	
-	public int getSpriteID()
-	{
+
+	public int getSpriteID() {
 		return rc.getSpriteID();
 	}
-	
-	/**
-	 * @see RenderComponent#getTextureID() 
-	 */
-	public int getTextureID()
-	{
+
+	public int getTextureID() {
 		return rc.getTextureID();
 	}
-	
-	/**
-	 * @see RenderComponent#getTexturePath()
-	 */
-	public String getPath()
-	{
+
+	public String getPath() {
 		return rc.getTexturePath();
 	}
 
-	/**
-	 * @see TransformComponent#getBearing()
-	 */
-	public int getBearing()
-	{
-		return (int)tc.getBearing();
+	public int getBearing() {
+		return (int) tc.getBearing();
 	}
-	
-	public float getR()
-	{
+
+	public float getR() {
 		return rc.getR();
 	}
-	public float getG()
-	{
+
+	public float getG() {
 		return rc.getG();
 	}
-	public float getB()
-	{
+
+	public float getB() {
 		return rc.getB();
 	}
-	
-	public double getXRenderOffset()
-	{
+
+	public double getXRenderOffset() {
 		return rc.getXRenderOffset();
 	}
-	
-	public double getYRenderOffset()
-	{
+
+	public double getYRenderOffset() {
 		return rc.getYRenderOffset();
 	}
-	//////////
-	// SETTERS
-	//////////
-	/**
-	 * @see RenderComponent#setTextureID(int)
-	 */
-	public void setTextureID(final int textureID)
-	{
+
+	
+	//////////////////////////////////////////////////
+	// Adapter - Setters
+	//////////////////////////////////////////////////
+
+	public void setTextureID(final int textureID) {
 		rc.setTextureID(textureID);
 	}
 
-	/**
-	 * @see RenderComponent#setSpriteID(int)
-	 */
-	public void setSpriteID(final int id)
-	{
+	public void setSpriteID(final int id) {
 		rc.setSpriteID(id);
 	}
 }

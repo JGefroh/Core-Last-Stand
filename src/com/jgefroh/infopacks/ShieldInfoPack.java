@@ -4,19 +4,16 @@ import com.jgefroh.components.ShieldComponent;
 import com.jgefroh.components.TransformComponent;
 import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
-import com.jgefroh.core.IInfoPack;
 
 
 /**
  * @author Joseph Gefroh
  */
-public class ShieldInfoPack extends AbstractInfoPack
-{
-	//////////
-	// DATA
-	//////////
-	/**The entity associated with this InfoPack.*/
-	private IEntity owner;
+public class ShieldInfoPack extends AbstractInfoPack {
+	
+	//////////////////////////////////////////////////
+	// Fields
+	//////////////////////////////////////////////////
 	
 	/**A component this InfoPack depends on.*/
 	private TransformComponent tc;
@@ -27,208 +24,181 @@ public class ShieldInfoPack extends AbstractInfoPack
 	/**A component this InfoPack depends on.*/
 	private ShieldComponent sc;
 		
-	/**Flag that indicates the InfoPack is invalid and unreliable.*/
-	private boolean isDirty;
 	
-	//////////
-	// INIT
-	//////////
+	//////////////////////////////////////////////////
+	// Initialize
+	//////////////////////////////////////////////////
+	
 	/**
-	 * Create a new instance of this InfoPack.
-	 * @param owner	the entity associated with this InfoPack
+	 * Creates a new instance of this InfoPack.
 	 */
-	public ShieldInfoPack(final IEntity owner)
-	{
-		this.owner = owner;
+	public ShieldInfoPack() {
 	}
 	
-	
-	//////////
-	// GETTERS
-	//////////
+
+	//////////////////////////////////////////////////
+	// IInfoPack
+	//////////////////////////////////////////////////
+
 	@Override
-	public boolean checkDirty()
-	{
-		if(owner.hasChanged())
-		{
-			tc = owner.getComponent(TransformComponent.class);
-			sc = owner.getComponent(ShieldComponent.class);			
-			
-			if(tc==null||sc==null)
-			{
-				setDirty(true);
-				return true;
-			}
+	public boolean checkComponents(final IEntity entity) {
+		if (entity == null) {
+			return false;
 		}
-		setDirty(false);
-		return false;
+		
+		if (entity.getComponent(TransformComponent.class) == null
+				|| entity.getComponent(ShieldComponent.class) == null) {
+			return false;
+		}
+		
+		return true;
 	}
 
 	@Override
-	public IInfoPack generate(final IEntity entity)
-	{
-		if(entity.getComponent(TransformComponent.class)!=null
-				&& entity.getComponent(ShieldComponent.class)!=null)
-		{
-			return new ShieldInfoPack(entity);
+	public boolean setEntity(final IEntity entity) {
+		this.tc = entity.getComponent(TransformComponent.class);
+		this.sc = entity.getComponent(ShieldComponent.class);
+		
+		if (tc == null
+				|| sc == null) {
+			tc = null;
+			sc = null;
+			entity.setChanged(true);
+			return false;		
 		}
-		return null;
+		
+		if (sc.getShield() != null) {
+			stc = sc.getShield().getComponent(TransformComponent.class);
+		}
+		
+		super.setCurrent(entity);
+		return true;
 	}
-	
-	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
-	}
-	
-	public double getXPos()
-	{
+
+
+	//////////////////////////////////////////////////
+	// Adapter - Getters
+	//////////////////////////////////////////////////
+
+	public double getXPos() {
 		return tc.getXPos();
 	}
-	
-	public double getYPos()
-	{
+
+	public double getYPos() {
 		return tc.getYPos();
 	}
-	
-	public boolean isShieldActive()
-	{
+
+	public boolean isShieldActive() {
 		return sc.isShieldActive();
 	}
-	
-	public IEntity getShield()
-	{
+
+	public IEntity getShield() {
 		return sc.getShield();
 	}
-	
-	public int getShieldCur()
-	{
+
+	public int getShieldCur() {
 		return sc.getShieldCur();
 	}
 
-	public int getShieldMin()
-	{
+	public int getShieldMin() {
 		return sc.getShieldMin();
 	}
 
-	public int getShieldMax()
-	{
+	public int getShieldMax() {
 		return sc.getShieldMax();
 	}
-	public int getShieldInc()
-	{
+
+	public int getShieldInc() {
 		return sc.getShieldInc();
 	}
-	
-	public int getShieldDec()
-	{
+
+	public int getShieldDec() {
 		return sc.getShieldDec();
 	}
-	
-	public long getShieldRechargeInterval()
-	{
+
+	public long getShieldRechargeInterval() {
 		return sc.getShieldRechargeInterval();
 	}
-	
-	public long getShieldDrainInterval()
-	{
+
+	public long getShieldDrainInterval() {
 		return sc.getShieldDrainInterval();
 	}
-	
-	public long getShieldRechargeDelay()
-	{
+
+	public long getShieldRechargeDelay() {
 		return sc.getShieldRechargeDelay();
 	}
 
-	public long getShieldLastUsed()
-	{
+	public long getShieldLastUsed() {
 		return sc.getShieldLastUsed();
 	}
 
-	public long getShieldLastRecharged()
-	{
+	public long getShieldLastRecharged() {
 		return sc.getShieldLastRecharged();
 	}
-	
-	public long getShieldLastDrained()
-	{
+
+	public long getShieldLastDrained() {
 		return sc.getShieldLastDrained();
 	}
-	//////////
-	// SETTERS
-	//////////
+
 	
-	public void setActive(final boolean isShieldActive)
-	{
+	//////////////////////////////////////////////////
+	// Adapter - Setters
+	//////////////////////////////////////////////////
+
+	public void setActive(final boolean isShieldActive) {
 		sc.setShieldActive(isShieldActive);
 	}
-	
-	public void setShield(final IEntity shield)
-	{
+
+	public void setShield(final IEntity shield) {
 		sc.setShield(shield);
-		if(shield!=null)
-		{			
+		if (shield != null) {
 			stc = shield.getComponent(TransformComponent.class);
-		}
-		else
-		{
+		} else {
 			stc = null;
 		}
 	}
-	
-	public void setShieldXPos(final double xPos)
-	{
-		if(stc!=null)
-		{
+
+	public void setShieldXPos(final double xPos) {
+		if (stc != null) {
 			stc.setXPos(xPos);
 		}
 	}
-	
-	public void setShieldYPos(final double yPos)
-	{
-		if(stc!=null)
-		{
+
+	public void setShieldYPos(final double yPos) {
+		if (stc != null) {
 			stc.setYPos(yPos);
 		}
 	}
-	
-	public void setShieldCur(final int shieldCur)
-	{
+
+	public void setShieldCur(final int shieldCur) {
 		sc.setShieldCur(shieldCur);
 	}
 
-	public void setShieldMin(final int shieldMin)
-	{
+	public void setShieldMin(final int shieldMin) {
 		sc.setShieldMin(shieldMin);
 	}
 
-	public void setShieldMax(final int shieldMax)
-	{
+	public void setShieldMax(final int shieldMax) {
 		sc.setShieldMax(shieldMax);
 	}
-	
-	public void setShieldInc(final int shieldInc)
-	{
+
+	public void setShieldInc(final int shieldInc) {
 		sc.setShieldInc(shieldInc);
 	}
-	
-	public void setShieldDec(final int shieldDec)
-	{
+
+	public void setShieldDec(final int shieldDec) {
 		sc.setShieldDec(shieldDec);
 	}
 
-	public void setShieldLastUsed(final long shieldLastUsed)
-	{
+	public void setShieldLastUsed(final long shieldLastUsed) {
 		sc.setShieldLastUsed(shieldLastUsed);
 	}
 
-	public void setShieldLastRecharged(final long shieldLastRecharged)
-	{
+	public void setShieldLastRecharged(final long shieldLastRecharged) {
 		sc.setShieldLastRecharged(shieldLastRecharged);
 	}
 
-	public void setShieldLastDrained(final long shieldLastDrained)
-	{
+	public void setShieldLastDrained(final long shieldLastDrained) {
 		sc.setShieldLastDrained(shieldLastDrained);
 	}
 }

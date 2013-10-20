@@ -1,13 +1,17 @@
 package com.jgefroh.systems;
 
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.jgefroh.core.AbstractSystem;
 import com.jgefroh.core.Core;
 import com.jgefroh.core.IEntity;
+import com.jgefroh.core.IMessage;
+import com.jgefroh.core.IPayload;
 import com.jgefroh.core.LoggerFactory;
-import com.jgefroh.messages.Message;
+import com.jgefroh.messages.DefaultMessage;
+import com.jgefroh.messages.DefaultMessage.REQUEST_DESTROY;
 
 
 
@@ -15,11 +19,12 @@ import com.jgefroh.messages.Message;
  * This is a temporary system used to destroy entities.
  * @author Joseph Gefroh
  */
-public class EntityDestructionSystem extends AbstractSystem
-{
-	//////////
-	// DATA
-	//////////
+public class EntityDestructionSystem extends AbstractSystem {
+	
+	//////////////////////////////////////////////////
+	// Fields
+	//////////////////////////////////////////////////
+	
 	/**A reference to the core engine controlling this system.*/
 	private Core core;
 	
@@ -30,75 +35,68 @@ public class EntityDestructionSystem extends AbstractSystem
 	private final Logger LOGGER 
 		= LoggerFactory.getLogger(this.getClass(), Level.ALL);
 	
-	//////////
-	// INIT
-	//////////
+	
+	//////////////////////////////////////////////////
+	// Initialize
+	//////////////////////////////////////////////////
+	
 	/**
-	 * Create a new EntityCreationSystem.
+	 * Create a new instance of this {@code System}.
 	 * @param core	 a reference to the Core controlling this system
 	 */
-	public EntityDestructionSystem(final Core core)
-	{
+	public EntityDestructionSystem(final Core core) {
 		this.core = core;
 		setDebugLevel(this.debugLevel);
 
 		init();
 	}
 	
+
+	//////////////////////////////////////////////////
+	// Override
+	//////////////////////////////////////////////////
 	
-	//////////
-	// ISYSTEM INTERFACE
-	//////////
 	@Override
-	public void init()
-	{
-		core.setInterested(this, Message.BEARING_TO_MOUSE);
+	public void init() {
+		core.setInterested(this, DefaultMessage.REQUEST_DESTROY);
 	}
 
 	@Override
-	public void recv(final String id, final String... message)
-	{
-		LOGGER.log(Level.FINEST, "Received message: " + id);
-		Message msgID = Message.valueOf(id);
-
-		switch(msgID)
-		{
+	public void recv(final IMessage messageType, final Map<IPayload, String> message) {		
+		LOGGER.log(Level.FINEST, "Received message: " + messageType);
+		if (messageType.getClass() == DefaultMessage.class) {
+			DefaultMessage type = (DefaultMessage) messageType;
+			switch (type) {
 			case REQUEST_DESTROY:
 				processDestroyRequest(message);
 				break;
+			default:
+				break;
+			}
 		}
 	}
-	//////////
-	// SYSTEM METHODS
-	//////////
 	
-	private void processDestroyRequest(final String[] message)
-	{
-		if(message.length>=1)
-		{
-			String entityID = message[0];
-			
-			IEntity entity = core.getEntityWithID(entityID);
-			
-			if(entity.getName().equalsIgnoreCase("BULLET"))
-			{
-				//EntityCreationSystem ecs = core.getSystem(EntityCreationSystem.class);
-				//ecs.addToPool(entity);
-				core.removeEntity(entityID);
-
-			}
-			else
-			{
-				core.removeEntity(entityID);
-			}
+	//////////////////////////////////////////////////
+	// Methods
+	//////////////////////////////////////////////////
+	
+	private void processDestroyRequest(final Map<IPayload, String> data) {
+		if (data == null || data.size() < 1) {
+			return;
 		}
+		core.removeEntity(data.get(REQUEST_DESTROY.ENTITY_ID)); //TODO: Check if this is used.
 	}
+	
+
+	//////////////////////////////////////////////////
+	// Debug
+	//////////////////////////////////////////////////
+	
 	/**
 	 * Sets the debug level of this {@code System}.
 	 * @param level	the Level to set
 	 */
-	public void setDebugLevel(final Level level)
-	{
+	public void setDebugLevel(final Level level) {
 		this.LOGGER.setLevel(level);
 	}
 

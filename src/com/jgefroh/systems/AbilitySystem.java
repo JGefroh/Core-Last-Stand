@@ -1,23 +1,28 @@
 package com.jgefroh.systems;
 
 
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.jgefroh.core.AbstractSystem;
 import com.jgefroh.core.Core;
+import com.jgefroh.core.IMessage;
+import com.jgefroh.core.IPayload;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.infopacks.AbilityInfoPack;
-import com.jgefroh.messages.Message;
+import com.jgefroh.messages.DefaultMessage;
+import com.jgefroh.messages.DefaultMessage.COMMAND_USE_ABILITY;
 
 /**
  * @author Joseph Gefroh
  */
-public class AbilitySystem extends AbstractSystem
-{
-	//////////
-	// DATA
-	//////////
+public class AbilitySystem extends AbstractSystem {
+	
+	//////////////////////////////////////////////////
+	// Fields
+	//////////////////////////////////////////////////
+	
 	/**A reference to the core engine controlling this system.*/
 	private Core core;
 	
@@ -28,92 +33,82 @@ public class AbilitySystem extends AbstractSystem
 	private final Logger LOGGER 
 		= LoggerFactory.getLogger(this.getClass(), Level.ALL);
 	
-	//////////
-	// INIT
-	//////////
+	
+	//////////////////////////////////////////////////
+	// Initialize
+	//////////////////////////////////////////////////
+	
 	/**
 	 * Create a new instance of this {@code System}.
 	 * @param core	 a reference to the Core controlling this system
 	 */
-	public AbilitySystem(final Core core)
-	{
+	public AbilitySystem(final Core core) {
 		this.core = core;
 		setDebugLevel(this.debugLevel);
 
 		init();
 	}
 	
+
+	//////////////////////////////////////////////////
+	// Override
+	//////////////////////////////////////////////////
 	
-	//////////
-	// ISYSTEM INTERFACE
-	//////////
 	@Override
-	public void init()
-	{
-		core.setInterested(this, Message.USE_ABILITY);
+	public void init() {
+		core.setInterested(this, DefaultMessage.COMMAND_USE_ABILITY);
 	}
 
 	@Override
-	public void work(final long now)
-	{
+	public void work(final long now) {
 	}
 
 	@Override
-	public void recv(final String id, final String... message)
-	{
-		LOGGER.log(Level.FINEST, "Received message: " + id);
-
-		Message msgID = Message.valueOf(id);
+	public void recv(final IMessage messageType, final Map<IPayload, String> message) {		
+		if(messageType.getClass() == DefaultMessage.class) {
+			DefaultMessage type = (DefaultMessage) messageType;
+			switch(type) {
+				case COMMAND_USE_ABILITY:
+					processAbility(message);
+					break;
+				default:
+					break;
+			}	
+		}
+	}
+	
+	
+	//////////////////////////////////////////////////
+	// Methods
+	//////////////////////////////////////////////////
+	
+	private void processAbility(final Map<IPayload, String> data) {
+		if (data == null || data.size() < 1) {
+			return;
+		}
 		
-		switch(msgID)
-		{
-			case USE_ABILITY:
-				processAbility(message);
-				break;
+		String entityID = data.get(COMMAND_USE_ABILITY.ENTITY_ID);
+		
+		AbilityInfoPack pack = core.getInfoPackFrom(entityID, AbilityInfoPack.class);
+		
+		if (pack != null) {
+			useAbility(pack);
 		}
 	}
 	
-	//////////
-	// SYSTEM METHODS
-	//////////
-	
-	private void processAbility(final String[] message)
-	{	
-		if(message.length>=1)
-		{
-			AbilityInfoPack pack = core.getInfoPackFrom(message[0], AbilityInfoPack.class);
-			if(pack!=null)
-			{
-				useAbility(pack);
-			}
-		}
+	private void useAbility(final AbilityInfoPack pack) {
 	}
+
 	
-	private void useAbility(final AbilityInfoPack pack)
-	{
-		core.send(Message.CREATE, "BOMBLET", pack.getOwner().getID(), 0 + "");
-		core.send(Message.CREATE, "BOMBLET", pack.getOwner().getID(), 1*22.5 + "");
-		core.send(Message.CREATE, "BOMBLET", pack.getOwner().getID(), 2*22.5 + "");
-		core.send(Message.CREATE, "BOMBLET", pack.getOwner().getID(), 3*22.5 + "");
-		core.send(Message.CREATE, "BOMBLET", pack.getOwner().getID(), 4*22.5 + "");
-		core.send(Message.CREATE, "BOMBLET", pack.getOwner().getID(), 5*22.5 + "");
-		core.send(Message.CREATE, "BOMBLET", pack.getOwner().getID(), 6*22.5 + "");
-		core.send(Message.CREATE, "BOMBLET", pack.getOwner().getID(), 7*22.5 + "");
-		core.send(Message.CREATE, "BOMBLET", pack.getOwner().getID(), 8*22.5 + "");
-		core.send(Message.CREATE, "BOMBLET", pack.getOwner().getID(), 9*22.5 + "");
-		core.send(Message.CREATE, "BOMBLET", pack.getOwner().getID(), 10*22.5 + "");
-		core.send(Message.CREATE, "BOMBLET", pack.getOwner().getID(), 11*22.5 + "");
-		core.send(Message.CREATE, "BOMBLET", pack.getOwner().getID(), 12*22.5 + "");
-		core.send(Message.CREATE, "BOMBLET", pack.getOwner().getID(), 13*22.5 + "");
-		core.send(Message.CREATE, "BOMBLET", pack.getOwner().getID(), 14*22.5 + "");
-		core.send(Message.CREATE, "BOMBLET", pack.getOwner().getID(), 15*22.5 + "");
-	}
+	//////////////////////////////////////////////////
+	// Debug
+	//////////////////////////////////////////////////
+	
 	/**
 	 * Sets the debug level of this {@code System}.
 	 * @param level	the Level to set
 	 */
-	public void setDebugLevel(final Level level)
-	{
+	public void setDebugLevel(final Level level) {
 		this.LOGGER.setLevel(level);
 	}
 	

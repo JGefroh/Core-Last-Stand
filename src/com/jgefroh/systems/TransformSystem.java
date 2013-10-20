@@ -18,11 +18,11 @@ import com.jgefroh.tests.Benchmark;
  * System that handles movement and repositioning of entities.
  * @author Joseph Gefroh
  */
-public class TransformSystem extends AbstractSystem
-{
-	//////////
-	// DATA
-	//////////
+public class TransformSystem extends AbstractSystem {
+	
+	//////////////////////////////////////////////////
+	// Fields
+	//////////////////////////////////////////////////
 	/**A reference to the core engine controlling this system.*/
 	private Core core;
 	
@@ -35,91 +35,75 @@ public class TransformSystem extends AbstractSystem
 	
 	private Benchmark bench = new Benchmark(this.getClass().getName(), false);
 
-	//////////
-	// INIT
-	//////////
+	
+	//////////////////////////////////////////////////
+	// Initialize
+	//////////////////////////////////////////////////
+	
 	/**
 	 * Creates a new instance of this {@code System}.
 	 * @param core	 a reference to the Core controlling this system
 	 */
-	public TransformSystem(final Core core)
-	{
+	public TransformSystem(final Core core) {
 		this.core = core;
 		setDebugLevel(this.debugLevel);
 	}
+
+	//////////////////////////////////////////////////
+	// Override
+	//////////////////////////////////////////////////
 	
-	
-	//////////
-	// ISYSTEM INTERFACE
-	//////////
 	@Override
-	public void work(final long now)
-	{
+	public void work(final long now) {
 		long startTime = System.nanoTime();
 		int numEntities = moveAll(now);			
 		bench.benchmark(System.nanoTime()-startTime, numEntities);
 	}
 	
-	//////////
-	// SYSTEM METHODS
-	//////////
+	//////////////////////////////////////////////////
+	// Methods
+	//////////////////////////////////////////////////
+	
 	/**
 	 * Moves all entities that are requesting moves based on their velocities.
 	 */
-	public int moveAll(final long now)
-	{
-		Iterator<MovementInfoPack> packs 
-			= core.getInfoPacksOfType(MovementInfoPack.class);
-
+	public int moveAll(final long now) {
+		Iterator<IEntity> packs = core.getEntitiesWithPack(MovementInfoPack.class);
+		MovementInfoPack pack = core.getInfoPackOfType(MovementInfoPack.class);
+		
 		int numEntities = 0;
-		while(packs.hasNext())
-		{
-			MovementInfoPack each = packs.next();
-			if(each.isDirty()==false)
-			{
-				if(now-each.getLastUpdated()>=each.getInterval())
-				{
-					move(each);
-					each.setLastUpdated(now);
-				}
+		while(packs.hasNext()) {
+			if (!pack.setEntity(packs.next())) {
+				continue;
+			}
+			if (now - pack.getLastUpdated() >= pack.getInterval()) {
+				move(pack);
+				pack.setLastUpdated(now);
 			}
 			numEntities++;
 		}
 		return numEntities;
 	}
-	
-	private void move(final MovementInfoPack each)
-	{
+
+	private void move(final MovementInfoPack each) {
 		Vector totalV = each.getTotalMovementVector();
-		LOGGER.log(Level.FINEST, "Translating " + each.getOwner().getName() + " by " + totalV);
-		each.setXPos((each.getXPos()+totalV.getVX()));
-		each.setYPos((each.getYPos()+totalV.getVY()));					
+		each.setXPos((each.getXPos() + totalV.getVX()));
+		each.setYPos((each.getYPos() + totalV.getVY()));
 		//Translate object by total vector amount.
-		
-		if(each.isContinuous()==false)
-		{
+		if (!each.isContinuous()) {
 			each.setTotalMovementVector(new Vector());
 		}
 	}
 	
-	/**
-	 * Sets the movement interval of the given entity
-	 * @param entity	the Entity to set the interval for
-	 * @param interval	the interval, in ms
-	 */
-	public void setInterval(final IEntity entity, final long interval)
-	{
-		MovementInfoPack pack =
-				core.getInfoPackFrom(entity, MovementInfoPack.class);
-		pack.setInterval(interval);
-	}
-	
+	//////////////////////////////////////////////////
+	// Debug
+	//////////////////////////////////////////////////
+
 	/**
 	 * Sets the debug level of this {@code System}.
 	 * @param level	the Level to set
 	 */
-	public void setDebugLevel(final Level level)
-	{
+	public void setDebugLevel(final Level level) {
 		this.LOGGER.setLevel(level);
 	}
 }

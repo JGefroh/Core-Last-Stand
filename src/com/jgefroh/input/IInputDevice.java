@@ -24,7 +24,7 @@ public interface IInputDevice
 	 * Set a new bind system for this keyboard.
 	 * @param bindSystem	the IBindSystem to apply
 	 */
-	public void setResponseSystem(final InputSystem irs);
+	public void setResponseSystem(final IInputSystem irs);
 	
 	/**
 	 * Get the bind system for this keyboard.

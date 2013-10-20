@@ -5,16 +5,15 @@ import com.jgefroh.components.RenderComponent;
 import com.jgefroh.components.TransformComponent;
 import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
-import com.jgefroh.core.IInfoPack;
 
-
-public class GUIBarInfoPack extends AbstractInfoPack
-{
-	//////////
-	// DATA
-	//////////
-	/**The entity associated with this InfoPack.*/
-	private IEntity owner;
+/**
+ * @author Joseph Gefroh
+ */
+public class GUIBarInfoPack extends AbstractInfoPack {
+	
+	//////////////////////////////////////////////////
+	// Fields
+	//////////////////////////////////////////////////
 	
 	/**A component this InfoPack depends on.*/
 	private TransformComponent tc;
@@ -24,201 +23,177 @@ public class GUIBarInfoPack extends AbstractInfoPack
 	
 	/**A component this InfoPack depends on.*/
 	private GUIBarComponent gbc;
+
 	
-	/**Flag that indicates the InfoPack is invalid and unreliable.*/
-	private boolean isDirty;
-	//////////
-	// INIT
-	//////////
+	//////////////////////////////////////////////////
+	// Initialize
+	//////////////////////////////////////////////////
+	
 	/**
-	 * Create a new instance of this InfoPack.
-	 * @param owner	the entity associated with this InfoPack
+	 * Creates a new instance of this InfoPack.
 	 */
-	public GUIBarInfoPack(final IEntity owner)
-	{
-		this.owner = owner;
+	public GUIBarInfoPack() {
 	}
 	
-	
-	//////////
-	// GETTERS
-	//////////
+
+	//////////////////////////////////////////////////
+	// IInfoPack
+	//////////////////////////////////////////////////
+
 	@Override
-	public boolean checkDirty()
-	{
-		if(owner.hasChanged())
-		{
-			tc = owner.getComponent(TransformComponent.class);
-			rc = owner.getComponent(RenderComponent.class);
-			gbc = owner.getComponent(GUIBarComponent.class);
-			if(tc==null||rc==null||gbc==null)
-			{
-				setDirty(true);
-				return true;
-			}
+	public boolean checkComponents(final IEntity entity) {
+		if (entity == null) {
+			return false;
 		}
-		setDirty(false);
-		return false;
+		
+		if (entity.getComponent(TransformComponent.class) == null
+				|| entity.getComponent(RenderComponent.class) == null
+				|| entity.getComponent(GUIBarComponent.class) == null) {
+			return false;
+		}
+		
+		return true;
 	}
 
 	@Override
-	public IInfoPack generate(final IEntity entity)
-	{
-		if(entity.getComponent(GUIBarComponent.class)!=null
-				&&entity.getComponent(RenderComponent.class)!=null
-				&&entity.getComponent(TransformComponent.class)!=null)
-		{
-			return new GUIBarInfoPack(entity);
+	public boolean setEntity(final IEntity entity) {
+		this.tc = entity.getComponent(TransformComponent.class);
+		this.rc = entity.getComponent(RenderComponent.class);
+		this.gbc = entity.getComponent(GUIBarComponent.class);
+		
+		if (tc == null
+				|| rc == null
+				|| gbc == null) {
+			tc = null;
+			rc = null;
+			gbc = null;
+			entity.setChanged(true);
+			return false;		
 		}
-		return null;
+		
+		super.setCurrent(entity);
+		return true;
 	}
-	
-	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
-	}
-	
-	public double getXPos()
-	{
+
+
+	//////////////////////////////////////////////////
+	// Adapter - Getters
+	//////////////////////////////////////////////////
+
+	public double getXPos() {
 		return tc.getXPos();
-	}	
-	
-	public double getYPos()
-	{
+	}
+
+	public double getYPos() {
 		return tc.getYPos();
 	}
-	
-	public double getZPos()
-	{
+
+	public double getZPos() {
 		return tc.getZPos();
 	}
-	
-	public double getWidth()
-	{
+
+	public double getWidth() {
 		return tc.getWidth();
 	}
-	
-	public double getHeight()
-	{
+
+	public double getHeight() {
 		return tc.getHeight();
 	}
-	
-	public double getDefXPos()
-	{
+
+	public double getDefXPos() {
 		return gbc.getDefXPos();
 	}
-	
-	public double getDefYPos()
-	{
+
+	public double getDefYPos() {
 		return gbc.getDefYPos();
 	}
-	
-	public double getDefHeight()
-	{
+
+	public double getDefHeight() {
 		return gbc.getDefHeight();
 	}
-	
-	public double getDefWidth()
-	{
+
+	public double getDefWidth() {
 		return gbc.getDefWidth();
 	}
-	
-	public double getMaxValue()
-	{
+
+	public double getMaxValue() {
 		return gbc.getMaxValue();
 	}
-	
-	public double getCurValue()
-	{
+
+	public double getCurValue() {
 		return gbc.getCurValue();
 	}
-	
-	public double getMaxWidth()
-	{
+
+	public double getMaxWidth() {
 		return gbc.getMaxWidth();
 	}
-	
-	public double getMaxHeight()
-	{
+
+	public double getMaxHeight() {
 		return gbc.getMaxHeight();
 	}
 
-	public boolean left()
-	{
+	public boolean left() {
 		return gbc.left();
 	}
-	
-	public boolean right()
-	{
+
+	public boolean right() {
 		return gbc.right();
 	}
-	
-	public boolean up()
-	{
+
+	public boolean up() {
 		return gbc.up();
 	}
-	
-	public boolean down()
-	{
+
+	public boolean down() {
 		return gbc.down();
 	}
-	
-	public boolean collapseMiddleH()
-	{
+
+	public boolean collapseMiddleH() {
 		return gbc.collapseMiddleH();
 	}
-	
-	public boolean collapseMiddleV()
-	{
+
+	public boolean collapseMiddleV() {
 		return gbc.collapseMiddleV();
 	}
-	//////////
-	// SETTERS
-	//////////
 	
-	public void setXPos(final double xPos)
-	{
+	
+	//////////////////////////////////////////////////
+	// Adapter - Setters
+	//////////////////////////////////////////////////
+
+	public void setXPos(final double xPos) {
 		tc.setXPos(xPos);
 	}
-	
-	public void setYPos(final double yPos)
-	{
+
+	public void setYPos(final double yPos) {
 		tc.setYPos(yPos);
 	}
-	
-	public void setWidth(final double width)
-	{
+
+	public void setWidth(final double width) {
 		tc.setWidth(width);
 	}
-	
-	public void setHeight(final double height)
-	{
+
+	public void setHeight(final double height) {
 		tc.setHeight(height);
 	}
-	
-	public void setRGB(final float r, final float g, final float b)
-	{
+
+	public void setRGB(final float r, final float g, final float b) {
 		rc.setRGB(r, g, b);
 	}
-	
-	public void setSpriteID(final int id)
-	{
+
+	public void setSpriteID(final int id) {
 		rc.setSpriteID(id);
 	}
-	
-	public void setMaxValue(final int maxValue)
-	{
+
+	public void setMaxValue(final int maxValue) {
 		gbc.setMaxValue(maxValue);
 	}
-	
-	public void setCurValue(final int curValue)
-	{
+
+	public void setCurValue(final int curValue) {
 		gbc.setCurValue(curValue);
 	}
-	
-	public void getShrinkDir(final int shrinkDir)
-	{
+
+	public void getShrinkDir(final int shrinkDir) {
 		gbc.getShrinkDir();
 	}
 }

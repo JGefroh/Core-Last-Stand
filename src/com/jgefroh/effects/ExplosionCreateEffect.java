@@ -1,8 +1,13 @@
 package com.jgefroh.effects;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.jgefroh.core.Core;
 import com.jgefroh.core.IEntity;
-import com.jgefroh.messages.Message;
+import com.jgefroh.core.IPayload;
+import com.jgefroh.messages.DefaultMessage;
+import com.jgefroh.messages.DefaultMessage.COMMAND_DETONATE;
 
 
 /**
@@ -29,14 +34,17 @@ public class ExplosionCreateEffect implements IEffect
 	}
 	public void execute(final IEntity source, final IEntity target)
 	{
+		Map<IPayload, String> parameters = new HashMap<IPayload, String>();
 		//Detonate is handled by the ExplosionSystem.
 		if(source.getName().equals("EXPLOSIVE"))
 		{
-			core.send(Message.DETONATE, source.getID(), target.getID());
+			parameters.put(COMMAND_DETONATE.ENTITY_ID, source.getID());
+			core.send(DefaultMessage.COMMAND_DETONATE, parameters);
 		}
 		else
 		{
-			core.send(Message.DETONATE, target.getID(), source.getID());
+			parameters.put(COMMAND_DETONATE.ENTITY_ID, target.getID());
+			core.send(DefaultMessage.COMMAND_DETONATE, parameters);
 		}
 	}
 }

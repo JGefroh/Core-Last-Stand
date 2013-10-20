@@ -2,26 +2,32 @@ package com.jgefroh.systems;
 
 
 import java.util.Iterator;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.jgefroh.core.AbstractSystem;
 import com.jgefroh.core.Core;
+import com.jgefroh.core.IEntity;
+import com.jgefroh.core.IMessage;
+import com.jgefroh.core.IPayload;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.data.Vector;
 import com.jgefroh.infopacks.ForceInfoPack;
-import com.jgefroh.messages.Message;
+import com.jgefroh.messages.DefaultMessage;
+import com.jgefroh.messages.DefaultMessage.COMMAND_GENERATE_FORCE;
 
 
 /**
  * Creates a one-time force vector to apply to an object.
  * @author Joseph Gefroh
  */
-public class ForceSystem extends AbstractSystem
-{
-	//////////
-	// DATA
-	//////////
+public class ForceSystem extends AbstractSystem {
+	
+	//////////////////////////////////////////////////
+	// Fields
+	//////////////////////////////////////////////////
+	
 	/**A reference to the core engine controlling this system.*/
 	private Core core;
 	
@@ -32,91 +38,87 @@ public class ForceSystem extends AbstractSystem
 	private final Logger LOGGER 
 		= LoggerFactory.getLogger(this.getClass(), Level.ALL);
 
+
+	//////////////////////////////////////////////////
+	// Initialize
+	//////////////////////////////////////////////////
 	
-	//////////
-	// INIT
-	//////////
 	/**
 	 * Creates a new instance of this {@code System}.
 	 * @param core	 a reference to the Core controlling this system
 	 */
-	public ForceSystem(final Core core)
-	{
+	public ForceSystem(final Core core) {
 		this.core = core;
 		setDebugLevel(this.debugLevel);
 		init();
 	}
 	
+	//////////////////////////////////////////////////
+	// Override
+	//////////////////////////////////////////////////
 	
-	//////////
-	// ISYSTEM INTERFACE
-	//////////
 	@Override
-	public void init()
-	{
+	public void init() {
 		setDebugLevel(this.debugLevel);
-		core.setInterested(this, Message.GENERATE_FORCE);
+		core.setInterested(this, DefaultMessage.COMMAND_GENERATE_FORCE);
 	}
 
 	@Override
-	public void work(final long now)
-	{
-		if(isRunning())
-		{
-			integrate(now);	//Add all forces together.
-		}
-		else
-		{
-			stop();
-		}
+	public void work(final long now) {
+		integrate(now);	//Add all forces together.
 	}
 
 	@Override
-	public void recv(final String id, final String... message)
-	{
-		LOGGER.log(Level.FINEST, "Received message: " + id);
-		
-		Message msgID = Message.valueOf(id);
-
-		switch(msgID)
-		{
-			case GENERATE_FORCE:
+	public void recv(final IMessage messageType, final Map<IPayload, String> message) {		
+		LOGGER.log(Level.FINEST, "Received message: " + messageType);
+		if (messageType.getClass() == DefaultMessage.class) {
+			DefaultMessage type = (DefaultMessage) messageType;
+			switch (type) {
+			case COMMAND_GENERATE_FORCE:
 				generate(message);
 				break;
+			default:
+				break;
+			}
 		}
-	}
-	//////////
-	// SYSTEM METHODS
-	//////////
+	}	
+	
+	
+	//////////////////////////////////////////////////
+	// Methods
+	//////////////////////////////////////////////////
+	
 	/**
 	 * Integrates all the vectors acting on a object into a single vector.
 	 * @param now	the current time
 	 */
-	public void integrate(final long now)
-	{
-		Iterator<ForceInfoPack> packs
-			= core.getInfoPacksOfType(ForceInfoPack.class);
+	public void integrate(final long now) {
+		Iterator<IEntity> packs = core.getEntitiesWithPack(ForceInfoPack.class);
+		ForceInfoPack pack = core.getInfoPackOfType(ForceInfoPack.class);
 		
-		while(packs.hasNext())
-		{
-			ForceInfoPack each = packs.next();
-			
-			Vector vecGenerated = each.getGeneratedVector();		
-			
-			if(each.isRelative()==true)
-			{
-				vecGenerated.setAngle(each.getBearing());
+		while(packs.hasNext()) {
+			if (!pack.setEntity(packs.next())) {
+				continue;
 			}
 			
-			Vector vecTotal = each.getSumVector();
+			Vector vecGenerated = pack.getGeneratedVector();		
+			
+			if (pack.isRelative()) {
+				vecGenerated.setAngle(pack.getBearing());
+			}
+			
+			Vector vecTotal = pack.getSumVector();
 			vecTotal.add(vecGenerated);
-			if(each.isContinuous()==false)
-			{				
-				each.setGeneratedForce(new Vector());
+			if (!pack.isContinuous()) {				
+				pack.setGeneratedForce(new Vector());
 			}
 		}
 	}
+
 	
+	//////////////////////////////////////////////////
+	// Messages
+	//////////////////////////////////////////////////
 	
 	/**
 	 * Generates a vector force for a specific entity.
@@ -124,41 +126,38 @@ public class ForceSystem extends AbstractSystem
 	 * 					[1] contains the vector's magnitude (double)
 	 * 					[2] contains the vector's angle		(double)
 	 */
-	private void generate(final String[] message)
-	{
-		if(message.length>=3)
-		{
-			String entityID = message[0];
-			double vecMag = 0;
-			double angle = 0;
-			try
-			{
-				vecMag = Double.parseDouble(message[1]);
-				angle = Double.parseDouble(message[2]);
-			}
-			catch(NumberFormatException e)
-			{
-				LOGGER.log(Level.WARNING, "Unexpected number of parameters.");
-			}
-			
-			ForceInfoPack fip 
-				= core.getInfoPackFrom(entityID, ForceInfoPack.class);
-			
-			if(fip!=null&&fip.isDirty()==false)
-			{
-				Vector generated = fip.getGeneratedVector();	//Get current generated vector...
-				Vector vector = new Vector();
-					vector.setAngle(angle);
-					vector.setMagnitude(fip.getMagnitude());
-					vector.setID(0);
-				generated.add(vector);
-				LOGGER.log(Level.FINE, 
-						fip.getOwner().getName() + "(" + entityID
-								+ ") generated force with " + 
-								vecMag + " magnitude at " + angle + " degrees.");
-			}
+	private void generate(final Map<IPayload, String> data) {
+		if (data == null || data.size() < 2) {
+			return;
+		}
+		
+		String entityID = data.get(COMMAND_GENERATE_FORCE.ENTITY_ID);
+		double angle = 0;
+		try {
+			angle = Double.parseDouble(data.get(COMMAND_GENERATE_FORCE.VECTOR_ANG));
+		}
+		catch(NumberFormatException e) {
+			LOGGER.log(Level.WARNING, "Unexpected number of parameters.");
+			return;
+		}
+		
+		ForceInfoPack fip 
+			= core.getInfoPackFrom(entityID, ForceInfoPack.class);
+		
+		if (fip != null) {
+			Vector generated = fip.getGeneratedVector();	//Get current generated vector...
+			Vector vector = new Vector();
+			vector.setAngle(angle);
+			vector.setMagnitude(fip.getMagnitude());
+			vector.setID(0);
+			generated.add(vector);
 		}
 	}
+	
+	
+	//////////////////////////////////////////////////
+	// Debug
+	//////////////////////////////////////////////////
 	
 	/**
 	 * Sets the debug level of this {@code System}.

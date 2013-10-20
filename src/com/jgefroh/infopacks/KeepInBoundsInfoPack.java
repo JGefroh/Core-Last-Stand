@@ -4,16 +4,13 @@ import com.jgefroh.components.KeepInBoundsComponent;
 import com.jgefroh.components.TransformComponent;
 import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
-import com.jgefroh.core.IInfoPack;
 
 
-public class KeepInBoundsInfoPack extends AbstractInfoPack
-{
-	//////////
-	// DATA
-	//////////
-	/**The entity associated with this InfoPack.*/
-	private IEntity owner;
+public class KeepInBoundsInfoPack extends AbstractInfoPack {
+
+	//////////////////////////////////////////////////
+	// Fields
+	//////////////////////////////////////////////////
 	
 	/**A component this InfoPack depends on.*/
 	private TransformComponent tc;
@@ -21,128 +18,103 @@ public class KeepInBoundsInfoPack extends AbstractInfoPack
 	/**A component this InfoPack depends on.*/
 	private KeepInBoundsComponent kibc;
 	
-	/**Flag that indicates the InfoPack is invalid and unreliable.*/
-	private boolean isDirty;
-	//////////
-	// INIT
-	//////////
+	
+	//////////////////////////////////////////////////
+	// Initialize
+	//////////////////////////////////////////////////
+	
 	/**
-	 * Create a new instance of this InfoPack.
-	 * @param owner	the entity associated with this InfoPack
+	 * Creates a new instance of this InfoPack.
 	 */
-	public KeepInBoundsInfoPack(final IEntity owner)
-	{
-		this.owner = owner;
+	public KeepInBoundsInfoPack() {
 	}
 	
 	
-	//////////
-	// GETTERS
-	//////////
+	//////////////////////////////////////////////////
+	// IInfoPack
+	//////////////////////////////////////////////////
+
 	@Override
-	public boolean checkDirty()
-	{
-		if(owner.hasChanged())
-		{
-			tc = owner.getComponent(TransformComponent.class);
-			kibc = owner.getComponent(KeepInBoundsComponent.class);			
-			if(tc==null||kibc==null)
-			{
-				setDirty(true);
-				return true;
-			}
+	public boolean checkComponents(final IEntity entity) {
+		if (entity == null) {
+			return false;
 		}
-		setDirty(false);
-		return false;
+		
+		if (entity.getComponent(TransformComponent.class) == null
+				|| entity.getComponent(KeepInBoundsComponent.class) == null) {
+			return false;
+		}
+		
+		return true;
 	}
 
 	@Override
-	public IInfoPack generate(final IEntity entity)
-	{
-		if(entity.getComponent(KeepInBoundsComponent.class)!=null
-				&&entity.getComponent(TransformComponent.class)!=null)
-		{
-			return new KeepInBoundsInfoPack(entity);
+	public boolean setEntity(final IEntity entity) {
+		this.tc = entity.getComponent(TransformComponent.class);
+		this.kibc = entity.getComponent(KeepInBoundsComponent.class);
+		
+		if (tc == null
+				|| kibc == null) {
+			tc = null;
+			kibc = null;
+			entity.setChanged(true);
+			return false;		
 		}
-		return null;
+		
+		super.setCurrent(entity);
+		return true;
 	}
-	
-	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
-	}
-	
-	/**
-	 * @see TransformComponent#getXPos() 
-	 */
-	public double getXPos()
-	{
+
+	//////////////////////////////////////////////////
+	// Adapter - Getters
+	//////////////////////////////////////////////////
+
+	public double getXPos() {
 		return tc.getXPos();
-	}	
-	
-	/**
-	 * @see TransformComponent#getYPos() 
-	 */
-	public double getYPos()
-	{
+	}
+
+	public double getYPos() {
 		return tc.getYPos();
 	}
-	
-	/**
-	 * @see TransformComponent#getZPos() 
-	 */
-	public double getZPos()
-	{
+
+	public double getZPos() {
 		return tc.getZPos();
 	}
-	
-	/**
-	 * @see TransformComponent#getWidth() 
-	 */
-	public double getWidth()
-	{
+
+	public double getWidth() {
 		return tc.getWidth();
 	}
-	
-	/**
-	 * @see TransformComponent#getHeight() 
-	 */
-	public double getHeight()
-	{
+
+	public double getHeight() {
 		return tc.getHeight();
 	}
 
-	public double getLastX()
-	{
+	public double getLastX() {
 		return kibc.getLastX();
 	}
-	
-	public double getLastY()
-	{
+
+	public double getLastY() {
 		return kibc.getLastY();
 	}
-	//////////
-	// SETTERS
-	//////////
 	
-	public void setLastX(final double lastX)
-	{
+	
+	//////////////////////////////////////////////////
+	// Adapter - Setters
+	//////////////////////////////////////////////////
+	
+	public void setLastX(final double lastX) {
 		kibc.setLastX(lastX);
 	}
-	
-	public void setLastY(final double lastY)
-	{
+
+	public void setLastY(final double lastY) {
 		kibc.setLastY(lastY);
 	}
-	
-	public void setXPos(final double xPos)
-	{
+
+	public void setXPos(final double xPos) {
 		tc.setXPos(xPos);
 	}
-	
-	public void setYPos(final double yPos)
-	{
+
+	public void setYPos(final double yPos) {
 		tc.setYPos(yPos);
 	}
 

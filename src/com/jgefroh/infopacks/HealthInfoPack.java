@@ -3,98 +3,83 @@ package com.jgefroh.infopacks;
 import com.jgefroh.components.HealthComponent;
 import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
-import com.jgefroh.core.IInfoPack;
 
-public class HealthInfoPack extends AbstractInfoPack
-{
-	//////////
-	// DATA
-	//////////
-	/**The entity associated with this InfoPack.*/
-	private IEntity owner;
+/**
+ * @author Joseph
+ */
+public class HealthInfoPack extends AbstractInfoPack {
 	
+	//////////////////////////////////////////////////
+	// Fields
+	//////////////////////////////////////////////////
 	/**A component this InfoPack depends on.*/
 	private HealthComponent hc;
 	
-	/**Flag that indicates the InfoPack is invalid and unreliable.*/
-	private boolean isDirty;
 	
+	//////////////////////////////////////////////////
+	// Initialize
+	//////////////////////////////////////////////////
 	
-	//////////
-	// INIT
-	//////////
 	/**
-	 * Create a new instance of this InfoPack.
-	 * @param owner	the entity associated with this InfoPack
+	 * Creates a new instance of this InfoPack.
 	 */
-	public HealthInfoPack(final IEntity owner)
-	{
-		this.owner = owner;
+	public HealthInfoPack()	{
 	}
 	
 	
-	//////////
-	// GETTERS
-	//////////
-	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
-	}
+	//////////////////////////////////////////////////
+	// IInfoPack
+	//////////////////////////////////////////////////
 	
 	@Override
-	public boolean checkDirty()
-	{
-		if(owner.hasChanged())
-		{
-			hc = owner.getComponent(HealthComponent.class);	
-			if(hc==null)
-			{
-				setDirty(true);
-				return true;
-			}
+	public boolean checkComponents(final IEntity entity) {
+		if (entity == null) {
+			return false;
 		}
-		setDirty(false);
-		return false;
+		
+		if (entity.getComponent(HealthComponent.class) == null) {
+			return false;
+		}
+		
+		return true;
 	}
 
 	@Override
-	public IInfoPack generate(final IEntity entity)
-	{
-		if(entity.getComponent(HealthComponent.class)!=null)
-		{
-			return new HealthInfoPack(entity);
+	public boolean setEntity(final IEntity entity) {
+		this.hc = entity.getComponent(HealthComponent.class);
+		
+		if (hc == null) {
+			entity.setChanged(true);
+			return false;		
 		}
-		return null;
+		
+		super.setCurrent(entity);
+		return true;
 	}
 	
-	/**
-	 * @see HealthComponent#getCurHealth()
-	 */
-	public int getCurHealth()
-	{
+	
+	//////////////////////////////////////////////////
+	// Adapter - Getters
+	//////////////////////////////////////////////////
+	
+	public int getCurHealth() {
 		return hc.getCurHealth();
 	}
-	
-	public int getMaxHealth()
-	{
+
+	public int getMaxHealth() {
 		return hc.getMaxHealth();
 	}
 	
-	//////////
-	// SETTERS
-	//////////
 	
-	/**
-	 * @see HealthComponent#setCurHealth(int)
-	 */
-	public void setCurHealth(final int curHealth)
-	{
+	//////////////////////////////////////////////////
+	// Adapter - Setters
+	//////////////////////////////////////////////////
+	
+	public void setCurHealth(final int curHealth) {
 		hc.setCurHealth(curHealth);
 	}
-	
-	public void setMaxHealth(final int maxHealth)
-	{
+
+	public void setMaxHealth(final int maxHealth) {
 		hc.setMaxHealth(maxHealth);
 	}
 }

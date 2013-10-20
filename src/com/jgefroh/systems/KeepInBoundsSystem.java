@@ -2,27 +2,30 @@ package com.jgefroh.systems;
 
 
 import java.util.Iterator;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.jgefroh.core.AbstractSystem;
 import com.jgefroh.core.Core;
+import com.jgefroh.core.IEntity;
+import com.jgefroh.core.IMessage;
+import com.jgefroh.core.IPayload;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.infopacks.KeepInBoundsInfoPack;
-import com.jgefroh.messages.Message;
+import com.jgefroh.messages.DefaultMessage;
+import com.jgefroh.messages.DefaultMessage.DATA_NATIVE_RESOLUTION;
 
 
 /**
  * Keeps objects within the confines of the screen.
- * 
- * 
  * @author Joseph Gefroh
  */
-public class KeepInBoundsSystem extends AbstractSystem
-{
-	//////////
-	// DATA
-	//////////
+public class KeepInBoundsSystem extends AbstractSystem {
+	
+	//////////////////////////////////////////////////
+	// Fields
+	//////////////////////////////////////////////////
 	/**A reference to the core engine controlling this system.*/
 	private Core core;
 
@@ -38,90 +41,82 @@ public class KeepInBoundsSystem extends AbstractSystem
 	
 	/**The native height of the playing area.*/
 	private int nativeHeight = 768;
+
+	//////////////////////////////////////////////////
+	// Initialize
+	//////////////////////////////////////////////////
 	
-	//////////
-	// INIT
-	//////////
 	/**
 	 * Create a new instance of this {@code System}.
 	 * @param core	 a reference to the Core controlling this system
 	 */
-	public KeepInBoundsSystem(final Core core)
-	{
+	public KeepInBoundsSystem(final Core core) {
 		this.core = core;
 		setDebugLevel(this.debugLevel);
 
 		init();
 	}
 
-	/////////
-	// ISYSTEM INTERFACE
-	/////////
+	//////////////////////////////////////////////////
+	// Override
+	//////////////////////////////////////////////////
+	
 	@Override
-	public void init()
-	{
+	public void init() {
 		LOGGER.log(Level.FINE, "Setting system values to default.");
-		core.setInterested(this, Message.NATIVE_WIDTH);
-		core.setInterested(this, Message.NATIVE_HEIGHT);
-		core.send(Message.REQUEST_NATIVE_WIDTH, "");
-		core.send(Message.REQUEST_NATIVE_HEIGHT,"");
+		core.setInterested(this, DefaultMessage.DATA_NATIVE_RESOLUTION);
+		core.send(DefaultMessage.REQUEST_NATIVE_RESOLUTION, null);
 	}
 
 	@Override
-	public void work(final long now)
-	{
+	public void work(final long now) {
 		checkPositions();
 	}
 	
 	@Override
-	public void recv(final String id, final String... message)
-	{
-		LOGGER.log(Level.FINEST, "Received message: " + id);
-		
-		Message msgID = Message.valueOf(id);
-		switch(msgID)
-		{
-			case NATIVE_WIDTH:
-				setNativeWidth(message);
-				break;
-			case NATIVE_HEIGHT:
-				setNativeHeight(message);
-				break;
+	public void recv(final IMessage messageType, final Map<IPayload, String> message) {		
+		LOGGER.log(Level.FINEST, "Received message: " + messageType);
+		if (messageType.getClass() == DefaultMessage.class) {
+			DefaultMessage type = (DefaultMessage) messageType;
+			switch (type) {
+				case DATA_NATIVE_RESOLUTION:
+					setNativeResolution(message);
+					break;
+				default:
+					break;
+			}
 		}
 	}
-	/////////
-	// SYSTEM METHODS
-	/////////
 	
-	private void checkPositions()
-	{
-		Iterator<KeepInBoundsInfoPack> packs
-			= core.getInfoPacksOfType(KeepInBoundsInfoPack.class);
+	//////////////////////////////////////////////////
+	// Methods
+	//////////////////////////////////////////////////
+	
+	private void checkPositions() {
+		Iterator<IEntity> packs = core.getEntitiesWithPack(KeepInBoundsInfoPack.class);
+		KeepInBoundsInfoPack pack = core.getInfoPackOfType(KeepInBoundsInfoPack.class);
 		
-		while(packs.hasNext())
-		{
-			KeepInBoundsInfoPack pack = packs.next();
-			
-			//Check if too far to the left
-			if(pack.getXPos()-pack.getWidth()/2<0)
-			{
-				pack.setXPos(0+pack.getWidth()/2);
-			}
-			///Check if too far to the right
-			else if(pack.getXPos()+pack.getWidth()/2>nativeWidth)
-			{
-				pack.setXPos(nativeWidth-pack.getWidth()/2);
+		while(packs.hasNext()) {
+			if (!pack.setEntity(packs.next())) {
+				continue;
 			}
 			
-			//Check if too far up
-			if(pack.getYPos()-pack.getHeight()/2<0)
-			{
-				pack.setYPos(0+pack.getHeight()/2);
+			if (pack.getXPos() - pack.getWidth() / 2 < 0) {
+				//Check if too far to the left
+				pack.setXPos(0 + pack.getWidth() / 2);
 			}
-			//Check if too far down
-			else if(pack.getYPos()+pack.getHeight()/2>nativeHeight)
-			{
-				pack.setYPos(nativeHeight-pack.getHeight()/2);
+			else if (pack.getXPos() + pack.getWidth() / 2 > nativeWidth) {
+				///Check if too far to the right
+				pack.setXPos(nativeWidth - pack.getWidth() / 2);
+			}
+
+			if (pack.getYPos() - pack.getHeight() / 2 < 0) {
+				//Check if too far up
+				pack.setYPos(0 + pack.getHeight() / 2);
+			}
+			else if (pack.getYPos() + pack.getHeight() / 2 > nativeHeight) {
+				//Check if too far down
+				pack.setYPos(nativeHeight - pack.getHeight() / 2);
 			}
 		}
 	}
@@ -130,47 +125,31 @@ public class KeepInBoundsSystem extends AbstractSystem
 	 * Sets the native width of the playing area.
 	 * @param message	[0] contains the width of the playing area.
 	 */
-	private void setNativeWidth(final String[] message)
-	{
-		if(message.length>0)
-		{
-			try
-			{
-				this.nativeWidth = Integer.parseInt(message[0]);
-			}
-			catch(NumberFormatException e)
-			{
-				LOGGER.log(Level.WARNING, "Unable to set native width to: " 
-							+ message[0]);
-			}
+	private void setNativeResolution(final Map<IPayload, String> data) {
+		if (data == null || data.size() < 2) {
+			return;
+		}
+		try {
+			int width = Integer.parseInt(data.get(DATA_NATIVE_RESOLUTION.NATIVE_WIDTH));
+			int height = Integer.parseInt(data.get(DATA_NATIVE_RESOLUTION.NATIVE_HEIGHT));
+			this.nativeWidth = width;
+			this.nativeHeight = height;
+		}
+		catch(NumberFormatException e) {
+			LOGGER.log(Level.WARNING, "Unable to set native resolution.");
 		}
 	}
+
 	
-	/**
-	 * Sets the native width of the playing area.
-	 * @param message	[0] contains the height of the playing area.
-	 */
-	private void setNativeHeight(final String[] message)
-	{
-		if(message.length>0)
-		{
-			try
-			{
-				this.nativeHeight = Integer.parseInt(message[0]);
-			}
-			catch(NumberFormatException e)
-			{
-				LOGGER.log(Level.WARNING, "Unable to set native width to: " 
-							+ message[0]);
-			}
-		}
-	}
+	//////////////////////////////////////////////////
+	// Debug
+	//////////////////////////////////////////////////
+	
 	/**
 	 * Sets the debug level of this {@code System}.
 	 * @param level	the Level to set
 	 */
-	public void setDebugLevel(final Level level)
-	{
+	public void setDebugLevel(final Level level) {
 		this.LOGGER.setLevel(level);
 	}
 }

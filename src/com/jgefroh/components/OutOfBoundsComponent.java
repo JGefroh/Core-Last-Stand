@@ -1,65 +1,50 @@
 package com.jgefroh.components;
 
 import com.jgefroh.core.AbstractComponent;
-import com.jgefroh.core.IEntity;
 
 /**
  * Contains data that allows entities to be destroyed after moving offscreen.
- * 
- * 
- * Date: 17JUN13
  * @author Joseph Gefroh
  */
-public class OutOfBoundsComponent extends AbstractComponent
-{
-	//////////
-	// DATA
-	//////////
-	/**The owner of this component.*/
-	private IEntity owner;
-	
-	/**FLAG: Indicates whether the entity should be checked or not.*/
-	private boolean isChecking = false;
-	
-	
-	//////////
-	// INIT
-	//////////
-	public OutOfBoundsComponent()
-	{	
-		init();
-	}
+public class OutOfBoundsComponent extends AbstractComponent {
 
-	@Override
-	public void init()
-	{
-	}
-	
-	
-	//////////
-	// GETTERS
-	//////////
+    //////////////////////////////////////////////////
+    // Fields
+    //////////////////////////////////////////////////
 
-	/**
-	 * Gets the flag indicating the entity should be checked or not.
-	 * @return	true if the entity should be checked; false otherwise
-	 */
-	public boolean isChecking()
-	{
-		return this.isChecking;
-	}
-	
-	
-	//////////
-	// SETTERS
-	//////////
-	
-	/**
-	 * Sets the flag indicating the Entity should be checked or not.
-	 * @param isChecking true if the entity should be checked; false otherwise
-	 */
-	public void setChecking(final boolean isChecking)
-	{
-		this.isChecking = isChecking;
-	}
+    /**FLAG: Indicates whether the entity should be checked or not.*/
+    private boolean isChecking = false;
+
+
+    //////////////////////////////////////////////////
+    // Constructors
+    //////////////////////////////////////////////////
+    public OutOfBoundsComponent() {
+    }
+
+
+    //////////////////////////////////////////////////
+    // Getters
+    //////////////////////////////////////////////////
+
+    /**
+     * Gets the flag indicating the entity should be checked or not.
+     * @return	true if the entity should be checked; false otherwise
+     */
+    public boolean isChecking() {
+        return this.isChecking;
+    }
+
+
+    //////////////////////////////////////////////////
+    // Setters
+    //////////////////////////////////////////////////
+    
+    /**
+     * Sets the flag indicating the Entity should be checked or not.
+     * @param isChecking true if the entity should be checked; false otherwise
+     */
+    public void setChecking(final boolean isChecking) {
+        this.isChecking = isChecking;
+    }
 }

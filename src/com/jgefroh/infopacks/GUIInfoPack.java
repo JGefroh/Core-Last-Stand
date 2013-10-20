@@ -5,16 +5,13 @@ import com.jgefroh.components.RenderComponent;
 import com.jgefroh.components.TransformComponent;
 import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
-import com.jgefroh.core.IInfoPack;
 
 
-public class GUIInfoPack extends AbstractInfoPack
-{
-	//////////
-	// DATA
-	//////////
-	/**The entity associated with this InfoPack.*/
-	private IEntity owner;
+public class GUIInfoPack extends AbstractInfoPack {
+	
+	//////////////////////////////////////////////////
+	// Fields
+	//////////////////////////////////////////////////
 	
 	/**A component this InfoPack depends on.*/
 	private TransformComponent tc;
@@ -22,127 +19,106 @@ public class GUIInfoPack extends AbstractInfoPack
 	/**A component this InfoPack depends on.*/
 	private RenderComponent rc;
 	
+	/**A component this InfoPack depends on.*/
 	private GUIComponent gc;
+
 	
-	/**Flag that indicates the InfoPack is invalid and unreliable.*/
-	private boolean isDirty;
-	//////////
-	// INIT
-	//////////
+	//////////////////////////////////////////////////
+	// Initialize
+	//////////////////////////////////////////////////
+	
 	/**
-	 * Create a new instance of this InfoPack.
-	 * @param owner	the entity associated with this InfoPack
+	 * Creates a new instance of this InfoPack.
 	 */
-	public GUIInfoPack(final IEntity owner)
-	{
-		this.owner = owner;
+	public GUIInfoPack() {
 	}
 	
-	
-	//////////
-	// GETTERS
-	//////////
+
+	//////////////////////////////////////////////////
+	// IInfoPack
+	//////////////////////////////////////////////////
+
 	@Override
-	public boolean checkDirty()
-	{
-		if(owner.hasChanged())
-		{
-			tc = owner.getComponent(TransformComponent.class);
-			rc = owner.getComponent(RenderComponent.class);
-			gc = owner.getComponent(GUIComponent.class);
-			if(tc==null||rc==null||gc==null)
-			{
-				setDirty(true);
-				return true;
-			}
+	public boolean checkComponents(final IEntity entity) {
+		if (entity == null) {
+			return false;
 		}
-		setDirty(false);
-		return false;
+		
+		if (entity.getComponent(TransformComponent.class) == null
+				|| entity.getComponent(RenderComponent.class) == null
+				|| entity.getComponent(GUIComponent.class) == null) {
+			return false;
+		}
+		
+		return true;
 	}
 
 	@Override
-	public IInfoPack generate(final IEntity entity)
-	{
-		if(entity.getComponent(GUIComponent.class)!=null
-				&&entity.getComponent(RenderComponent.class)!=null
-				&&entity.getComponent(TransformComponent.class)!=null)
-		{
-			return new GUIInfoPack(entity);
+	public boolean setEntity(final IEntity entity) {
+		this.tc = entity.getComponent(TransformComponent.class);
+		this.rc = entity.getComponent(RenderComponent.class);
+		this.gc = entity.getComponent(GUIComponent.class);
+		
+		if (tc == null
+				|| rc == null
+				|| gc == null) {
+			tc = null;
+			rc = null;
+			gc = null;
+			entity.setChanged(true);
+			return false;		
 		}
-		return null;
+		
+		super.setCurrent(entity);
+		return true;
 	}
-	
-	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
-	}
-	
-	/**
-	 * @see TransformComponent#getXPos() 
-	 */
-	public double getXPos()
-	{
+
+
+	//////////////////////////////////////////////////
+	// Adapter - Getters
+	//////////////////////////////////////////////////
+
+	public double getXPos() {
 		return tc.getXPos();
-	}	
-	
-	/**
-	 * @see TransformComponent#getYPos() 
-	 */
-	public double getYPos()
-	{
+	}
+
+	public double getYPos() {
 		return tc.getYPos();
 	}
-	
-	/**
-	 * @see TransformComponent#getZPos() 
-	 */
-	public double getZPos()
-	{
+
+	public double getZPos() {
 		return tc.getZPos();
 	}
-	
-	/**
-	 * @see TransformComponent#getWidth() 
-	 */
-	public double getWidth()
-	{
+
+	public double getWidth() {
 		return tc.getWidth();
 	}
-	
-	/**
-	 * @see TransformComponent#getHeight() 
-	 */
-	public double getHeight()
-	{
+
+	public double getHeight() {
 		return tc.getHeight();
 	}
-	
-	public int getID()
-	{
+
+	public int getID() {
 		return gc.getID();
 	}
-	//////////
-	// SETTERS
-	//////////
 	
-	public void setXPos(final double xPos)
-	{
+	//////////////////////////////////////////////////
+	// Adapter - Setters
+	//////////////////////////////////////////////////
+	
+	public void setXPos(final double xPos) {
 		tc.setXPos(xPos);
 	}
-	
-	public void setYPos(final double yPos)
-	{
+
+	public void setYPos(final double yPos) {
 		tc.setYPos(yPos);
 	}
-	
-	public void setWidth(final double width)
-	{
+
+	public void setWidth(final double width) {
 		tc.setWidth(width);
 	}
-	
-	public void setHeight(final double height)
-	{
+
+	public void setHeight(final double height) {
 		tc.setHeight(height);
 	}
 }

@@ -7,16 +7,13 @@ import com.jgefroh.components.RenderComponent;
 import com.jgefroh.components.TransformComponent;
 import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
-import com.jgefroh.core.IInfoPack;
 
 
-public class GUICounterInfoPack extends AbstractInfoPack
-{
-	//////////
-	// DATA
-	//////////
-	/**The entity associated with this InfoPack.*/
-	private IEntity owner;
+public class GUICounterInfoPack extends AbstractInfoPack {
+	
+	//////////////////////////////////////////////////
+	// Fields
+	//////////////////////////////////////////////////
 	
 	/**A component this InfoPack depends on.*/
 	private TransformComponent tc;
@@ -27,155 +24,140 @@ public class GUICounterInfoPack extends AbstractInfoPack
 	/**A component this InfoPack depends on.*/
 	private GUICounterComponent gcc;
 	
-	/**Flag that indicates the InfoPack is invalid and unreliable.*/
-	private boolean isDirty;
-	//////////
-	// INIT
-	//////////
+	
+	//////////////////////////////////////////////////
+	// Initialize
+	//////////////////////////////////////////////////
+	
 	/**
-	 * Create a new instance of this InfoPack.
-	 * @param owner	the entity associated with this InfoPack
+	 * Creates a new instance of this InfoPack.
 	 */
-	public GUICounterInfoPack(final IEntity owner)
-	{
-		this.owner = owner;
+	public GUICounterInfoPack()	{
 	}
 	
-	
-	//////////
-	// GETTERS
-	//////////
+
+	//////////////////////////////////////////////////
+	// IInfoPack
+	//////////////////////////////////////////////////
+
 	@Override
-	public boolean checkDirty()
-	{
-		if(owner.hasChanged())
-		{
-			tc = owner.getComponent(TransformComponent.class);
-			rc = owner.getComponent(RenderComponent.class);
-			gcc = owner.getComponent(GUICounterComponent.class);
-			if(tc==null||rc==null||gcc==null)
-			{
-				setDirty(true);
-				return true;
-			}
+	public boolean checkComponents(final IEntity entity) {
+		if (entity == null) {
+			return false;
 		}
-		setDirty(false);
-		return false;
+		
+		if (entity.getComponent(TransformComponent.class) == null
+				|| entity.getComponent(RenderComponent.class) == null
+				|| entity.getComponent(GUICounterComponent.class) == null) {
+			return false;
+		}
+		
+		return true;
 	}
 
 	@Override
-	public IInfoPack generate(final IEntity entity)
-	{
-		if(entity.getComponent(GUICounterComponent.class)!=null
-				&&entity.getComponent(RenderComponent.class)!=null
-				&&entity.getComponent(TransformComponent.class)!=null)
-		{
-			return new GUICounterInfoPack(entity);
+	public boolean setEntity(final IEntity entity) {
+		this.tc = entity.getComponent(TransformComponent.class);
+		this.rc = entity.getComponent(RenderComponent.class);
+		this.gcc = entity.getComponent(GUICounterComponent.class);
+		
+		if (tc == null
+				|| rc == null
+				|| gcc == null) {
+			tc = null;
+			rc = null;
+			gcc = null;
+			entity.setChanged(true);
+			return false;		
 		}
-		return null;
+		
+		super.setCurrent(entity);
+		return true;
 	}
+
 	
-	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
-	}
+	//////////////////////////////////////////////////
+	// Adapter - Getters
+	//////////////////////////////////////////////////
 	
-	public double getXPos()
-	{
+	public double getXPos() {
 		return tc.getXPos();
-	}	
-	
-	public double getYPos()
-	{
+	}
+
+	public double getYPos() {
 		return tc.getYPos();
 	}
-	
-	public double getZPos()
-	{
+
+	public double getZPos() {
 		return tc.getZPos();
 	}
-	
-	public double getWidth()
-	{
+
+	public double getWidth() {
 		return tc.getWidth();
 	}
-	
-	public double getHeight()
-	{
+
+	public double getHeight() {
 		return tc.getHeight();
 	}
-	
-	public int getCharWidth()
-	{
+
+	public int getCharWidth() {
 		return gcc.getCharWidth();
 	}
 
-	public int getCharHeight()
-	{
+	public int getCharHeight() {
 		return gcc.getCharHeight();
 	}
-	
-	public Iterator<String> getChildren()
-	{
+
+	public Iterator<String> getChildren() {
 		return gcc.getChildren().iterator();
 	}
-	
-	public char getDefaultChar()
-	{
+
+	public char getDefaultChar() {
 		return gcc.getDefaultChar();
 	}
-	
-	public String getText()
-	{
+
+	public String getText() {
 		return gcc.getText();
 	}
-	
-	public int getNumSlots()
-	{
+
+	public int getNumSlots() {
 		return gcc.getNumSlots();
 	}
-	//////////
-	// SETTERS
-	//////////
 	
-	public void setXPos(final double xPos)
-	{
+	
+	//////////////////////////////////////////////////
+	// Adapter - Setters
+	//////////////////////////////////////////////////
+
+	public void setXPos(final double xPos) {
 		tc.setXPos(xPos);
 	}
-	
-	public void setYPos(final double yPos)
-	{
+
+	public void setYPos(final double yPos) {
 		tc.setYPos(yPos);
 	}
-	
-	public void setCharWidth(final int charWidth)
-	{
+
+	public void setCharWidth(final int charWidth) {
 		gcc.setCharWidth(charWidth);
 	}
-	
-	public void setCharHeight(final int charHeight)
-	{
+
+	public void setCharHeight(final int charHeight) {
 		gcc.setCharHeight(charHeight);
 	}
-	
-	public void setRGB(final float r, final float g, final float b)
-	{
+
+	public void setRGB(final float r, final float g, final float b) {
 		rc.setRGB(r, g, b);
 	}
-	
-	public void setSpriteID(final int id)
-	{
+
+	public void setSpriteID(final int id) {
 		rc.setSpriteID(id);
 	}
-	
-	public void setDefaultChar(final char defaultChar)
-	{
+
+	public void setDefaultChar(final char defaultChar) {
 		gcc.setDefaultChar(defaultChar);
 	}
-	
-	public void setText(final String text)
-	{
+
+	public void setText(final String text) {
 		gcc.setText(text);
 	}
 }

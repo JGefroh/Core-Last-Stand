@@ -2,6 +2,7 @@ package com.jgefroh.systems;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,10 +37,15 @@ import com.jgefroh.core.AbstractSystem;
 import com.jgefroh.core.Core;
 import com.jgefroh.core.Entity;
 import com.jgefroh.core.IEntity;
+import com.jgefroh.core.IMessage;
+import com.jgefroh.core.IPayload;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.data.Vector;
 import com.jgefroh.data.Weapon;
-import com.jgefroh.messages.Message;
+import com.jgefroh.input.InputSystem.InputAction;
+import com.jgefroh.messages.DefaultMessage;
+import com.jgefroh.messages.DefaultMessage.COMMAND_CREATE;
+import com.jgefroh.messages.DefaultMessage.EVENT_PLAYER_CREATED;
 import com.jgefroh.systems.WeaponSystem.FireMode;
 
 
@@ -50,11 +56,11 @@ import com.jgefroh.systems.WeaponSystem.FireMode;
  * and the entities created from that (like loading a level).
  * @author Joseph Gefroh
  */
-public class EntityCreationSystem extends AbstractSystem
-{
-	//////////
-	// DATA
-	//////////
+public class EntityCreationSystem extends AbstractSystem {
+	
+	//////////////////////////////////////////////////
+	// Fields
+	//////////////////////////////////////////////////
 	/**A reference to the core engine controlling this system.*/
 	private Core core;
 	
@@ -65,12 +71,12 @@ public class EntityCreationSystem extends AbstractSystem
 	private final Logger LOGGER 
 		= LoggerFactory.getLogger(this.getClass(), Level.ALL);
 	
-	private double bearing;
-	
 	HashMap<String, ArrayList<IEntity>> entityPool;
-	//////////
-	// INIT
-	//////////
+	
+	//////////////////////////////////////////////////
+	// Initialize
+	//////////////////////////////////////////////////
+	
 	/**
 	 * Create a new EntityCreationSystem.
 	 * @param core	 a reference to the Core controlling this system
@@ -88,65 +94,59 @@ public class EntityCreationSystem extends AbstractSystem
 	// ISYSTEM INTERFACE
 	//////////
 	@Override
-	public void init()
-	{
+	public void init() {
 		setDebugLevel(this.debugLevel);
 
 		entityPool = new HashMap<String, ArrayList<IEntity>>();
-		core.setInterested(this, Message.BEARING_TO_MOUSE);
-		core.setInterested(this, Message.CREATE);
+		core.setInterested(this, DefaultMessage.COMMAND_CREATE);
 	}
 	
 	@Override
-	public void recv(final String id, final String... message)
-	{
-		LOGGER.log(Level.FINEST, "Received message: " + id);
-		Message msgID = Message.valueOf(id);
-		
-		switch(msgID)
-		{
-			case CREATE:
-				create(message);
-				break;
+	public void recv(final IMessage messageType, final Map<IPayload, String> message) {		
+		LOGGER.log(Level.FINEST, "Received message: " + messageType);
+		if (messageType.getClass() == DefaultMessage.class) {
+			DefaultMessage type = (DefaultMessage) messageType;
+			switch (type) {
+				case COMMAND_CREATE:
+					create(message);
+					break;
+				default:
+					break;
+			}
 		}
 	}
 	//////////
 	// SYSTEM METHODS
 	//////////
-	private void create(final String[] message)
-	{
-		if(message.length>=2)
-		{
-			String makeThis = message[0];
-			String forThis= message[1];
-			
-			if(makeThis.equals("BULLET"))
-			{
-				createBullet(core.getEntityWithID(forThis));
-			}
-			else if(makeThis.equals("EXPLOSION"))
-			{
-				createExplosion(core.getEntityWithID(forThis));
-			}
-			else if(makeThis.equals("BOMBLET"))
-			{
-				createBomblet(core.getEntityWithID(forThis), Double.parseDouble(message[2]));
-			}
+	private void create(final Map<IPayload, String> data) {
+		if (data == null || data.size() < 2) {
+			return;
+		}
+		String makeThis = data.get(COMMAND_CREATE.TYPE_TO_CREATE);
+		String forThis = data.get(COMMAND_CREATE.OWNER_ID);
+
+		if (makeThis.equals("BULLET")) {
+			createBullet(core.getEntityWithID(forThis));
+		} 
+		else if (makeThis.equals("EXPLOSION")) {
+			createExplosion(core.getEntityWithID(forThis));
+		} 
+		else if (makeThis.equals("BOMBLET")) {
+			createBomblet(core.getEntityWithID(forThis),
+					Double.parseDouble(data.get(COMMAND_CREATE.ANGLE)));
 		}
 	}
-	public void addToPool(final IEntity entity)
-	{
+
+	public void addToPool(final IEntity entity) {
 		ArrayList<IEntity> entities = entityPool.get(entity.getName());
-		
-		if(entities!=null)
-		{			
+
+		if (entities != null) {
 			entities.add(entity);
-		}
-		else
-		{
+		} 
+		else {
 			ArrayList<IEntity> newEntities = new ArrayList<IEntity>();
 			newEntities.add(entity);
-			entityPool.put(entity.getName(), newEntities);		
+			entityPool.put(entity.getName(), newEntities);
 		}
 	}
 	
@@ -178,15 +178,15 @@ public class EntityCreationSystem extends AbstractSystem
 			player.add(vc);
 			
 		InputComponent ic = new InputComponent();
-			ic.setInterested(Message.MOVE_UP.name());	
-			ic.setInterested(Message.MOVE_DOWN.name());	
-			ic.setInterested(Message.MOVE_LEFT.name());	
-			ic.setInterested(Message.MOVE_RIGHT.name());	
-			ic.setInterested(Message.FIRE1_PRESSED.name());	
-			ic.setInterested(Message.FIRE1_RELEASED.name());	
-			ic.setInterested(Message.SHIELD_PRESSED.name());
-			ic.setInterested(Message.SHIELD_RELEASED.name());
-			ic.setInterested(Message.SPECIAL_RELEASED.name());
+			ic.setInterested(InputAction.MOVE_UP.name());	
+			ic.setInterested(InputAction.MOVE_DOWN.name());	
+			ic.setInterested(InputAction.MOVE_LEFT.name());	
+			ic.setInterested(InputAction.MOVE_RIGHT.name());	
+			ic.setInterested(InputAction.REQUEST_FIRE_START.name());	
+			ic.setInterested(InputAction.REQUEST_FIRE_STOP.name());
+			ic.setInterested(InputAction.REQUEST_SHIELD_START.name());
+			ic.setInterested(InputAction.REQUEST_SHIELD_STOP.name());
+			ic.setInterested(InputAction.REQUEST_SPECIAL.name());
 			player.add(ic);
 		
 		CollisionComponent cc = new CollisionComponent();
@@ -308,7 +308,9 @@ public class EntityCreationSystem extends AbstractSystem
 			player.add(abc);
 		core.add(player);
 		
-		core.send(Message.PLAYER_CREATED, player.getID());
+		Map<IPayload, String> parameters = new HashMap<IPayload, String>();
+		parameters.put(EVENT_PLAYER_CREATED.PLAYER_ENTITY_ID, player.getID());
+		core.send(DefaultMessage.EVENT_PLAYER_CREATED, parameters);
 	}
 	
 	public void createEnemy(final int xPos, final int yPos, final String type)

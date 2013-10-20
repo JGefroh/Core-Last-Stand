@@ -5,62 +5,50 @@ import com.jgefroh.core.IEntity;
 
 /**
  * Contains data to link an entity to another entity.
- * 
- * 
- * Date: 21JUN13
  * @author Joseph Gefroh
  */
-public class SlaveComponent extends AbstractComponent
-{
-	//////////
-	// DATA
-	//////////
-	/**The owner of this component.*/
-	private IEntity owner;
-	
-	/**The master of this Entity.*/
-	private IEntity master;
-	
-	//////////
-	// INIT
-	//////////
-	/**
-	 * Creates a new instance of this {@code Component}.
-	 */
-	public SlaveComponent()
-	{
-		init();
-	}
-	
-	@Override
-	public void init()
-	{
-	}
+public class SlaveComponent extends AbstractComponent {
 
-	/**
-	 * Gets the Entity this Entity is linked to.
-	 * @return	the Entity that this entity follows
-	 */
-	public IEntity getMaster()
-	{
-		return this.master;
-	}
-	
-	//////////
-	// GETTERS
-	//////////
-	
+    //////////////////////////////////////////////////
+    // Fields
+    //////////////////////////////////////////////////
+    
+    /**The master of this Entity.*/
+    private IEntity master;
 
-	//////////
-	// SETTERS
-	//////////	
-	/**
-	 * Sets the Entity this Entity is linked to.
-	 * @param master	the Entity that this entity follows
-	 */
-	public void setMaster(final IEntity master)
-	{
-		this.master = master;
-	}
-	
+    //////////////////////////////////////////////////
+    // Constructors
+    //////////////////////////////////////////////////
+    /**
+     * Creates a new instance of this {@code Component}.
+     */
+    public SlaveComponent() {
+    }
+
+    
+    //////////////////////////////////////////////////
+    // Getters
+    //////////////////////////////////////////////////
+    
+    /**
+     * Gets the Entity this Entity is linked to.
+     * @return	the Entity that this entity follows
+     */
+    public IEntity getMaster() {
+        return this.master;
+    }
+
+
+    //////////////////////////////////////////////////
+    // Setters
+    //////////////////////////////////////////////////
+    
+    /**
+     * Sets the Entity this Entity is linked to.
+     * @param master	the Entity that this entity follows
+     */
+    public void setMaster(final IEntity master) {
+        this.master = master;
+    }
+
 }

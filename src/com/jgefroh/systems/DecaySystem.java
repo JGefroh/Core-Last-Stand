@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import com.jgefroh.core.AbstractSystem;
 import com.jgefroh.core.Core;
+import com.jgefroh.core.IEntity;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.infopacks.DecayInfoPack;
 
@@ -16,12 +17,12 @@ import com.jgefroh.infopacks.DecayInfoPack;
  * Date: 31MAY13
  * @author Joseph Gefroh
  */
-public class DecaySystem extends AbstractSystem
-{
+public class DecaySystem extends AbstractSystem {
 	//TODO: Make this create bodies, too.
-	//////////
-	// DATA
-	//////////
+	//////////////////////////////////////////////////
+	// Fields
+	//////////////////////////////////////////////////
+	
 	/**A reference to the core engine controlling this system.*/
 	private Core core;
 	
@@ -31,48 +32,59 @@ public class DecaySystem extends AbstractSystem
 	/**Logger for debug purposes.*/
 	private final Logger LOGGER 
 		= LoggerFactory.getLogger(this.getClass(), debugLevel);
+
+
+	//////////////////////////////////////////////////
+	// Initialize
+	//////////////////////////////////////////////////
 	
-	
-	//////////
-	// INIT
-	//////////
-	public DecaySystem(final Core core)
-	{
+	/**
+	 * Create a new instance of this {@code System}.
+	 * @param core	 a reference to the Core controlling this system
+	 */
+	public DecaySystem(final Core core) {
 		this.core = core;
 	}
 	
-	
-	//////////
-	// ISYSTEM INTERFACE
-	//////////
 
+	//////////////////////////////////////////////////
+	// Override
+	//////////////////////////////////////////////////
+	
 	@Override
-	public void work(final long now)
-	{
+	public void work(final long now) {
 		decay(now);
 	}
-	
-	//////////
-	// SYSTEM METHODS
-	//////////
-	private void decay(final long now)
-	{
-		Iterator<DecayInfoPack> infoPacks = 
-				core.getInfoPacksOfType(DecayInfoPack.class);
-		while(infoPacks.hasNext())
-		{
-			DecayInfoPack pack = infoPacks.next();
 
-			if(now-pack.getLastUpdateTime()>=pack.getTimeUntilDecay()&&pack.getLastUpdateTime()!=0)
-			{	
-				core.removeEntity(pack.getOwner());
+	
+	//////////////////////////////////////////////////
+	// Methods
+	//////////////////////////////////////////////////
+	
+	private void decay(final long now) {
+		Iterator<IEntity> packs = core.getEntitiesWithPack(DecayInfoPack.class);
+		DecayInfoPack pack = core.getInfoPackOfType(DecayInfoPack.class);
+		
+		while(packs.hasNext()) {
+			if (!pack.setEntity(packs.next())) {
+				continue;
 			}
-			else if(pack.getLastUpdateTime()==0)
-			{
+
+			if (now - pack.getLastUpdateTime() >= pack.getTimeUntilDecay() 
+					&& pack.getLastUpdateTime() != 0) {	
+				core.removeEntity(pack.getEntity());
+			}
+			else if (pack.getLastUpdateTime() == 0) {
 				pack.setLastUpdateTime(now);
 			}
 		}
 	}
+
+	
+	//////////////////////////////////////////////////
+	// Debug
+	//////////////////////////////////////////////////
+	
 	/**
 	 * Sets the debug level of this {@code System}.
 	 * @param level	the Level to set

@@ -1,8 +1,13 @@
 package com.jgefroh.effects;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.jgefroh.core.Core;
 import com.jgefroh.core.IEntity;
-import com.jgefroh.messages.Message;
+import com.jgefroh.core.IPayload;
+import com.jgefroh.messages.DefaultMessage;
+import com.jgefroh.messages.DefaultMessage.EVENT_EXPLOSION_CONTACT;
 
 
 /**
@@ -27,16 +32,21 @@ public class ExplosionHitEffect implements IEffect
 		}
 		return false;
 	}
-	public void execute(final IEntity source, final IEntity target)
-	{
+
+	public void execute(final IEntity source, final IEntity target) {
+		Map<IPayload, String> parameters = new HashMap<IPayload, String>();
+
 		//Explosion contacts are handled by the ExplosionSystem.
-		if(source.getName().equals("EXPLOSION"))
-		{
-			core.send(Message.EXPLOSION_CONTACT, source.getID(), target.getID());
-		}
-		else
-		{
-			core.send(Message.EXPLOSION_CONTACT, target.getID(), source.getID());
+		if (source.getName().equals("EXPLOSION")) {
+			parameters.put(EVENT_EXPLOSION_CONTACT.SOURCE_ID, source.getID());
+			parameters.put(EVENT_EXPLOSION_CONTACT.VICTIM_ID, target.getID());
+			core.send(DefaultMessage.EVENT_EXPLOSION_CONTACT, parameters);
+		} 
+		else {
+
+			parameters.put(EVENT_EXPLOSION_CONTACT.VICTIM_ID, source.getID());
+			parameters.put(EVENT_EXPLOSION_CONTACT.SOURCE_ID, target.getID());
+			core.send(DefaultMessage.EVENT_EXPLOSION_CONTACT, parameters);
 		}
 	}
 }

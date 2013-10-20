@@ -1,7 +1,6 @@
 package com.jgefroh.input;
 
-public interface IInputSystem
-{
+public interface IInputSystem {
 	/**The code indicating that an action will be performed on a move event.*/
 	public static final int MOVE = 4;
 	/**The code indicating that an action will be performed on a press event.*/

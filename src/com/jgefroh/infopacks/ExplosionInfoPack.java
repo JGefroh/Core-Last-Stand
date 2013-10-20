@@ -4,18 +4,15 @@ import com.jgefroh.components.ExplosionComponent;
 import com.jgefroh.components.TransformComponent;
 import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
-import com.jgefroh.core.IInfoPack;
 
 /**
  * @author Joseph Gefroh
  */
-public class ExplosionInfoPack extends AbstractInfoPack
-{
-	//////////
-	// DATA
-	//////////
-	/**The entity associated with this InfoPack.*/
-	private IEntity owner;
+public class ExplosionInfoPack extends AbstractInfoPack {
+	
+	//////////////////////////////////////////////////
+	// Fields
+	//////////////////////////////////////////////////
 	
 	/**A component this InfoPack depends on.*/
 	private ExplosionComponent ec;
@@ -23,59 +20,59 @@ public class ExplosionInfoPack extends AbstractInfoPack
 	/**A component this InfoPack depends on.*/
 	private TransformComponent tc;
 	
-	/**Flag that indicates the InfoPack is invalid and unreliable.*/
-	private boolean isDirty;
+
+	//////////////////////////////////////////////////
+	// Initialize
+	//////////////////////////////////////////////////
 	
-	
-	//////////
-	// INIT
-	//////////
 	/**
-	 * Create a new instance of this InfoPack.
-	 * @param owner	the entity associated with this InfoPack
+	 * Creates a new instance of this InfoPack.
 	 */
-	public ExplosionInfoPack(final IEntity owner)
-	{
-		this.owner = owner;
+	public ExplosionInfoPack() {
 	}
 	
 	
-	//////////
-	// GETTERS
-	//////////
+
+	//////////////////////////////////////////////////
+	// IInfoPack
+	//////////////////////////////////////////////////
+
 	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
-	}
-	
-	@Override
-	public boolean checkDirty()
-	{
-		if(owner.hasChanged())
-		{
-			ec = owner.getComponent(ExplosionComponent.class);
-			tc = owner.getComponent(TransformComponent.class);
-			if(ec==null||tc == null)
-			{
-				setDirty(true);
-				return true;
-			}
+	public boolean checkComponents(final IEntity entity) {
+		if (entity == null) {
+			return false;
 		}
-		setDirty(false);
-		return false;
+		
+		if (entity.getComponent(TransformComponent.class) == null
+				|| entity.getComponent(ExplosionComponent.class) == null) {
+			return false;
+		}
+		
+		return true;
 	}
 
 	@Override
-	public IInfoPack generate(final IEntity entity)
-	{
-		if(entity.getComponent(ExplosionComponent.class)!=null
-				&&entity.getComponent(TransformComponent.class)!=null)
-		{
-			return new ExplosionInfoPack(entity);
+	public boolean setEntity(final IEntity entity) {
+		this.tc = entity.getComponent(TransformComponent.class);
+		this.ec = entity.getComponent(ExplosionComponent.class);
+		
+		if (tc == null
+				|| ec == null) {
+			tc = null;
+			ec = null;
+			entity.setChanged(true);
+			return false;		
 		}
-		return null;
+		
+		super.setCurrent(entity);
+		return true;
 	}
+
+	
+	//////////////////////////////////////////////////
+	// Adapter - Getters
+	//////////////////////////////////////////////////
+	
 	public double getHeight()
 	{
 		return tc.getHeight();
@@ -125,9 +122,12 @@ public class ExplosionInfoPack extends AbstractInfoPack
 	{
 		return ec.getNumHits(entityID);
 	}
-	//////////
-	// SETTERS
-	//////////
+	
+	
+	//////////////////////////////////////////////////
+	// Adapter - Setters
+	//////////////////////////////////////////////////
+	
 	public void setWidth(final double width)
 	{
 		tc.setWidth(width);

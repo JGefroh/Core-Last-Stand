@@ -4,26 +4,17 @@ import com.jgefroh.components.TransformComponent;
 import com.jgefroh.components.VelocityComponent;
 import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
-import com.jgefroh.core.IInfoPack;
 import com.jgefroh.data.Vector;
 
 
 /**
- * Intended to be used by the TransformSystem.
- * 
- * Controls access to the following components:
- * TransformComponent
- * VelocityComponent
- * 
  * @author Joseph Gefroh
  */
-public class MovementInfoPack extends AbstractInfoPack
-{
-	//////////
-	// DATA
-	//////////
-	/**The entity associated with this InfoPack.*/
-	private IEntity owner;
+public class MovementInfoPack extends AbstractInfoPack {
+	
+	//////////////////////////////////////////////////
+	// Fields
+	//////////////////////////////////////////////////
 	
 	/**A component this InfoPack depends on.*/
 	private TransformComponent tc;
@@ -31,151 +22,112 @@ public class MovementInfoPack extends AbstractInfoPack
 	/**A component this InfoPack depends on.*/
 	private VelocityComponent vc;
 	
-	/**Flag that indicates the InfoPack is invalid and unreliable.*/
-	private boolean isDirty;	
+
+	//////////////////////////////////////////////////
+	// Initialize
+	//////////////////////////////////////////////////
 	
-	
-	//////////
-	// INIT
-	//////////
 	/**
-	 * Create a new instance of this InfoPack.
-	 * @param owner	the entity associated with this InfoPack
+	 * Creates a new instance of this InfoPack.
 	 */
-	public MovementInfoPack(final IEntity owner)
-	{
-		this.owner = owner;
+	public MovementInfoPack() {
 	}
+
 	
-	
-	//////////
-	// GETTERS
-	//////////
+	//////////////////////////////////////////////////
+	// IInfoPack
+	//////////////////////////////////////////////////
+
 	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
-	}
-	
-	@Override
-	public boolean checkDirty()
-	{
-		if(owner.hasChanged())
-		{
-			tc = owner.getComponent(TransformComponent.class);
-			vc = owner.getComponent(VelocityComponent.class);			
-			if(tc==null||vc==null)
-			{
-				setDirty(true);
-				return true;
-			}
+	public boolean checkComponents(final IEntity entity) {
+		if (entity == null) {
+			return false;
 		}
-		setDirty(false);
-		return false;
+		
+		if (entity.getComponent(TransformComponent.class) == null
+				|| entity.getComponent(VelocityComponent.class) == null) {
+			return false;
+		}
+		
+		return true;
 	}
 
 	@Override
-	public IInfoPack generate(final IEntity entity)
-	{
-		if(entity.getComponent(TransformComponent.class)!=null
-				&& entity.getComponent(VelocityComponent.class)!=null)
-		{
-			return new MovementInfoPack(entity);
+	public boolean setEntity(final IEntity entity) {
+		this.tc = entity.getComponent(TransformComponent.class);
+		this.vc = entity.getComponent(VelocityComponent.class);
+		
+		if (tc == null
+				|| vc == null) {
+			tc = null;
+			vc = null;
+			entity.setChanged(true);
+			return false;		
 		}
-		return null;
+		
+		super.setCurrent(entity);
+		return true;
 	}
-	/**
-	 * @see TransformComponent#getXPos()
-	 */
-	public double getXPos()
-	{
+	
+	
+	//////////////////////////////////////////////////
+	// Adapter - Getters
+	//////////////////////////////////////////////////
+
+	public double getXPos() {
 		return tc.getXPos();
 	}
-	
-	/**
-	 * @see TransformComponent#getYPos()
-	 */
-	public double getYPos()
-	{
+
+	public double getYPos() {
 		return tc.getYPos();
 	}
-	
-	/**
-	 * @see VelocityComponent#getInterval()
-	 */
-	public long getInterval()
-	{
+
+	public long getInterval() {
 		return vc.getInterval();
 	}
-	
-	/**
-	 * @see TransformComponent#getBearing()
-	 */
-	public double getBearing()
-	{
+
+	public double getBearing() {
 		return tc.getBearing();
 	}
-	
-	/**
-	 * @see VelocityComponent#getLastUpdated()
-	 */
-	public long getLastUpdated()
-	{
+
+	public long getLastUpdated() {
 		return vc.getLastUpdated();
 	}
-	
-	public Vector getTotalMovementVector()
-	{
+
+	public Vector getTotalMovementVector() {
 		return vc.getTotalMovementVector();
 	}
-	
-	public boolean isContinuous()
-	{
+
+	public boolean isContinuous() {
 		return vc.isContinuous();
 	}
-	//////////
-	// SETTERS
-	//////////
 	
-	/**
-	 * @see TransformComponent#setXPos(double)
-	 */
-	public void setXPos(final double xPos)
-	{
+	
+	//////////////////////////////////////////////////
+	// Adapter - Setters
+	//////////////////////////////////////////////////
+
+	public void setXPos(final double xPos) {
 		tc.setXPos(xPos);
 	}
-	
-	/**
-	 * @see TransformComponent#setYPos(double)
-	 */
-	public void setYPos(final double yPos)
-	{
+
+	public void setYPos(final double yPos) {
 		tc.setYPos(yPos);
 	}
-	
-	/**
-	 * @see VelocityComponent#setInterval(long)
-	 */
-	public void setInterval(final long interval)
-	{
+
+	public void setInterval(final long interval) {
 		vc.setInterval(interval);
 	}
-	
-	/**
-	 * @see VelocityComponent#setLastUpdated(long)
-	 */
-	public void setLastUpdated(final long lastUpdated)
-	{
+
+	public void setLastUpdated(final long lastUpdated) {
 		vc.setLastUpdated(lastUpdated);
 	}
-	
-	public void setTotalMovementVector(final Vector totalMovementVector)
-	{
+
+	public void setTotalMovementVector(final Vector totalMovementVector) {
 		vc.setTotalMovementVector(totalMovementVector);
 	}
-	
-	public void setContinuous(final boolean isContinuous)
-	{
+
+	public void setContinuous(final boolean isContinuous) {
 		vc.setContinuous(isContinuous);
 	}
 }

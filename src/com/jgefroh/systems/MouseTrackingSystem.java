@@ -2,25 +2,30 @@ package com.jgefroh.systems;
 
 
 import java.util.Iterator;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.jgefroh.core.AbstractSystem;
 import com.jgefroh.core.Core;
+import com.jgefroh.core.IEntity;
+import com.jgefroh.core.IMessage;
+import com.jgefroh.core.IPayload;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.infopacks.MouseTrackInfoPack;
-import com.jgefroh.messages.Message;
+import com.jgefroh.messages.DefaultMessage;
+import com.jgefroh.messages.DefaultMessage.DATA_INPUT_CURSOR_POSITION;
 
 
 /**
  * Rotates entities towards the mouse.
  * @author Joseph Gefroh
  */
-public class MouseTrackingSystem extends AbstractSystem
-{
-	//////////
-	// DATA
-	//////////
+public class MouseTrackingSystem extends AbstractSystem {
+	
+	//////////////////////////////////////////////////
+	// Fields
+	//////////////////////////////////////////////////
 	/**A reference to the core engine controlling this system.*/
 	private Core core;
 	
@@ -36,75 +41,73 @@ public class MouseTrackingSystem extends AbstractSystem
 	
 	/**The Y world position of the mouse.*/
 	private double mouseY;
-	//////////
-	// INIT
-	//////////
+	
+	
+	//////////////////////////////////////////////////
+	// Initialize
+	//////////////////////////////////////////////////
+	
 	/**
 	 * Create a new instance of this {@code System}.
 	 * @param core	 a reference to the Core controlling this system
 	 */
-	public MouseTrackingSystem(final Core core)
-	{
+	public MouseTrackingSystem(final Core core) {
 		this.core = core;
 		setDebugLevel(this.debugLevel);
 
 		init();
 	}
+
 	
+	//////////////////////////////////////////////////
+	// Override
+	//////////////////////////////////////////////////
 	
-	//////////
-	// ISYSTEM INTERFACE
-	//////////
 	@Override
-	public void init()
-	{
-		core.setInterested(this, Message.INPUT_CURSOR_POSITION);
+	public void init() {
+		core.setInterested(this, DefaultMessage.DATA_INPUT_CURSOR_POSITION);
 	}
 
 	@Override
-	public void work(final long now)
-	{
+	public void work(final long now) {
 		turnTowardsMouse(now);			
 	}
 
 	@Override
-	public void recv(final String id, final String... message)
-	{
-		LOGGER.log(Level.FINEST, "Received message: " + id);
-		Message msgID = Message.valueOf(id);
-
-		switch(msgID)
-		{
-			case INPUT_CURSOR_POSITION:
-				updateCursorPosition(message);
-				break;
-		}
-		if(id.equals("INPUT_CURSOR_POSITION"))
-		{
-			updateCursorPosition(message);
+	public void recv(final IMessage messageType, final Map<IPayload, String> message) {		
+		LOGGER.log(Level.FINEST, "Received message: " + messageType);
+		if (messageType.getClass() == DefaultMessage.class) {
+			DefaultMessage type = (DefaultMessage) messageType;
+			switch (type) {
+				case DATA_INPUT_CURSOR_POSITION:
+					updateCursorPosition(message);
+					break;
+				default:
+					break;
+			}
 		}
 	}
 	
-	//////////
-	// SYSTEM METHODS
-	//////////
+	
+	//////////////////////////////////////////////////
+	// Methods
+	//////////////////////////////////////////////////
+	
 	/**
 	 * Turns all entities with a MouseTrackInfoPack towards the mouse.
 	 */
-	public void turnTowardsMouse(final long now)
-	{
-		core.send(Message.REQUEST_CURSOR_POSITION);
+	public void turnTowardsMouse(final long now) {
+		core.send(DefaultMessage.REQUEST_CURSOR_POSITION, null);
 		
-		Iterator<MouseTrackInfoPack> packs 
-			= core.getInfoPacksOfType(MouseTrackInfoPack.class);
-		while(packs.hasNext())
-		{
-			MouseTrackInfoPack each = packs.next();
-			if(each.isDirty()==false)
-			{
-				double bearing = calculateBearing(each.getXPos(), each.getYPos());
-				each.setBearing(bearing);
+		Iterator<IEntity> packs = core.getEntitiesWithPack(MouseTrackInfoPack.class);
+		MouseTrackInfoPack pack = core.getInfoPackOfType(MouseTrackInfoPack.class);
+		
+		while (packs.hasNext()) {
+			if (!pack.setEntity(packs.next())) {
+				continue;
 			}
+			double bearing = calculateBearing(pack.getXPos(), pack.getYPos());
+			pack.setBearing(bearing);
 		}
 	}
 	
@@ -112,29 +115,22 @@ public class MouseTrackingSystem extends AbstractSystem
 	 * Updates this System's last known world mouse coordinates.
 	 * @param message
 	 */
-	private void updateCursorPosition(final String[] message)
-	{
-		if(message.length>=2)
-		{
-			try
-			{
-				this.mouseX = Integer.parseInt(message[0]);
-				this.mouseY = Integer.parseInt(message[1]);
-			}
-			catch(NumberFormatException e)
-			{
-				LOGGER.log(Level.SEVERE, 
-						"Error updating cursor position - bad format."
-						+ "Quitting...");
-				e.printStackTrace();
-				System.exit(-1);
-			}
+	private void updateCursorPosition(final Map<IPayload, String> data)  {
+		if (data == null || data.size() < 2) {
+			return;
 		}
-		else
-		{
+		
+		try {
+			int yPos = Integer.parseInt(data.get(DATA_INPUT_CURSOR_POSITION.MOUSE_Y));
+			int xPos = Integer.parseInt(data.get(DATA_INPUT_CURSOR_POSITION.MOUSE_X));
+			this.mouseX = xPos;
+			this.mouseY = yPos;
+		}
+		catch(NumberFormatException e) {
 			LOGGER.log(Level.SEVERE, 
-					"Error updating cursor position - unexpected response."
+					"Error updating cursor position - bad format."
 					+ "Quitting...");
+			e.printStackTrace();
 			System.exit(-1);
 		}
 	}
@@ -145,8 +141,7 @@ public class MouseTrackingSystem extends AbstractSystem
 	 * @param y	the y coordinate of the object
 	 * @return	the angle to turn the object in order to face the mouse
 	 */
-	private double calculateBearing(final double x, final double y)
-	{
+	private double calculateBearing(final double x, final double y) {
 		double adj = this.mouseX-x;
 		double opp = this.mouseY-y;
 		
@@ -154,12 +149,16 @@ public class MouseTrackingSystem extends AbstractSystem
 		return bearing;
 	}
 	
+	
+	//////////////////////////////////////////////////
+	// Debug
+	//////////////////////////////////////////////////
+	
 	/**
 	 * Sets the debug level of this {@code System}.
 	 * @param level	the Level to set
 	 */
-	public void setDebugLevel(final Level level)
-	{
+	public void setDebugLevel(final Level level) {
 		this.LOGGER.setLevel(level);
 	}
 }

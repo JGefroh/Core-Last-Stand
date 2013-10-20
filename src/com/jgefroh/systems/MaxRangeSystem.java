@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import com.jgefroh.core.AbstractSystem;
 import com.jgefroh.core.Core;
+import com.jgefroh.core.IEntity;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.infopacks.MaxRangeInfoPack;
 
@@ -15,11 +16,12 @@ import com.jgefroh.infopacks.MaxRangeInfoPack;
  * Destroys entities that move a certain distance away from their origin.
  * @author Joseph Gefroh
  */
-public class MaxRangeSystem extends AbstractSystem
-{
-	//////////
-	// DATA
-	//////////
+public class MaxRangeSystem extends AbstractSystem {
+	
+	//////////////////////////////////////////////////
+	// Fields
+	//////////////////////////////////////////////////
+	
 	/**A reference to the core engine controlling this system.*/
 	private Core core;
 	
@@ -30,15 +32,16 @@ public class MaxRangeSystem extends AbstractSystem
 	private final Logger LOGGER 
 		= LoggerFactory.getLogger(this.getClass(), Level.ALL);
 	
-	//////////
-	// INIT
-	//////////
+	
+	//////////////////////////////////////////////////
+	// Initialize
+	//////////////////////////////////////////////////
+	
 	/**
 	 * Create a new instance of this {@code System}.
 	 * @param core	 a reference to the Core controlling this system
 	 */
-	public MaxRangeSystem(final Core core)
-	{
+	public MaxRangeSystem(final Core core) {
 		this.core = core;
 		setDebugLevel(this.debugLevel);
 
@@ -46,62 +49,60 @@ public class MaxRangeSystem extends AbstractSystem
 	}
 	
 	
-	//////////
-	// ISYSTEM INTERFACE
-	//////////
+	//////////////////////////////////////////////////
+	// Override
+	//////////////////////////////////////////////////
+	
 	@Override
-	public void work(final long now)
-	{
-		checkPassed(now);		
+	public void work(final long now) {
+		checkPassed(now);
 	}
 
-	//////////
-	// SYSTEM METHODS
-	//////////
-	public void checkPassed(final long now)
-	{
-		Iterator<MaxRangeInfoPack> packs 
-			= core.getInfoPacksOfType(MaxRangeInfoPack.class);
+	
+	//////////////////////////////////////////////////
+	// Methods
+	//////////////////////////////////////////////////
+	
+	public void checkPassed(final long now) {
+		Iterator<IEntity> packs = core.getEntitiesWithPack(MaxRangeInfoPack.class);
+		MaxRangeInfoPack pack = core.getInfoPackOfType(MaxRangeInfoPack.class);
 		
-		while(packs.hasNext())
-		{
-			MaxRangeInfoPack each = packs.next();
-			if(each.isDirty()==false)
-			{
-				
-				//Step 1: get the amount it has traveled since last  check
-				double x = each.getLastXPos();
-				double y = each.getLastYPos();
-				
-				double diffX = x-each.getXPos();
-				double diffY = y-each.getYPos();
-				
-				double distance = Math.sqrt(diffX*diffX+diffY*diffY);
-				
-				//Step 2: Add the amount traveled to the total
-				each.setLastXPos(each.getXPos());
-				each.setLastYPos(each.getYPos());
-				each.setDistanceTraveled(each.getDistanceTraveled()+distance);
-				
-				//Step 3: Check the amount it has traveled against the max range
-				if(each.getDistanceTraveled()>each.getMaxRange())
-				{
-					LOGGER.log(Level.FINE, 
-							each.getOwner().getName() + "(" 
-									+ each.getOwner().getID()
-									+ ") destroyed (reached max range).");
-					core.removeEntity(each.getOwner());
-				}
+		while(packs.hasNext()) {
+			if (!pack.setEntity(packs.next())) {
+				continue;
+			}
+			
+			//Step 1: get the amount it has traveled since last check
+			double x = pack.getLastXPos();
+			double y = pack.getLastYPos();
+
+			double diffX = x - pack.getXPos();
+			double diffY = y - pack.getYPos();
+
+			double distance = Math.sqrt(diffX * diffX + diffY * diffY);
+
+			//Step 2: Add the amount traveled to the total
+			pack.setLastXPos(pack.getXPos());
+			pack.setLastYPos(pack.getYPos());
+			pack.setDistanceTraveled(pack.getDistanceTraveled() + distance);
+
+			//Step 3: Check the amount it has traveled against the max
+			//range
+			if (pack.getDistanceTraveled() > pack.getMaxRange()) {
+				core.removeEntity(pack.getEntity());
 			}
 		}
 	}
+
+	//////////////////////////////////////////////////
+	// Debug
+	//////////////////////////////////////////////////
 	
 	/**
 	 * Sets the debug level of this {@code System}.
 	 * @param level	the Level to set
 	 */
-	public void setDebugLevel(final Level level)
-	{
+	public void setDebugLevel(final Level level) {
 		this.LOGGER.setLevel(level);
 	}
 	

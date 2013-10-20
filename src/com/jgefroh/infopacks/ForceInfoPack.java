@@ -5,16 +5,13 @@ import com.jgefroh.components.TransformComponent;
 import com.jgefroh.components.VelocityComponent;
 import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
-import com.jgefroh.core.IInfoPack;
 import com.jgefroh.data.Vector;
 
-public class ForceInfoPack extends AbstractInfoPack
-{
-	//////////
-	// DATA
-	//////////
-	/**The entity associated with this InfoPack.*/
-	private IEntity owner;
+public class ForceInfoPack extends AbstractInfoPack {
+	
+	//////////////////////////////////////////////////
+	// Fields
+	//////////////////////////////////////////////////
 	
 	/**A component this InfoPack depends on.*/
 	private ForceGeneratorComponent fgc;
@@ -25,122 +22,108 @@ public class ForceInfoPack extends AbstractInfoPack
 	/**A component this InfoPack depends on.*/
 	private TransformComponent tc;
 	
-	/**Flag that indicates the InfoPack is invalid and unreliable.*/
-	private boolean isDirty;	
 	
+	//////////////////////////////////////////////////
+	// Initialize
+	//////////////////////////////////////////////////
 	
-	//////////
-	// INIT
-	//////////
 	/**
-	 * Create a new instance of this InfoPack.
-	 * @param owner	the entity associated with this InfoPack
+	 * Creates a new instance of this InfoPack.
 	 */
-	public ForceInfoPack(final IEntity owner)
-	{
-		this.owner = owner;
+	public ForceInfoPack() {
 	}
 	
 	
-	//////////
-	// GETTERS
-	//////////
-	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
-	}
+	//////////////////////////////////////////////////
+	// IInfoPack
+	//////////////////////////////////////////////////
 
-	
 	@Override
-	public boolean checkDirty()
-	{
-		if(owner.hasChanged())
-		{
-			fgc = owner.getComponent(ForceGeneratorComponent.class);
-			vc = owner.getComponent(VelocityComponent.class);
-			tc = owner.getComponent(TransformComponent.class);
-			if(fgc==null || vc==null || tc==null)
-			{
-				setDirty(true);
-				return true;
-			}
+	public boolean checkComponents(final IEntity entity) {
+		if (entity == null) {
+			return false;
 		}
-		setDirty(false);
-		return false;
+		
+		if (entity.getComponent(ForceGeneratorComponent.class) == null
+				|| entity.getComponent(VelocityComponent.class) == null
+				|| entity.getComponent(TransformComponent.class) == null) {
+			return false;
+		}
+		
+		return true;
 	}
 
 	@Override
-	public IInfoPack generate(final IEntity entity)
-	{
-		if(entity.getComponent(VelocityComponent.class)!=null
-				&&entity.getComponent(ForceGeneratorComponent.class)!=null
-				&&entity.getComponent(TransformComponent.class)!=null)
-		{
-			return new ForceInfoPack(entity);
+	public boolean setEntity(final IEntity entity) {
+		this.fgc = entity.getComponent(ForceGeneratorComponent.class);
+		this.vc = entity.getComponent(VelocityComponent.class);
+		this.tc = entity.getComponent(TransformComponent.class);
+		
+		if (fgc == null
+				|| vc == null
+				|| tc == null) {
+			fgc = null;
+			vc = null;
+			tc = null;
+			entity.setChanged(true);
+			return false;		
 		}
-		return null;
+		
+		super.setCurrent(entity);
+		return true;
 	}
-	public Vector getGeneratedVector()
-	{
+	
+	
+	//////////////////////////////////////////////////
+	// Adapter - Getters
+	//////////////////////////////////////////////////
+
+	public Vector getGeneratedVector() {
 		return fgc.getVector();
 	}
-	
-	public Vector getSumVector()
-	{
+
+	public Vector getSumVector() {
 		return vc.getTotalMovementVector();
 	}
-	
-	public long getLastGenerated()
-	{
+
+	public long getLastGenerated() {
 		return fgc.getLastUpdated();
 	}
-	
-	public long getGenerateInterval()
-	{
+
+	public long getGenerateInterval() {
 		return fgc.getInterval();
 	}
-	
-	public double getMagnitude()
-	{
+
+	public double getMagnitude() {
 		return fgc.getMagnitude();
 	}
-	
-	public boolean isContinuous()
-	{
+
+	public boolean isContinuous() {
 		return fgc.isContinuous();
 	}
-	
-	public boolean isRelative()
-	{
+
+	public boolean isRelative() {
 		return fgc.isRelative();
 	}
-	
-	public double getBearing()
-	{
+
+	public double getBearing() {
 		return tc.getBearing();
 	}
-	//////////
-	// SETTERS
-	//////////
-	public void setGeneratedForce(final Vector vector)
-	{
+	
+	
+	//////////////////////////////////////////////////
+	// Adapter - Setters
+	//////////////////////////////////////////////////
+
+	public void setGeneratedForce(final Vector vector) {
 		fgc.setVector(vector);
 	}
-	
-	public void setContinuous(final boolean isContinuous)
-	{
+
+	public void setContinuous(final boolean isContinuous) {
 		fgc.setContinuous(isContinuous);
 	}
-	
 
-	public void setRelative(final boolean isRelative)
-	{
+	public void setRelative(final boolean isRelative) {
 		fgc.setRelative(isRelative);
 	}
-	//////////
-	// METHODS
-	//////////
-
-
 }

@@ -100,7 +100,7 @@ public class Main
 	private void initSystems()
 	{
 		core.addSystem(new WindowSystem(core, 1366, 768, "Last Stand - 29JUL13"));
-		core.addSystem(new RenderSystem(core), true);
+		core.addSystem(new RenderSystem(core));
 		
 		core.addSystem(new ForceSystem(core));
 		TransformSystem tranSys = new TransformSystem(core);
@@ -109,7 +109,7 @@ public class Main
 		core.addSystem(new InputSystem(core));
 		
 		core.addSystem(new CollisionSystem(core));
-		core.addSystem(new EntityCreationSystem(core), true);
+		core.addSystem(new EntityCreationSystem(core));
 		
 		//core.addSystem(new MouseTrackingSystem(core));
 		core.addSystem(new WeaponSystem(core));
@@ -142,33 +142,33 @@ public class Main
 	
 	private void initFactories()
 	{
-		core.addFactory(new RenderInfoPack(null));
-		core.addFactory(new MovementInfoPack(null));
-		core.addFactory(new InputInfoPack(null));
-		core.addFactory(new CollisionInfoPack(null));
-		core.addFactory(new ForceInfoPack(null));
-		core.addFactory(new WeaponInfoPack(null));
-		core.addFactory(new AnimationInfoPack(null));
-		core.addFactory(new MouseTrackInfoPack(null));
-		core.addFactory(new MaxRangeInfoPack(null));
-		core.addFactory(new HealthInfoPack(null));
-		core.addFactory(new HealthBarInfoPack(null));
-		core.addFactory(new DamageInfoPack(null));
-		core.addFactory(new AIInfoPack(null));
-		core.addFactory(new TargetInfoPack(null));
-		core.addFactory(new TargetTrackInfoPack(null));
-		core.addFactory(new OutOfBoundsInfoPack(null));
-		core.addFactory(new ShieldInfoPack(null));
-		core.addFactory(new KeepInBoundsInfoPack(null));
-		core.addFactory(new GUIInfoPack(null));
-		core.addFactory(new GUIBarInfoPack(null));
-		core.addFactory(new GUICharSlotInfoPack(null));
-		core.addFactory(new GUICounterInfoPack(null));
-		core.addFactory(new GUITextInfoPack(null));
-		core.addFactory(new ScoreInfoPack(null));
-		core.addFactory(new DecayInfoPack(null));
-		core.addFactory(new ExplosionInfoPack(null));	
-		core.addFactory(new AbilityInfoPack(null));	
+		core.add(new RenderInfoPack());
+		core.add(new MovementInfoPack());
+		core.add(new InputInfoPack());
+		core.add(new CollisionInfoPack());
+		core.add(new ForceInfoPack());
+		core.add(new WeaponInfoPack());
+		core.add(new AnimationInfoPack());
+		core.add(new MouseTrackInfoPack());
+		core.add(new MaxRangeInfoPack());
+		core.add(new HealthInfoPack());
+		core.add(new HealthBarInfoPack());
+		core.add(new DamageInfoPack());
+		core.add(new AIInfoPack());
+		core.add(new TargetInfoPack());
+		core.add(new TargetTrackInfoPack());
+		core.add(new OutOfBoundsInfoPack());
+		core.add(new ShieldInfoPack());
+		core.add(new KeepInBoundsInfoPack());
+		core.add(new GUIInfoPack());
+		core.add(new GUIBarInfoPack());
+		core.add(new GUICharSlotInfoPack());
+		core.add(new GUICounterInfoPack());
+		core.add(new GUITextInfoPack());
+		core.add(new ScoreInfoPack());
+		core.add(new DecayInfoPack());
+		core.add(new ExplosionInfoPack());	
+		core.add(new AbilityInfoPack());	
 	}
 	
 	/**

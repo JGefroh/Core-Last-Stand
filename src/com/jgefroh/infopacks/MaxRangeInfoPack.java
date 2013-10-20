@@ -4,19 +4,16 @@ import com.jgefroh.components.MaxRangeComponent;
 import com.jgefroh.components.TransformComponent;
 import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
-import com.jgefroh.core.IInfoPack;
 
 
 /**
  * @author Joseph Gefroh
  */
-public class MaxRangeInfoPack extends AbstractInfoPack
-{
-	//////////
-	// DATA
-	//////////
-	/**The entity associated with this InfoPack.*/
-	private IEntity owner;
+public class MaxRangeInfoPack extends AbstractInfoPack {
+	
+	//////////////////////////////////////////////////
+	// Fields
+	//////////////////////////////////////////////////
 	
 	/**A component this InfoPack depends on.*/
 	private TransformComponent tc;
@@ -24,109 +21,96 @@ public class MaxRangeInfoPack extends AbstractInfoPack
 	/**A component this InfoPack depends on.*/
 	private MaxRangeComponent mc;
 	
-	/**Flag that indicates the InfoPack is invalid and unreliable.*/
-	private boolean isDirty;	
 	
+	//////////////////////////////////////////////////
+	// Initialize
+	//////////////////////////////////////////////////
 	
-	//////////
-	// INIT
-	//////////
 	/**
-	 * Create a new instance of this InfoPack.
-	 * @param owner	the entity associated with this InfoPack
+	 * Creates a new instance of this InfoPack.
 	 */
-	public MaxRangeInfoPack(final IEntity owner)
-	{
-		this.owner = owner;
+	public MaxRangeInfoPack() {
 	}
 	
-	
-	//////////
-	// GETTERS
-	//////////
+
+	//////////////////////////////////////////////////
+	// IInfoPack
+	//////////////////////////////////////////////////
+
 	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
-	}
-	
-	@Override
-	public boolean checkDirty()
-	{
-		if(owner.hasChanged())
-		{
-			tc = owner.getComponent(TransformComponent.class);
-			mc = owner.getComponent(MaxRangeComponent.class);			
-			if(tc==null||mc==null)
-			{
-				setDirty(true);
-				return true;
-			}
+	public boolean checkComponents(final IEntity entity) {
+		if (entity == null) {
+			return false;
 		}
-		setDirty(false);
-		return false;
+		
+		if (entity.getComponent(TransformComponent.class) == null
+				|| entity.getComponent(MaxRangeComponent.class) == null) {
+			return false;
+		}
+		
+		return true;
 	}
 
 	@Override
-	public IInfoPack generate(final IEntity entity)
-	{
-		if(entity.getComponent(TransformComponent.class)!=null
-				&&entity.getComponent(MaxRangeComponent.class)!=null)
-		{
-			return new MaxRangeInfoPack(entity);
+	public boolean setEntity(final IEntity entity) {
+		this.tc = entity.getComponent(TransformComponent.class);
+		this.mc = entity.getComponent(MaxRangeComponent.class);
+		
+		if (tc == null
+				|| mc == null) {
+			tc = null;
+			mc = null;
+			entity.setChanged(true);
+			return false;		
 		}
-		return null;
+		
+		super.setCurrent(entity);
+		return true;
 	}
-	/**
-	 * @see TransformComponent#getXPos()
-	 */
-	public double getXPos()
-	{
+
+	
+	//////////////////////////////////////////////////
+	// Adapter - Getters
+	//////////////////////////////////////////////////
+
+	public double getXPos() {
 		return tc.getXPos();
 	}
-	
-	/**
-	 * @see TransformComponent#getYPos()
-	 */
-	public double getYPos()
-	{
+
+	public double getYPos() {
 		return tc.getYPos();
 	}
-	
-	public double getLastXPos()
-	{
+
+	public double getLastXPos() {
 		return mc.getLastXPos();
 	}
 
-	public double getLastYPos()
-	{
+	public double getLastYPos() {
 		return mc.getLastYPos();
 	}
-	
-	public int getMaxRange()
-	{
+
+	public int getMaxRange() {
 		return mc.getMaxRange();
 	}
-	
-	public double getDistanceTraveled()
-	{
+
+	public double getDistanceTraveled() {
 		return mc.getDistanceTraveled();
 	}
-	//////////
-	// SETTERS
-	//////////
 	
-	public void setLastXPos(final double lastXPos)
-	{
+	
+	//////////////////////////////////////////////////
+	// Adapter - Setters
+	//////////////////////////////////////////////////
+	
+	public void setLastXPos(final double lastXPos) {
 		mc.setLastXPos(lastXPos);
 	}
-	
-	public void setLastYPos(final double lastYPos)
-	{
+
+	public void setLastYPos(final double lastYPos) {
 		mc.setLastYPos(lastYPos);
 	}
-	public void setDistanceTraveled(final double distanceTraveled)
-	{
+
+	public void setDistanceTraveled(final double distanceTraveled) {
 		mc.setDistanceTraveled(distanceTraveled);
 	}
 	

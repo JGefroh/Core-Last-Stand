@@ -3,90 +3,80 @@ package com.jgefroh.infopacks;
 import com.jgefroh.components.DecayComponent;
 import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
-import com.jgefroh.core.IInfoPack;
 
 /**
  * @author Joseph Gefroh
  */
-public class DecayInfoPack extends AbstractInfoPack
-{
-	//////////
-	// DATA
-	//////////
-	/**The entity associated with this InfoPack.*/
-	private IEntity owner;
+public class DecayInfoPack extends AbstractInfoPack {
+	
+	//////////////////////////////////////////////////
+	// Fields
+	//////////////////////////////////////////////////
 	
 	/**A component this InfoPack depends on.*/
 	private DecayComponent dc;
 	
-	/**Flag that indicates the InfoPack is invalid and unreliable.*/
-	private boolean isDirty;
 	
+	//////////////////////////////////////////////////
+	// Initialize
+	//////////////////////////////////////////////////
 	
-	//////////
-	// INIT
-	//////////
 	/**
-	 * Create a new instance of this InfoPack.
-	 * @param owner	the entity associated with this InfoPack
+	 * Creates a new instance of this InfoPack.
 	 */
-	public DecayInfoPack(final IEntity owner)
-	{
-		this.owner = owner;
+	public DecayInfoPack() {
 	}
 	
 	
-	//////////
-	// GETTERS
-	//////////
+	//////////////////////////////////////////////////
+	// IInfoPack
+	//////////////////////////////////////////////////
+
 	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
-	}
-	
-	@Override
-	public boolean checkDirty()
-	{
-		if(owner.hasChanged())
-		{
-			dc = owner.getComponent(DecayComponent.class);	
-			if(dc==null)
-			{
-				setDirty(true);
-				return true;
-			}
+	public boolean checkComponents(final IEntity entity) {
+		if (entity == null) {
+			return false;
 		}
-		setDirty(false);
-		return false;
+		
+		if (entity.getComponent(DecayComponent.class) == null) {
+			return false;
+		}
+		
+		return true;
 	}
 
 	@Override
-	public IInfoPack generate(final IEntity entity)
-	{
-		if(entity.getComponent(DecayComponent.class)!=null)
-		{
-			return new DecayInfoPack(entity);
+	public boolean setEntity(final IEntity entity) {
+		this.dc = entity.getComponent(DecayComponent.class);
+		
+		if (dc == null) {
+			entity.setChanged(true);
+			return false;		
 		}
-		return null;
+		
+		super.setCurrent(entity);
+		return true;
 	}
-	public long getLastUpdateTime()
-	{
+
+	
+	//////////////////////////////////////////////////
+	// Adapter - Getters
+	//////////////////////////////////////////////////
+	
+	public long getLastUpdateTime() {
 		return dc.getLastUpdateTime();
 	}
 
-	public long getTimeUntilDecay()
-	{
+	public long getTimeUntilDecay() {
 		return dc.getTimeUntilDecay();
 	}
 
-	//////////
-	// SETTERS
-	//////////
 	
-	public void setLastUpdateTime(final long lastUpdateTime)
-	{
+	//////////////////////////////////////////////////
+	// Adapter - Setters
+	//////////////////////////////////////////////////
+
+	public void setLastUpdateTime(final long lastUpdateTime) {
 		dc.setLastUpdateTime(lastUpdateTime);
 	}
-	
 }

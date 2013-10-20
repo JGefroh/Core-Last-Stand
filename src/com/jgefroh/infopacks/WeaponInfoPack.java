@@ -3,230 +3,190 @@ package com.jgefroh.infopacks;
 import com.jgefroh.components.WeaponComponent;
 import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
-import com.jgefroh.core.IInfoPack;
 import com.jgefroh.data.Weapon;
 
 
 /**
- * Intended to be used by the WeaponSystem.
- * 
- * Controls access to the following components:
- * WeaponComponent
- * 
  * @author Joseph Gefroh
  */
-public class WeaponInfoPack extends AbstractInfoPack
-{
-	//////////
-	// DATA
-	//////////
-	/**The entity associated with this InfoPack.*/
-	private IEntity owner;
+public class WeaponInfoPack extends AbstractInfoPack {
+
+	//////////////////////////////////////////////////
+	// Fields
+	//////////////////////////////////////////////////
 	
 	/**A component this InfoPack depends on.*/
 	private WeaponComponent wc;
 	
-	/**Flag that indicates the InfoPack is invalid and unreliable.*/
-	private boolean isDirty;
-	//////////
-	// INIT
-	//////////
+
+	//////////////////////////////////////////////////
+	// Initialize
+	//////////////////////////////////////////////////
+	
 	/**
-	 * Create a new instance of this InfoPack.
-	 * @param owner	the entity associated with this InfoPack
+	 * Creates a new instance of this InfoPack.
 	 */
-	public WeaponInfoPack(final IEntity owner)
-	{
-		this.owner = owner;
+	public WeaponInfoPack() {
 	}
 	
 	
-	//////////
-	// GETTERS
-	//////////
+	//////////////////////////////////////////////////
+	// IInfoPack
+	//////////////////////////////////////////////////
+
 	@Override
-	public boolean checkDirty()
-	{
-		if(owner.hasChanged())
-		{
-			wc = owner.getComponent(WeaponComponent.class);
-			if(wc==null)
-			{
-				setDirty(true);
-				return true;
-			}
+	public boolean checkComponents(final IEntity entity) {
+		if (entity == null) {
+			return false;
 		}
-		setDirty(false);
-		return false;
-	}
-	
-	@Override
-	public IInfoPack generate(final IEntity entity)
-	{
-		if(entity.getComponent(WeaponComponent.class)!=null)
-		{
-			return new WeaponInfoPack(entity);
+		
+		if (entity.getComponent(WeaponComponent.class) == null) {
+			return false;
 		}
-		return null;
+		
+		return true;
 	}
-	
+
 	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
+	public boolean setEntity(final IEntity entity) {
+		this.wc = entity.getComponent(WeaponComponent.class);
+		
+		if (wc == null) {
+			entity.setChanged(true);
+			return false;		
+		}
+		
+		super.setCurrent(entity);
+		return true;
 	}
+
+
+	//////////////////////////////////////////////////
+	// Adapter - Getters
+	//////////////////////////////////////////////////
 	
-	public Weapon getCurrentWeapon()
-	{
+	public Weapon getCurrentWeapon() {
 		return wc.getCurrentWeapon();
 	}
-	
-	public long getConsecutiveShotDelay()
-	{
+
+	public long getConsecutiveShotDelay() {
 		return wc.getConsecutiveShotDelay();
 	}
-	
-	public long getLastFired()
-	{
+
+	public long getLastFired() {
 		return wc.getLastFired();
 	}
-	
-	public boolean isFireRequested()
-	{
+
+	public boolean isFireRequested() {
 		return wc.isFireRequested();
 	}
-	
-	public int getFireMode()
-	{
+
+	public int getFireMode() {
 		return wc.getFireMode();
 	}
-	
-	public int getDamage()
-	{
+
+	public int getDamage() {
 		return wc.getDamage();
 	}
-	
-	public int getMaxRange()
-	{
+
+	public int getMaxRange() {
 		return wc.getMaxRange();
 	}
 
-	public int getBurstSize()
-	{
+	public int getBurstSize() {
 		return wc.getBurstSize();
 	}
-	
-	public int getShotsThisBurst()
-	{
+
+	public int getShotsThisBurst() {
 		return wc.getShotsThisBurst();
 	}
-	public boolean isInBurst()
-	{
+
+	public boolean isInBurst() {
 		return wc.isInBurst();
 	}
-	
-	public long getBurstDelay()
-	{
+
+	public long getBurstDelay() {
 		return wc.getBurstDelay();
 	}
-	
-	public int getShotType()
-	{
+
+	public int getShotType() {
 		return wc.getShotType();
 	}
-	
-	public int getNumShots()
-	{
+
+	public int getNumShots() {
 		return wc.getNumShots();
 	}
-	
-	public double getRecoilCur()
-	{
+
+	public double getRecoilCur() {
 		return wc.getRecoilCur();
 	}
-	
-	public double getRecoilInc()
-	{
+
+	public double getRecoilInc() {
 		return wc.getRecoilInc();
 	}
-	
-	public double getRecoilDec()
-	{
+
+	public double getRecoilDec() {
 		return wc.getRecoilDec();
 	}
-	
-	public double getRecoilMax()
-	{
+
+	public double getRecoilMax() {
 		return wc.getRecoilMax();
 	}
-	
-	public double getRecoilMin()
-	{
+
+	public double getRecoilMin() {
 		return wc.getRecoilMin();
 	}
-	//////////
-	// SETTERS
-	//////////
+
+
+	//////////////////////////////////////////////////
+	// Adapter - Setters
+	//////////////////////////////////////////////////
 	
-	public void setInterval(final long interval)
-	{
+	public void setInterval(final long interval) {
 		wc.setConsecutiveShotDelay(interval);
 	}
-	
-	public void setLastFired(final long lastFired)
-	{
+
+	public void setLastFired(final long lastFired) {
 		wc.setLastFired(lastFired);
 	}
-	
-	public void setFireRequested(final boolean fireRequested)
-	{
+
+	public void setFireRequested(final boolean fireRequested) {
 		wc.setFireRequested(fireRequested);
 	}
-	
-	public void setCurrentWeapon(final String weaponName)
-	{
+
+	public void setCurrentWeapon(final String weaponName) {
 		wc.setCurrentWeapon(weaponName);
 	}
 
-	
-	public void setDamage(final int damage)
-	{
+	public void setDamage(final int damage) {
 		wc.setDamage(damage);
 	}
-	
-	public void setMaxRange(final int maxRange)
-	{
+
+	public void setMaxRange(final int maxRange) {
 		wc.setMaxRange(maxRange);
 	}
-	
-	public void setFireMode(final int fireMode)
-	{
+
+	public void setFireMode(final int fireMode) {
 		wc.setFireMode(fireMode);
 	}
-	
-	public void setBurstSize(final int burstSize)
-	{
+
+	public void setBurstSize(final int burstSize) {
 		wc.setBurstSize(burstSize);
 	}
-	
-	public void setShotsThisBurst(final int shotsThisBurst)
-	{
+
+	public void setShotsThisBurst(final int shotsThisBurst) {
 		wc.setShotsThisBurst(shotsThisBurst);
 	}
-	public void setInBurst(final boolean isInBurst)
-	{
+
+	public void setInBurst(final boolean isInBurst) {
 		wc.setInBurst(isInBurst);
 	}
-	
-	public void setBurstDelay(final long burstDelay)
-	{
+
+	public void setBurstDelay(final long burstDelay) {
 		wc.setBurstDelay(burstDelay);
 	}
-	
-	public void setShotType(final int shotType)
-	{
+
+	public void setShotType(final int shotType) {
 		wc.setShotType(shotType);
 	}
-	
-	
 }

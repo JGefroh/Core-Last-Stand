@@ -4,21 +4,16 @@ import com.jgefroh.components.TargetTrackComponent;
 import com.jgefroh.components.TransformComponent;
 import com.jgefroh.core.AbstractInfoPack;
 import com.jgefroh.core.IEntity;
-import com.jgefroh.core.IInfoPack;
 
 
 /**
- *
- * 
  * @author Joseph Gefroh
  */
-public class TargetTrackInfoPack extends AbstractInfoPack
-{
-	//////////
-	// DATA
-	//////////
-	/**The entity associated with this InfoPack.*/
-	private IEntity owner;
+public class TargetTrackInfoPack extends AbstractInfoPack {
+	
+	//////////////////////////////////////////////////
+	// Fields
+	//////////////////////////////////////////////////
 	
 	/**A component this InfoPack depends on.*/
 	private TransformComponent tc;
@@ -26,126 +21,108 @@ public class TargetTrackInfoPack extends AbstractInfoPack
 	/**A component this InfoPack depends on.*/
 	private TargetTrackComponent ttc;
 	
-	/**Flag that indicates the InfoPack is invalid and unreliable.*/
-	private boolean isDirty;	
 	
+	//////////////////////////////////////////////////
+	// Initialize
+	//////////////////////////////////////////////////
 	
-	//////////
-	// INIT
-	//////////
 	/**
-	 * Create a new instance of this InfoPack.
-	 * @param owner	the entity associated with this InfoPack
+	 * Creates a new instance of this InfoPack.
 	 */
-	public TargetTrackInfoPack(final IEntity owner)
-	{
-		this.owner = owner;
+	public TargetTrackInfoPack() {
 	}
 	
 	
-	//////////
-	// GETTERS
-	//////////
+	//////////////////////////////////////////////////
+	// IInfoPack
+	//////////////////////////////////////////////////
+
 	@Override
-	public IEntity getOwner()
-	{
-		return this.owner;
-	}
-	
-	@Override
-	public boolean checkDirty()
-	{
-		if(owner.hasChanged())
-		{
-			tc = owner.getComponent(TransformComponent.class);
-			ttc = owner.getComponent(TargetTrackComponent.class);			
-			if(tc==null||ttc==null)
-			{
-				setDirty(true);
-				return true;
-			}
+	public boolean checkComponents(final IEntity entity) {
+		if (entity == null) {
+			return false;
 		}
-		setDirty(false);
-		return false;
-	}
-	
-	@Override
-	public IInfoPack generate(final IEntity entity)
-	{
-		if(entity.getComponent(TransformComponent.class)!=null
-				&& entity.getComponent(TargetTrackComponent.class)!=null)
-		{
-			return new TargetTrackInfoPack(entity);
+		
+		if (entity.getComponent(TransformComponent.class) == null
+				|| entity.getComponent(TargetTrackComponent.class) == null) {
+			return false;
 		}
-		return null;
+		
+		return true;
 	}
 
-	/**
-	 * @see TransformComponent#getXPos()
-	 */
-	public double getXPos()
-	{
+	@Override
+	public boolean setEntity(final IEntity entity) {
+		this.tc = entity.getComponent(TransformComponent.class);
+		this.ttc = entity.getComponent(TargetTrackComponent.class);
+		
+		if (tc == null
+				|| ttc == null) {
+			tc = null;
+			ttc = null;
+			entity.setChanged(true);
+			return false;		
+		}
+		
+		super.setCurrent(entity);
+		return true;
+	}
+
+
+	//////////////////////////////////////////////////
+	// Adapter - Getters
+	//////////////////////////////////////////////////
+	
+	public double getXPos() {
 		return tc.getXPos();
 	}
-	
-	/**
-	 * @see TransformComponent#getYPos()
-	 */
-	public double getYPos()
-	{
+
+	public double getYPos() {
 		return tc.getYPos();
 	}
-	
-	public IEntity getTarget()
-	{
+
+	public IEntity getTarget() {
 		return ttc.getTarget();
 	}
-	
-	public double getTargetRange()
-	{
+
+	public double getTargetRange() {
 		return ttc.getTargetRange();
 	}
-	
-	public long getLastTurned()
-	{
+
+	public long getLastTurned() {
 		return ttc.getLastTurned();
 	}
-	
-	public long getTurnInterval()
-	{
+
+	public long getTurnInterval() {
 		return ttc.getTurnInterval();
 	}
-	
-	public double getTurnSpeed()
-	{
+
+	public double getTurnSpeed() {
 		return ttc.getTurnSpeed();
 	}
-	
-	public double getBearing()
-	{
+
+	public double getBearing() {
 		return tc.getBearing();
 	}
-	//////////
-	// SETTERS
-	//////////
+
 	
-	public void setBearing(final double bearing)
-	{
+	//////////////////////////////////////////////////
+	// Adapter - Setters
+	//////////////////////////////////////////////////
+	
+	public void setBearing(final double bearing) {
 		tc.setBearing(bearing);
 	}
-	
-	public void setTarget(final IEntity target)
-	{
+
+	public void setTarget(final IEntity target) {
 		ttc.setTarget(target);
 	}
-	
-	public void setTargetRange(final double targetRange)
-	{
+
+	public void setTargetRange(final double targetRange) {
 		ttc.setTargetRange(targetRange);
 	}
-	
-	public void setLastTurned(final long lastTurned)
-	{
+
+	public void setLastTurned(final long lastTurned) {
 		ttc.setLastTurned(lastTurned);
 	}
 }

@@ -4,19 +4,24 @@ package com.jgefroh.systems;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
 import com.jgefroh.core.AbstractSystem;
 import com.jgefroh.core.Core;
+import com.jgefroh.core.IEntity;
+import com.jgefroh.core.IMessage;
+import com.jgefroh.core.IPayload;
 import com.jgefroh.core.LoggerFactory;
 import com.jgefroh.data.Sprite;
 import com.jgefroh.data.Texture;
 import com.jgefroh.infopacks.RenderInfoPack;
-import com.jgefroh.messages.Message;
+import com.jgefroh.messages.DefaultMessage;
+import com.jgefroh.messages.DefaultMessage.DATA_NATIVE_RESOLUTION;
+import com.jgefroh.messages.DefaultMessage.DATA_WINDOW_RESOLUTION;
 import com.jgefroh.tests.Benchmark;
 
 
@@ -27,11 +32,11 @@ import com.jgefroh.tests.Benchmark;
  * Date: 12JUN13
  * @author Joseph Gefroh
  */
-public class RenderSystem extends AbstractSystem
-{
-	//////////
-	// DATA
-	//////////
+public class RenderSystem extends AbstractSystem {
+	
+	//////////////////////////////////////////////////
+	// Fields
+	//////////////////////////////////////////////////
 	/**A reference to the core engine controlling this system.*/
 	private Core core;
 	
@@ -58,10 +63,12 @@ public class RenderSystem extends AbstractSystem
 	private final int NATIVE_HEIGHT = 768;
 	
 	private Benchmark bench = new Benchmark(this.getClass().getName(), false);
-
-	//////////
-	// INIT
-	//////////
+	
+	
+	//////////////////////////////////////////////////
+	// Initialize
+	//////////////////////////////////////////////////
+	
 	/**
 	 * Creates a new instance of this {@code System}.
 	 * @param core	 a reference to the Core controlling this system
@@ -93,87 +100,83 @@ public class RenderSystem extends AbstractSystem
 	}
 	
 	
-	//////////
-	// ISYSTEM INTERFACE
-	//////////
+	
+	//////////////////////////////////////////////////
+	// Override
+	//////////////////////////////////////////////////
+	
 	@Override
-	public void init()
-	{
+	public void init() {
 		LOGGER.log(Level.FINE, "Setting system values to default.");
 		initOpenGL();
 		textures = new HashMap<Integer, Texture>();
 		idMan = new HashMap<String, Integer>();
 		idMan.put(null, -1);
-		core.setInterested(this, Message.WINDOW_RESIZED);
-		core.setInterested(this, Message.WINDOW_WIDTH);
-		core.setInterested(this, Message.WINDOW_HEIGHT);
-		core.setInterested(this, Message.REQUEST_NATIVE_WIDTH);
-		core.setInterested(this, Message.REQUEST_NATIVE_HEIGHT);
-		core.setInterested(this, Message.TOGGLE_WIREFRAME);
-		
-		core.send(Message.NATIVE_WIDTH, NATIVE_WIDTH + "");
-		core.send(Message.NATIVE_HEIGHT, NATIVE_HEIGHT+ ""); 
+		core.setInterested(this, DefaultMessage.DATA_WINDOW_RESOLUTION);
+		core.setInterested(this, DefaultMessage.REQUEST_NATIVE_RESOLUTION);
+		core.setInterested(this, DefaultMessage.COMMAND_TOGGLE_WIREFRAME);
+		sendNativeResolution();
 	}
 	
 	@Override
-	public void start() 
-	{
-		core.send(Message.REQUEST_WINDOW_WIDTH, "");
-		core.send(Message.REQUEST_WINDOW_HEIGHT, "");
+	public void start() {
+		core.send(DefaultMessage.REQUEST_WINDOW_RESOLUTION, null);
 		super.start();
 	}
 
 	@Override
-	public void work(final long now)
-	{
+	public void work(final long now) {
 		long startTime = System.nanoTime();
 		int numEntities = render();
 		bench.benchmark(System.nanoTime()-startTime, numEntities);
 	}
 
 	@Override
-	public void recv(final String id, final String... message)
-	{
-		LOGGER.log(Level.FINEST, "Received message: " + id);
-
-		Message msgID = Message.valueOf(id);
-		switch(msgID)
-		{			
-			case WINDOW_RESIZED:
-				resizeDrawableArea(Display.getWidth(), Display.getHeight());
-				break;
-			case WINDOW_WIDTH:
-				resizeDrawableArea(Display.getWidth(), Display.getHeight());
-				break;
-			case WINDOW_HEIGHT:
-				resizeDrawableArea(Display.getWidth(), Display.getHeight());
-				break;
-			case TOGGLE_WIREFRAME:
-				toggleWireframeMode();
-				break;
-			case REQUEST_NATIVE_WIDTH:
-				core.send(Message.NATIVE_WIDTH, NATIVE_WIDTH + "");
-				break;
-			case REQUEST_NATIVE_HEIGHT:
-				core.send(Message.NATIVE_HEIGHT, NATIVE_HEIGHT + "");
-				break;
+	public void recv(final IMessage messageType, final Map<IPayload, String> message) {		
+		LOGGER.log(Level.FINEST, "Received message: " + messageType);
+		if (messageType.getClass() == DefaultMessage.class) {
+			DefaultMessage type = (DefaultMessage) messageType;
+			switch (type) {
+				case DATA_WINDOW_RESOLUTION:
+					try {
+						int width = Integer.parseInt(message.get(DATA_WINDOW_RESOLUTION.WINDOW_WIDTH));
+						int height = Integer.parseInt(message.get(DATA_WINDOW_RESOLUTION.WINDOW_HEIGHT));
+						resizeDrawableArea(width, height);
+					}
+					catch (NumberFormatException e) {
+					}
+					break;
+				case COMMAND_TOGGLE_WIREFRAME:
+					toggleWireframeMode();
+					break;
+				case REQUEST_NATIVE_RESOLUTION:
+					sendNativeResolution();
+					break;
+				default:
+					break;
+			}
 		}
 	}
 	
-	//////////
-	// GETTERS
-	//////////
+	//////////////////////////////////////////////////
+	// Methods
+	//////////////////////////////////////////////////
+	
+	private void sendNativeResolution() {
+		Map<IPayload, String> parameters = new HashMap<IPayload, String>();
+		parameters.put(DATA_NATIVE_RESOLUTION.NATIVE_HEIGHT, NATIVE_HEIGHT + "");
+		parameters.put(DATA_NATIVE_RESOLUTION.NATIVE_WIDTH, NATIVE_WIDTH + "");
+		core.send(DefaultMessage.DATA_NATIVE_RESOLUTION, parameters);
+	}
 	/**
 	 * Get the uMin texture coordinates stored for a given sprite and texture.
 	 * @param textureID		the OpenGL assigned ID of the texture
 	 * @param spriteIndex	the index of the sprite who's coordinate to return
 	 * @return	the uMin texture coordinate of the sprite, 0 if error
 	 */
-	private float getUMin(final int textureID, final int spriteIndex)
-	{
+	private float getUMin(final int textureID, final int spriteIndex) {
 		Texture texture = textures.get(textureID);
-		if(texture!=null)
-		{
+		if (texture != null) {
 			return texture.getUMin(spriteIndex);
 		}
 		return 0.0f;
@@ -185,11 +188,9 @@ public class RenderSystem extends AbstractSystem
 	 * @param spriteIndex	the index of the sprite who's coordinate to return
 	 * @return	the uMax texture coordinate of the sprite, 0 if error
 	 */
-	private float getUMax(final int textureID, final int spriteIndex)
-	{
+	private float getUMax(final int textureID, final int spriteIndex) {
 		Texture texture = textures.get(textureID);
-		if(texture!=null)
-		{
+		if (texture != null) {
 			return texture.getUMax(spriteIndex);
 		}
 		return 0.0f;
@@ -201,11 +202,9 @@ public class RenderSystem extends AbstractSystem
 	 * @param spriteIndex	the index of the sprite who's coordinate to return
 	 * @return	the vMin texture coordinate of the sprite, 0 if error
 	 */
-	private float getVMin(final int textureID, final int spriteIndex)
-	{
+	private float getVMin(final int textureID, final int spriteIndex) {
 		Texture texture = textures.get(textureID);
-		if(texture!=null)
-		{
+		if (texture != null) {
 			return texture.getVMin(spriteIndex);
 		}
 		return 0;
@@ -217,55 +216,46 @@ public class RenderSystem extends AbstractSystem
 	 * @param spriteIndex	the index of the sprite who's coordinate to return
 	 * @return	the vMax texture coordinate of the sprite, 0 if error
 	 */
-	private float getVMax(final int textureID, final int spriteIndex)
-	{
+	private float getVMax(final int textureID, final int spriteIndex) {
 		Texture texture = textures.get(textureID);
-		if(texture!=null)
-		{
+		if (texture != null) {
 			return texture.getVMax(spriteIndex);
 		}
 		return 0.0f;
 	}
-	
-	
-	//////////
-	// SYSTEM METHODS
-	//////////
+
 	/**
 	 * Render the entities that have render components.
 	 */
-	public int render()
-	{
+	public int render() {
 		newFrame();
-		Iterator<RenderInfoPack> packs = 
-				core.getInfoPacksOfType(RenderInfoPack.class);
+		Iterator<IEntity> packs = core.getEntitiesWithPack(RenderInfoPack.class);
+		RenderInfoPack pack = core.getInfoPackOfType(RenderInfoPack.class);
 		int numEntities = 0;
-		while(packs.hasNext())
-		{
-			RenderInfoPack pack = packs.next();
-			if(pack.isDirty()==false&&pack.isVisible()==true)
-			{
-				if(pack.getTextureID()==-1)
-				{//If the component doesn't know its textureID...
+		while(packs.hasNext()) {
+			if (!pack.setEntity(packs.next())) {
+				continue;
+			}
+			
+			if (pack.isVisible()) {
+				if (pack.getTextureID() == -1) {//If the component doesn't know
+												//its textureID...
 					Integer id = idMan.get(pack.getPath());
-					if(id!=null)
-					{
+					if (id != null) {
 						pack.setTextureID(id);
-					}
-					else
-					{	
+					} 
+					else {
 						//If ID doesn't exist, texture isn't loaded.
 						//Ask resource loader to load texture here to enable
 						//"streaming".
-						LOGGER.log(Level.WARNING, 
-								"Draw requested with unloaded texture: " 
-								+ pack.getPath());
-						idMan.put(pack.getPath(), -1);	//Avoid repeat log msgs.
+						LOGGER.log(Level.WARNING, "Draw requested with unloaded texture: "
+												+ pack.getPath());
+						idMan.put(pack.getPath(), -1); //Avoid repeat log msgs.
 					}
 				}
 				drawQuadAt(pack);
 			}
-			
+
 			numEntities++;
 		}
 		return numEntities;
@@ -274,15 +264,13 @@ public class RenderSystem extends AbstractSystem
 	/**
 	 * Clear the previous frame.
 	 */
-	private void newFrame()
-	{
+	private void newFrame() {
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		GL11.glLoadIdentity();
 	}
 	
-	private void drawQuadAt(final RenderInfoPack pack)
-	{
+	private void drawQuadAt(final RenderInfoPack pack) {
 		int textureID = pack.getTextureID();
 		int spriteID = pack.getSpriteID();
 		
@@ -315,7 +303,6 @@ public class RenderSystem extends AbstractSystem
 		
 		GL11.glBegin(GL11.GL_QUADS);
 		{
-
 			GL11.glTexCoord3d(uMin, vMax, z);	//Bottom Left
 			GL11.glVertex3d(0, 0, z);		//Top Left
 
@@ -338,8 +325,7 @@ public class RenderSystem extends AbstractSystem
 	 * @param buffer	the buffer containing the pixel data of the texture
 	 * @param meta		the metadata related to the texture
 	 */
-	public void createTexture(final ByteBuffer buffer, final Texture meta)
-	{
+	public void createTexture(final ByteBuffer buffer, final Texture meta) {
 		//Convert texture to string? BASE64?
 		LOGGER.log(Level.FINE, "Creating OpenGL texture for " + meta.getPath());
 
@@ -368,13 +354,11 @@ public class RenderSystem extends AbstractSystem
 	 * Go through a texture's sprites and calculate their texture coordinates.
 	 * @param meta	the Texture you want to go through
 	 */
-	public void calcTextureCoordinates(final Texture meta)
-	{
+	public void calcTextureCoordinates(final Texture meta) {
 		LOGGER.log(Level.FINE, "Calculating UV coordinates for " 
 						+ meta.getPath());
 		Iterator<Sprite> sprites = meta.getSpriteIterator();
-		while(sprites.hasNext())
-		{
+		while(sprites.hasNext()) {
 			int id = sprites.next().getSpriteID();
 			
 			float uMin = ((float)meta.getXMin(id))/meta.getImageWidth();
@@ -394,8 +378,7 @@ public class RenderSystem extends AbstractSystem
 	 * @param width		the width of the window
 	 * @param height	the height of the window
 	 */
-	private void resizeDrawableArea(final int width, final int height)
-	{
+	private void resizeDrawableArea(final int width, final int height) {
 		GL11.glMatrixMode(GL11.GL_VIEWPORT);
 		GL11.glLoadIdentity();
 		GL11.glViewport(0, 0, width, height);
@@ -403,31 +386,32 @@ public class RenderSystem extends AbstractSystem
 		GL11.glLoadIdentity();
 		GL11.glOrtho(0, NATIVE_WIDTH, NATIVE_HEIGHT, 0, -1, 100);
 	}
-	/**
-	 * Sets the debug level of this {@code System}.
-	 * @param level	the Level to set
-	 */
-	public void setDebugLevel(final Level level)
-	{
-		this.LOGGER.setLevel(level);
-	}
 	
 	/**
 	 * Toggles the display of wireframes.
 	 */
-	private void toggleWireframeMode()
-	{
-		if(this.wireframeEnabled==false)
-		{
+	private void toggleWireframeMode() {
+		if (this.wireframeEnabled) {
 			GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
 			GL11.glDisable(GL11.GL_TEXTURE_2D);
 			this.wireframeEnabled = true;
-		}
-		else
-		{
+		} else {
 			GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
 			GL11.glEnable(GL11.GL_TEXTURE_2D);
 			this.wireframeEnabled = false;
 		}
+	}
+	
+	
+	//////////////////////////////////////////////////
+	// Debug
+	//////////////////////////////////////////////////
+
+	/**
+	 * Sets the debug level of this {@code System}.
+	 * @param level	the Level to set
+	 */
+	public void setDebugLevel(final Level level) {
+		this.LOGGER.setLevel(level);
 	}
 }
