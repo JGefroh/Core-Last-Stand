@@ -15,6 +15,9 @@ import com.jgefroh.data.Upgrade;
 import com.jgefroh.messages.DefaultMessage;
 import com.jgefroh.messages.DefaultMessage.COMMAND_ADJUST_SCORE;
 import com.jgefroh.messages.DefaultMessage.COMMAND_BUY;
+import com.jgefroh.messages.DefaultMessage.COMMAND_CHANGE_HEALTH;
+import com.jgefroh.messages.DefaultMessage.COMMAND_CHANGE_HEALTH_MAX;
+import com.jgefroh.messages.DefaultMessage.COMMAND_CHANGE_SHIELD_MAX;
 import com.jgefroh.messages.DefaultMessage.COMMAND_INQUIRE;
 import com.jgefroh.messages.DefaultMessage.DATA_SCORE;
 import com.jgefroh.messages.DefaultMessage.DATA_UPGRADE_DESC;
@@ -73,27 +76,8 @@ public class UpgradeSystem extends AbstractSystem {
 		core.setInterested(this, DefaultMessage.DATA_SCORE);
 		core.setInterested(this, DefaultMessage.EVENT_PLAYER_CREATED);
 		core.setInterested(this, DefaultMessage.COMMAND_INQUIRE);
-		
-		upgrades = new HashMap<String, Upgrade>();
-		
-		upgrades.put("1", 
-				new Upgrade("Repair", "Repairs your ship for 50HP. \n \n Costs 100 points.", 100, DefaultMessage.COMMAND_CHANGE_HEALTH, 50));
-		
-		upgrades.put("2", 
-				new Upgrade("Hull+", "Increases your maximum HP by 25 HP. \n \n Costs 200 points.", 200, DefaultMessage.COMMAND_CHANGE_HEALTH_MAX, 25));
-		
-		upgrades.put("3", 
-				new Upgrade("Batteries", "Increases your maximum shield by 10. \n \n Costs 500 points.", 500, DefaultMessage.COMMAND_CHANGE_SHIELD_MAX, 10));
 
-		upgrades.put("7", 
-				new Upgrade("DEV_HEALTH", "Repairs your ship for 9001 HP. \n \n Costs 0 points.", 0, DefaultMessage.COMMAND_CHANGE_HEALTH, 9001));
-		
-		upgrades.put("8", 
-				new Upgrade("DEV_SHIELD", "Increases your maximum shield by 9001. \n \n Costs 0 points.", 0, DefaultMessage.COMMAND_CHANGE_SHIELD_MAX, 9001));
-		
-		upgrades.put("9", 
-				new Upgrade("DEV_HEALTH_MAX", "Increases your maximum health by 9001 HP. \n \n Costs 0 points.", 0, DefaultMessage.COMMAND_CHANGE_HEALTH_MAX, 9001));
-		
+		initUpgrades();
 	}
 
 	@Override
@@ -111,6 +95,7 @@ public class UpgradeSystem extends AbstractSystem {
 					break;
 				case EVENT_PLAYER_CREATED:
 					this.playerID = message.get(EVENT_PLAYER_CREATED.PLAYER_ENTITY_ID);
+					initUpgrades();    //Updates player ID to new entity ID.
 					break;
 				default:
 					break;
@@ -120,6 +105,31 @@ public class UpgradeSystem extends AbstractSystem {
 	//////////////////////////////////////////////////
 	// Methods
 	//////////////////////////////////////////////////
+	private void initUpgrades() {
+        upgrades = new HashMap<String, Upgrade>();
+        Upgrade health = new Upgrade("Repair", "Repairs your ship for 50HP. \n \n Costs 100 points.", 100, DefaultMessage.COMMAND_CHANGE_HEALTH);
+        Map<IPayload, String> parameters = new HashMap<IPayload, String>();
+        parameters.put(COMMAND_CHANGE_HEALTH.AMOUNT, "50");
+        parameters.put(COMMAND_CHANGE_HEALTH.ENTITY_ID, playerID);
+        health.setParameters(parameters);
+        
+        
+        Upgrade healthMax = new Upgrade("Hull+", "Increases your maximum HP by 25 HP. \n \n Costs 200 points.", 200, DefaultMessage.COMMAND_CHANGE_HEALTH_MAX);
+        parameters = new HashMap<IPayload, String>();
+        parameters.put(COMMAND_CHANGE_HEALTH_MAX.AMOUNT, "25");
+        parameters.put(COMMAND_CHANGE_HEALTH_MAX.ENTITY_ID, playerID);
+        healthMax.setParameters(parameters);
+        
+        Upgrade shield = new Upgrade("Batteries", "Increases your maximum shield by 10. \n \n Costs 500 points.", 500, DefaultMessage.COMMAND_CHANGE_SHIELD_MAX);
+        parameters = new HashMap<IPayload, String>();
+        parameters.put(COMMAND_CHANGE_SHIELD_MAX.AMOUNT, "10");
+        parameters.put(COMMAND_CHANGE_SHIELD_MAX.ENTITY_ID, playerID);
+        shield.setParameters(parameters);
+        
+        upgrades.put("1", health);
+        upgrades.put("2", healthMax);
+        upgrades.put("3", shield);
+	}
 	
 	private void buy(final Map<IPayload, String> data) {
 		core.send(DefaultMessage.REQUEST_SCORE, null);
@@ -129,9 +139,9 @@ public class UpgradeSystem extends AbstractSystem {
 				Map<IPayload, String> parameters = new HashMap<IPayload, String>();
 				parameters.put(COMMAND_ADJUST_SCORE.AMOUNT, -upgrade.getCost() + "");
 				core.send(DefaultMessage.COMMAND_ADJUST_SCORE, parameters);
-
-				parameters = new HashMap<IPayload, String>();
-				//TODO: Resolve purchase issue.
+				core.send(upgrade.getCommand(), upgrade.getParameters());
+				System.out.println(upgrade.getCommand());
+				System.out.println(upgrade.getParameters());
 			}
 		}
 	}

@@ -63,157 +63,144 @@ import com.jgefroh.systems.WindowSystem;
 /**
  * @author Joseph Gefroh
  */
-public class Main
-{
-	/**A reference to the Core that powers the game.*/
-	private Core core;
-	
-	/***/
-	private boolean continueGame = true;		//Continue
-	private ResourceLoader rl;
-	
-	public static void main(String[] args)
-	{
-		Main ts = new Main();
-		ts.loop();
-		System.exit(0);
-	}
-	
-	public Main()
-	{
-		init();
-	}
-	
+public class Main {
 
-	private void init()
-	{
-		core = new Core();
-		core.setDebugLevel(Level.OFF);
-		initFactories();
-		initSystems();
-		loadTexture();
-	}
-	
-	/**
-	 * Initialize all of the various systems of the game.
-	 */
-	private void initSystems()
-	{
-		core.addSystem(new WindowSystem(core, 1366, 768, "Last Stand - 29JUL13"));
-		core.addSystem(new RenderSystem(core));
-		
-		core.addSystem(new ForceSystem(core));
-		TransformSystem tranSys = new TransformSystem(core);
-		//tranSys.setWait(30);
-		core.addSystem(tranSys);
-		core.addSystem(new InputSystem(core));
-		
-		core.addSystem(new CollisionSystem(core));
-		core.addSystem(new EntityCreationSystem(core));
-		
-		//core.addSystem(new MouseTrackingSystem(core));
-		core.addSystem(new WeaponSystem(core));
-		MaxRangeSystem mrs = new MaxRangeSystem(core);
-			mrs.setWait(100);
-		core.addSystem(mrs);
-		core.addSystem(new DamageSystem(core));
-		core.addSystem(new HealthMonitorSystem(core));
-		core.addSystem(new GUIHealthBarSystem(core));
-		AISystem aiSys = new AISystem(core);
-			aiSys.setWait(1000);
-		core.addSystem(aiSys);
-		core.addSystem(new TargetTrackSystem(core));
-		OutOfBoundsSystem oobSys = new OutOfBoundsSystem(core);
-		core.addSystem(oobSys);
-		EnemySpawnSystem eSpawn = new EnemySpawnSystem(core);
-			eSpawn.setWait(30000);
-			eSpawn.setLast(core.now()-31000);
-		core.addSystem(eSpawn); 
-		core.addSystem(new ShieldSystem(core));
-		core.addSystem(new KeepInBoundsSystem(core));
-		core.addSystem(new GUISystem(core));
-		core.addSystem(new ScoreSystem(core));
-		core.addSystem(new UpgradeSystem(core));
-		core.addSystem(new DecaySystem(core));
-		core.addSystem(new ExplosionSystem(core));
-		core.addSystem(new AbilitySystem(core));
-		rl = new ResourceLoader(core);
-	}
-	
-	private void initFactories()
-	{
-		core.add(new RenderInfoPack());
-		core.add(new MovementInfoPack());
-		core.add(new InputInfoPack());
-		core.add(new CollisionInfoPack());
-		core.add(new ForceInfoPack());
-		core.add(new WeaponInfoPack());
-		core.add(new AnimationInfoPack());
-		core.add(new MouseTrackInfoPack());
-		core.add(new MaxRangeInfoPack());
-		core.add(new HealthInfoPack());
-		core.add(new HealthBarInfoPack());
-		core.add(new DamageInfoPack());
-		core.add(new AIInfoPack());
-		core.add(new TargetInfoPack());
-		core.add(new TargetTrackInfoPack());
-		core.add(new OutOfBoundsInfoPack());
-		core.add(new ShieldInfoPack());
-		core.add(new KeepInBoundsInfoPack());
-		core.add(new GUIInfoPack());
-		core.add(new GUIBarInfoPack());
-		core.add(new GUICharSlotInfoPack());
-		core.add(new GUICounterInfoPack());
-		core.add(new GUITextInfoPack());
-		core.add(new ScoreInfoPack());
-		core.add(new DecayInfoPack());
-		core.add(new ExplosionInfoPack());	
-		core.add(new AbilityInfoPack());	
-	}
-	
-	/**
-	 * Loop through game functions (main game loop).
-	 */
-	public void loop()
-	{
-		newGame();
-		while(!Display.isCloseRequested())
-		{
-			Display.update();
-			core.work();
-		}
-	}
-	
-	////////////
-	public void newGame()
-	{
+    /**A reference to the Core that powers the game.*/
+    private Core core;
 
-		EntityCreationSystem ecs = 
-				core.getSystem(EntityCreationSystem.class);
-		if(ecs!=null)
-		{			
-			ecs.createPlayer(32, 384);
-		}
-		CollisionSystem cs = core.getSystem(CollisionSystem.class);
-				
-		if(cs!=null)
-		{
-			cs.setCollision(1, 2, true);	//alien, pbullet
-			cs.setCollision(0, 3, true);	//player, abullet
-		}
-	}
-	
-	public void loadTexture()
-	{
-		if(rl!=null)
-		{
-			rl.loadTexture("res/player.png");
-			rl.loadTexture("res/bullet.png");
-			rl.loadTexture("res/enemy.png");
-			rl.loadTexture("res/bg.png");
-			rl.loadTexture("res/fx.png");
-			rl.loadTexture("res/alphabet.png");
-			rl.loadTexture("res/icons.png");
-		}
-	}
+    /***/
+    private boolean continueGame = true; //Continue
+    private ResourceLoader rl;
+
+    public static void main(String[] args) {
+        Main ts = new Main();
+        ts.loop();
+        System.exit(0);
+    }
+
+    public Main() {
+        init();
+    }
+
+
+    private void init() {
+        core = new Core();
+        core.setDebugLevel(Level.OFF);
+        initFactories();
+        initSystems();
+        loadTexture();
+    }
+
+    /**
+     * Initialize all of the various systems of the game.
+     */
+    private void initSystems() {
+        core.addSystem(new WindowSystem(core, 1366, 768, "Last Stand - 29JUL13"));
+        core.addSystem(new RenderSystem(core));
+
+        core.addSystem(new ForceSystem(core));
+        TransformSystem tranSys = new TransformSystem(core);
+        //tranSys.setWait(30);
+        core.addSystem(tranSys);
+        core.addSystem(new InputSystem(core));
+
+        core.addSystem(new CollisionSystem(core));
+        core.addSystem(new EntityCreationSystem(core));
+
+        //core.addSystem(new MouseTrackingSystem(core));
+        core.addSystem(new WeaponSystem(core));
+        MaxRangeSystem mrs = new MaxRangeSystem(core);
+        mrs.setWait(100);
+        core.addSystem(mrs);
+        core.addSystem(new DamageSystem(core));
+        core.addSystem(new HealthMonitorSystem(core));
+        core.addSystem(new GUIHealthBarSystem(core));
+        AISystem aiSys = new AISystem(core);
+        aiSys.setWait(1000);
+        core.addSystem(aiSys);
+        core.addSystem(new TargetTrackSystem(core));
+        OutOfBoundsSystem oobSys = new OutOfBoundsSystem(core);
+        core.addSystem(oobSys);
+        EnemySpawnSystem eSpawn = new EnemySpawnSystem(core);
+        eSpawn.setWait(30000);
+        eSpawn.setLast(core.now() - 31000);
+        core.addSystem(eSpawn);
+        core.addSystem(new ShieldSystem(core));
+        core.addSystem(new KeepInBoundsSystem(core));
+        core.addSystem(new GUISystem(core));
+        core.addSystem(new ScoreSystem(core));
+        core.addSystem(new UpgradeSystem(core));
+        core.addSystem(new DecaySystem(core));
+        core.addSystem(new ExplosionSystem(core));
+        core.addSystem(new AbilitySystem(core));
+        rl = new ResourceLoader(core);
+    }
+
+    private void initFactories() {
+        core.add(new RenderInfoPack());
+        core.add(new MovementInfoPack());
+        core.add(new InputInfoPack());
+        core.add(new CollisionInfoPack());
+        core.add(new ForceInfoPack());
+        core.add(new WeaponInfoPack());
+        core.add(new AnimationInfoPack());
+        core.add(new MouseTrackInfoPack());
+        core.add(new MaxRangeInfoPack());
+        core.add(new HealthInfoPack());
+        core.add(new HealthBarInfoPack());
+        core.add(new DamageInfoPack());
+        core.add(new AIInfoPack());
+        core.add(new TargetInfoPack());
+        core.add(new TargetTrackInfoPack());
+        core.add(new OutOfBoundsInfoPack());
+        core.add(new ShieldInfoPack());
+        core.add(new KeepInBoundsInfoPack());
+        core.add(new GUIInfoPack());
+        core.add(new GUIBarInfoPack());
+        core.add(new GUICharSlotInfoPack());
+        core.add(new GUICounterInfoPack());
+        core.add(new GUITextInfoPack());
+        core.add(new ScoreInfoPack());
+        core.add(new DecayInfoPack());
+        core.add(new ExplosionInfoPack());
+        core.add(new AbilityInfoPack());
+    }
+
+    /**
+     * Loop through game functions (main game loop).
+     */
+    public void loop() {
+        newGame();
+        while (!Display.isCloseRequested()) {
+            Display.update();
+            core.work();
+        }
+    }
+
+    ////////////
+    public void newGame() {
+
+        EntityCreationSystem ecs = core.getSystem(EntityCreationSystem.class);
+        if (ecs != null) {
+            ecs.createPlayer(32, 384);
+        }
+        CollisionSystem cs = core.getSystem(CollisionSystem.class);
+
+        if (cs != null) {
+            cs.setCollision(1, 2, true); //alien, pbullet
+            cs.setCollision(0, 3, true); //player, abullet
+        }
+    }
+
+    public void loadTexture() {
+        if (rl != null) {
+            rl.loadTexture("res/player.png");
+            rl.loadTexture("res/bullet.png");
+            rl.loadTexture("res/enemy.png");
+            rl.loadTexture("res/bg.png");
+            rl.loadTexture("res/fx.png");
+            rl.loadTexture("res/alphabet.png");
+            rl.loadTexture("res/icons.png");
+        }
+    }
 }

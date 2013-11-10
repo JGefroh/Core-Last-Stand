@@ -103,7 +103,7 @@ public class ScoreSystem extends AbstractSystem {
 	//////////////////////////////////////////////////
 	
 	private void adjustScore(final Map<IPayload, String> data) {
-		if (data == null || data.size() < 2) {
+		if (data == null || data.size() < 1) {
 			return;
 		}
 		try {
@@ -122,7 +122,7 @@ public class ScoreSystem extends AbstractSystem {
 		
 		String entityID = data.get(EVENT_DESTROYING_ENTITY.ENTITY_ID);
 		
-		if("NO_HEALTH".equals(data.get(EVENT_DESTROYING_ENTITY.REASON))) {
+		if(!"NO_HEALTH".equals(data.get(EVENT_DESTROYING_ENTITY.REASON))) {
 			return;
 		}
 		

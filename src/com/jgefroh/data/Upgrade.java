@@ -1,6 +1,10 @@
 package com.jgefroh.data;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.jgefroh.core.IMessage;
+import com.jgefroh.core.IPayload;
 
 public class Upgrade {
 
@@ -23,6 +27,8 @@ public class Upgrade {
     /**The amount this upgrade will do.*/
     private int value;
 
+    /**The payload.*/
+    private Map<IPayload, String> parameters;
 
     //////////////////////////////////////////////////
     // Constructors
@@ -31,12 +37,11 @@ public class Upgrade {
     private Upgrade() {
     }
 
-    public Upgrade(final String name, final String desc, final int cost, final IMessage command, final int value) {
+    public Upgrade(final String name, final String desc, final int cost, final IMessage command) {
         setName(name);
         setDesc(desc);
         setCost(cost);
         setCommand(command);
-        setValue(value);
     }
 
 
@@ -84,6 +89,13 @@ public class Upgrade {
         return this.value;
     }
 
+    /**
+     * Gets the parameters of this upgrade.
+     * @return  the parameters
+     */
+    public final Map<IPayload, String> getParameters() {
+        return this.parameters;
+    }
     
     //////////////////////////////////////////////////
     // Setters
@@ -126,5 +138,13 @@ public class Upgrade {
      */
     public final void setValue(final int value) {
         this.value = value;
+    }
+    
+    /**
+     * Sets the value of the parameters associated with this upgrade.
+     * @param parameters the parameters to set
+     */
+    public final void setParameters(final Map<IPayload, String> parameters) {
+        this.parameters = parameters;
     }
 }
